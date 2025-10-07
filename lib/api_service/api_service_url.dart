@@ -4,6 +4,7 @@
 class ApiServiceUrl{
 
   static String apiBaseUrl= "https://elearningapi.edumation.in/api/";
+  static String hamaareSitaareApiBaseUrl= "https://hamaaresitaareapi.edumation.in/api/";
   static String countryBaseUrl= "https://apiapp.edumation.in/api/";
   static String urlLauncher = "https://elearningapi.edumation.in/FileUploads/";
   static String fileUpload = "https://elearningapi.edumation.in/api/CommonDropdown/FileUpload";
@@ -20,5 +21,9 @@ class ApiServiceUrl{
   static String getUserRole = "User/GetUserRole";
   static String sessionDetails = "SessionDetails";
   static String loginWithInstitute = "User/LoginWithInstitute";
+
+  static String getDashboardWeek = "Dashboard/GetDashboardWeek";
+  static String getDashboardLongTermGoal = "Dashboard/GetDashboardLongTermGoal";
+  static String getStudentByInstituteId = "Student/GetStudentByinstituteId";
 
   }

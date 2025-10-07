@@ -4,18 +4,28 @@ import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 
 class CustomViewCard extends StatelessWidget {
-  const CustomViewCard({super.key});
+  final StudentListDataModal student;
+  final VoidCallback? onViewPressed;
+
+  const CustomViewCard({
+    super.key,
+    required this.student,
+    this.onViewPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(15.sp, 15.sp, 10.sp, 0),
+      margin: EdgeInsets.only(bottom: 12.sp),
+      padding: EdgeInsets.fromLTRB(15.sp, 15.sp, 10.sp, 0.sp),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.borderColor, width: 1.sp),
         borderRadius: BorderRadius.circular(10.r),
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,10 +36,15 @@ class CustomViewCard extends StatelessWidget {
                 height: 70.sp,
                 width: 70.sp,
                 decoration: BoxDecoration(
-                  color: AppColors.themeColor,
+                  color: AppColors.themeColor.withOpacity(0.1),
                   shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: AssetImage(ImgAssets.user,),
+                  image: student.studentImage != null && student.studentImage!.isNotEmpty
+                      ? DecorationImage(
+                    image: NetworkImage(student.studentImage!),
+                    fit: BoxFit.cover,
+                  )
+                      : const DecorationImage(
+                    image: AssetImage(ImgAssets.user),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -37,30 +52,34 @@ class CustomViewCard extends StatelessWidget {
 
               SizedBox(width: 10.sp),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: "Syed Touseef",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.themeColor, // Pink/red color
-                  ),
-                  SizedBox(height: 2.sp),
-                  CustomText(
-                    text: "PID - 10120",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textGrey,
-                  ),
-                  SizedBox(height: 2.sp),
-                  CustomText(
-                    text: "Diagnosis - GDD",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textGrey,
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: student.studentName ?? "Unknown Student",
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.themeColor,
+                    ),
+                    SizedBox(height: 2.sp),
+                    CustomText(
+                      text: "PID - ${student.pidNumber ?? "N/A"}",
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textGrey,
+                    ),
+                    SizedBox(height: 2.sp),
+                    CustomText(
+                      text: "Diagnosis - ${student.diagnosis ?? "N/A"}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textGrey,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -71,7 +90,7 @@ class CustomViewCard extends StatelessWidget {
               text: 'View',
               innerPadding: EdgeInsets.symmetric(
                 vertical: 4.sp,
-                horizontal: 20.sp,
+                horizontal: 22.sp,
               ),
               containerColor: Colors.white,
               textColor: AppColors.yellow,
@@ -79,6 +98,7 @@ class CustomViewCard extends StatelessWidget {
               fontWeight: FontWeight.w500,
               borderColor: AppColors.yellow,
               borderWidth: 1,
+              // onTap: onViewPressed,
             ),
           ),
         ],
