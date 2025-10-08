@@ -6,7 +6,7 @@ class ApiServiceUrl{
   static String apiBaseUrl= "https://elearningapi.edumation.in/api/";
   static String hamaareSitaareApiBaseUrl= "https://hamaaresitaareapi.edumation.in/api/";
   static String countryBaseUrl= "https://apiapp.edumation.in/api/";
-  static String urlLauncher = "https://elearningapi.edumation.in/FileUploads/";
+  static String urlLauncher = "https://hamaaresitaareapi.edumation.in/FileUploads/";
   static String fileUpload = "https://elearningapi.edumation.in/api/CommonDropdown/FileUpload";
 
   // static String apiBaseUrl= "http://172.16.82.6:50/api/";

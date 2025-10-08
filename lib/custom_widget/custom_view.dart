@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
@@ -40,7 +41,8 @@ class CustomViewCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   image: student.studentImage != null && student.studentImage!.isNotEmpty
                       ? DecorationImage(
-                    image: NetworkImage(student.studentImage!),
+                    image: NetworkImage('${ApiServiceUrl.urlLauncher}uploads/${student.studentImage}',),
+                    // image: NetworkImage(student.studentImage!),
                     fit: BoxFit.cover,
                   )
                       : const DecorationImage(

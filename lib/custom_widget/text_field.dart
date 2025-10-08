@@ -98,7 +98,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     final Color effectiveBorderColor =
-        widget.borderColor ?? AppColors.themeColor;
+        widget.borderColor ?? AppColors.themeBlue;
     final double effectiveBorderRadius = widget.borderRadius ?? 30.sp;
 
     return SizedBox(
@@ -124,7 +124,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: TextStyle(
               fontSize: widget.fontSize ?? 14.sp,
               color: widget.isEditable
-                  ? (widget.fontColor ?? AppColors.themeColor)
+                  ? (widget.fontColor ?? AppColors.themeBlue)
                   : AppColors.darkGrey,
             ),
             inputFormatters: widget.onlyLetters
