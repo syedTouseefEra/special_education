@@ -112,7 +112,7 @@
 //     super.dispose();
 //   }
 //
-//   Widget _buildDocViewer() {
+//   widget _buildDocViewer() {
 //     if (_webViewController == null) {
 //       return const Center(child: CircularProgressIndicator());
 //     }
@@ -120,7 +120,7 @@
 //     return WebViewWidget(controller: _webViewController!);
 //   }
 //
-//   Widget _buildContent() {
+//   widget _buildContent() {
 //     switch (mediaType) {
 //       case 'image':
 //         return InteractiveViewer(
@@ -189,7 +189,7 @@
 //   }
 //
 //   @override
-//   Widget build(BuildContext context) {
+//   widget build(BuildContext context) {
 //     return Container(
 //       color: AppColors.themeColor,
 //       child: SafeArea(

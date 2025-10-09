@@ -23,7 +23,7 @@ class DashboardProvider with ChangeNotifier {
 
   /// Token (should later come from login/session)
   static const _token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjYiLCJuYmYiOjE3NTk3NTE5NjcsImV4cCI6MTc1OTgxMTk2NywiaWF0IjoxNzU5NzUxOTY3fQ.ML8ewe1Zc4LOc30MYmWoBRb7XpoYAMaOfV5s0nysmcA';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzU5OTkxMjE2LCJleHAiOjE3NjAwNTEyMTYsImlhdCI6MTc1OTk5MTIxNn0.noVyjWDigGWsvbCfxDBRq6CWg0QDTOua6A5uEv8AdUg';
 
   /// ============ WEEKLY GOAL DATA ============
   Future<bool> getDashboardWeekData() async {
@@ -63,7 +63,6 @@ class DashboardProvider with ChangeNotifier {
     );
   }
 
-  /// ============ STUDENT LIST DATA ============
   Future<bool> getDashboardStudentListData() async {
     return _getDashboardData<List<StudentListDataModal>>(
       cacheKey: 'studentData',

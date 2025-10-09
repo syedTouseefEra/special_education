@@ -3,19 +3,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/provider/login/login_provider.dart';
+import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
 
-Future<void> main() async {
+// Declare a global RouteObserver
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await GetStorage.init('user');
   await GetStorage.init('registered');
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => LoginProvider()..loadUserData(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginProvider()..loadUserData()),
+        ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
+      ],
       child: MyApp(),
     ),
   );
@@ -26,7 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: Size(375, 812),
-      child: Consumer<LoginProvider>(
+      builder: (context, child) => Consumer<LoginProvider>(
         builder: (context, loginProvider, _) {
           Widget homeScreen;
 
@@ -39,8 +46,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Special Education',
-            // theme: ThemeData(primarySwatch: Colors.pink),
             home: homeScreen,
+            navigatorObservers: [routeObserver],  // <-- Add RouteObserver here
           );
         },
       ),

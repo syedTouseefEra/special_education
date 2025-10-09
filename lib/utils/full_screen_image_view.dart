@@ -14,7 +14,7 @@
 //   });
 //
 //   @override
-//   Widget build(BuildContext context) {
+//   widget build(BuildContext context) {
 //     ImageProvider imageProvider;
 //
 //     if (imageUrl != null) {
