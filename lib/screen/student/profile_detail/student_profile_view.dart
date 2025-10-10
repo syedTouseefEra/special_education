@@ -1,5 +1,6 @@
 import 'package:flutter/Material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/assets.dart';
@@ -11,6 +12,7 @@ import 'package:special_education/screen/student/profile_detail/widget/long_term
 import 'package:special_education/screen/student/profile_detail/widget/profile_details_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/student_profile_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/widget/weekly_goal_view.dart';
+import 'package:special_education/screen/student/student_dashboard_provider.dart';
 
 class ProfileView extends StatefulWidget {
   final StudentProfileDataModel student; 
@@ -61,18 +63,6 @@ class _ProfileViewState extends State<ProfileView> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Container(
-                              //   height: 90.sp,
-                              //   width: 90.sp,
-                              //   decoration: BoxDecoration(
-                              //     color: AppColors.themeColor.withOpacity(0.1),
-                              //     shape: BoxShape.circle,
-                              //     image: const DecorationImage(
-                              //       image: AssetImage(ImgAssets.user),
-                              //       fit: BoxFit.cover,
-                              //     ),
-                              //   ),
-                              // ),
                               Container(
                                 height: 90.sp,
                                 width: 90.sp,
@@ -203,11 +193,22 @@ class _ProfileViewState extends State<ProfileView> {
                         child: InkWell(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
-                          onTap: () {
-                            setState(() {
-                              selectedTab = 'Learning Objective';
-                            });
+                          onTap: () async {
+                            final provider = Provider.of<StudentDashboardProvider>(context, listen: false);
+
+                            final success = await provider.getLongTermGoal(widget.student.studentId.toString());
+
+                            if (success) {
+                              setState(() {
+                                selectedTab = 'Learning Objective';
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(provider.error ?? 'Failed to load long-term goals')),
+                              );
+                            }
                           },
+
                           child: CustomContainer(
                             textAlign: TextAlign.center,
                             borderRadius: 0,
@@ -286,12 +287,12 @@ class _ProfileViewState extends State<ProfileView> {
                       color: AppColors.themeColor,
                     ),
                   ),
-                  SizedBox(height: 15.sp),
+                  SizedBox(height: 10.sp),
 
                   if (selectedTab == 'Profile Details')
                     ProfileDetailsView(student: widget.student,)
                   else if (selectedTab == 'Learning Objective')
-                    LongTermGoalView()
+                    LongTermGoalView(studentId: widget.student.studentId.toString(),)
                   else if (selectedTab == 'Time Frame')
                     WeeklyGoalView()
                   else if (selectedTab == 'All Videos')

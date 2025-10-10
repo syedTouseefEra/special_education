@@ -1,3 +1,5 @@
+import 'package:html/parser.dart' show parse;
+import 'package:html/parser.dart' as html_parser;
 enum TextCase {
   sentence,
   title,
@@ -43,3 +45,20 @@ String getInitials(String fullName) {
   return nameParts.map((part) => part[0].toUpperCase()).join();
 }
 
+String parseHtmlString(String htmlString) {
+  final document = parse(htmlString);
+  final String parsedString = document.body?.text ?? '';
+  return parsedString;
+}
+
+String parseHtmlToMultiline(String htmlString) {
+  final document = html_parser.parse(htmlString);
+  final paragraphs = document.body?.getElementsByTagName('p');
+
+  if (paragraphs != null && paragraphs.isNotEmpty) {
+    return paragraphs.map((p) => p.text.trim()).join('\n');
+  } else {
+    // Fallback: return plain text if no <p> tags
+    return document.body?.text.trim() ?? htmlString;
+  }
+}

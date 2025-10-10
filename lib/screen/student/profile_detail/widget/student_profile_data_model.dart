@@ -189,3 +189,29 @@ class Quality {
     return data;
   }
 }
+
+
+class LongTermGoal {
+  int? id;
+  String? longTermGoal;
+  int? goalCount;
+  int? goalStatus;
+
+  LongTermGoal({this.id, this.longTermGoal, this.goalCount, this.goalStatus});
+
+  LongTermGoal.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    longTermGoal = json['longTermGoal'];
+    goalCount = json['goalCount'];
+    goalStatus = json['goalStatus'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['longTermGoal'] = longTermGoal;
+    data['goalCount'] = goalCount;
+    data['goalStatus'] = goalStatus;
+    return data;
+  }
+}

@@ -7,10 +7,13 @@ import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/student/profile_detail/widget/student_profile_data_model.dart';
 
 class StudentDashboardProvider with ChangeNotifier {
+
   bool _isLoading = false;
   String? _error;
+
   List<StudentListDataModal>? _studentData;
   List<StudentListDataModal>? _filteredStudentData;
+  List<LongTermGoal>? _longTermGoalData;
 
   List<StudentProfileDataModel>? _studentProfileData;
 
@@ -19,7 +22,6 @@ class StudentDashboardProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  // Return filtered list if search query is active, else full list
   List<StudentListDataModal>? get studentData {
     if (_searchQuery.isEmpty) {
       return _studentData;
@@ -30,6 +32,10 @@ class StudentDashboardProvider with ChangeNotifier {
 
   List<StudentProfileDataModel>? get studentProfileData {
     return _studentProfileData;
+  }
+
+  List<LongTermGoal>? get longTermGoalData {
+    return _longTermGoalData;
   }
 
   final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
@@ -144,4 +150,58 @@ class StudentDashboardProvider with ChangeNotifier {
 
     return false;
   }
+
+  Future<bool> getLongTermGoal(String id) async {
+    _setLoading(true);
+
+    try {
+      final response = await _api.getApiCall(
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getLongTermGoal}",
+        params: {"studentId": id},
+        token: _token,
+      );
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body["responseStatus"] == true && body["data"] is List) {
+        _longTermGoalData = (body["data"] as List)
+            .map((e) => LongTermGoal.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+        _setLoading(false);
+        return true;
+      }
+      _setError(body["responseMessage"] ?? "Something went wrong");
+    } catch (e) {
+      _setError("Exception: $e");
+    } finally {
+      _setLoading(false);
+    }
+
+    return false;
+  }
+
+  Future<bool> addLongTermCourse(String id, String longTermGoal) async {
+    _setLoading(true);
+
+    try {
+      final response = await _api.postApiCall(
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.addLongTermCourse}",
+        body: {
+          "studentId": id,
+          "longTermGoal": longTermGoal,
+        },
+        token: _token,
+      );
+      final body = json.decode(response.body);
+      if (response.statusCode == 201 && body["responseStatus"] == true && body["data"] is List) {
+        return true;
+      }
+      _setError(body["responseMessage"] ?? "Something went wrong");
+    } catch (e) {
+      _setError("Exception: $e");
+    } finally {
+      _setLoading(false);
+    }
+
+    return false;
+  }
+
 }

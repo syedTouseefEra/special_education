@@ -26,5 +26,7 @@ class ApiServiceUrl{
   static String getDashboardLongTermGoal = "Dashboard/GetDashboardLongTermGoal";
   static String getStudentByInstituteId = "Student/GetStudentByinstituteId";
   static String getStudentProfile = "Student/GetStudentProfile";
+  static String getLongTermGoal = "StudentSkill/GetLongTermGoal";
+  static String addLongTermCourse = "StudentSkill/AddLongTermCourse";
 
   }

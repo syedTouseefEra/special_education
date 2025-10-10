@@ -1,5 +1,4 @@
 import 'package:flutter/Material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/constant/assets.dart';
@@ -56,7 +55,6 @@ class ProfileDetailsView extends StatelessWidget {
                             color: AppColors.textGrey,
                           ),
                         ),
-
                         if (rating.quality != null && rating.quality!.isNotEmpty)
                           ...rating.quality!.map<Widget>((quality) {
                             return Padding(
@@ -77,7 +75,7 @@ class ProfileDetailsView extends StatelessWidget {
                                 valueCase: TextCase.title,
                               ),
                             );
-                          }).toList()
+                          })
                         else
                           Padding(
                             padding: EdgeInsets.fromLTRB(20.sp, 0, 10.sp, 5.sp),
@@ -99,7 +97,7 @@ class ProfileDetailsView extends StatelessWidget {
                           )
                       ],
                     );
-                  }).toList(),
+                  }),
                   Padding(
                     padding: EdgeInsets.all(15.sp),
                     child: Row(
@@ -203,7 +201,7 @@ class ProfileDetailsView extends StatelessWidget {
                         valueCase: TextCase.title,
                       ),
                     );
-                  }).toList(),
+                  }),
                   Padding(
                     padding: EdgeInsets.all(15.sp),
                     child: Row(
