@@ -35,7 +35,7 @@ class StudentDashboardProvider with ChangeNotifier {
   final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
 
   static const String _token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzU5OTkxMjE2LCJleHAiOjE3NjAwNTEyMTYsImlhdCI6MTc1OTk5MTIxNn0.noVyjWDigGWsvbCfxDBRq6CWg0QDTOua6A5uEv8AdUg';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwMDczNzUzLCJleHAiOjE3NjAxMzM3NTMsImlhdCI6MTc2MDA3Mzc1M30.pQjc9i1U7H55WiF6OdxCH16ia6Rcix8oB0OkbvdOGO8';
 
   Future<bool> fetchStudentList() async {
     _setLoading(true);
