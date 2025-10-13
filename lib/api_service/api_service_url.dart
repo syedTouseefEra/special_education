@@ -28,5 +28,6 @@ class ApiServiceUrl{
   static String getStudentProfile = "Student/GetStudentProfile";
   static String getLongTermGoal = "StudentSkill/GetLongTermGoal";
   static String addLongTermCourse = "StudentSkill/AddLongTermCourse";
+  static String updateLongTermGoal = "StudentSkill/UpdateLongTermGoal";
 
   }

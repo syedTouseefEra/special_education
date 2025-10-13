@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/utils/text_case_utils.dart';
 
 class LongTermGoalView extends StatefulWidget {
   final String studentId;
-  const LongTermGoalView({Key? key, required this.studentId}) : super(key: key);
+  const LongTermGoalView({super.key, required this.studentId});
 
   @override
   State<LongTermGoalView> createState() => _LongTermGoalViewState();
@@ -23,7 +23,6 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<StudentDashboardProvider>(
         context,
@@ -37,7 +36,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
     return Consumer<StudentDashboardProvider>(
       builder: (context, provider, _) {
         if (provider.isLoading) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         final longTermGoals = provider.longTermGoalData;
@@ -69,7 +68,6 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                             child: Padding(
                               padding: EdgeInsets.all(20.sp),
                               child: Column(
-                                mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CustomText(
@@ -84,7 +82,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                     fontSize: 16.sp,
                                     color: AppColors.grey,
                                   ),
-                                  Divider(thickness: 1),
+                                  const Divider(thickness: 1),
                                   SizedBox(height: 10.h),
                                   Row(
                                     children: [
@@ -116,14 +114,35 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                       InkWell(
                                         onTap: () async {
                                           NavigationHelper.pop(context);
+
                                           await provider.addLongTermCourse(
                                             widget.studentId,
-                                            learningTextController.value.text.trim(),
+                                            learningTextController.text.trim(),
                                           );
-                                          provider.getLongTermGoal(widget.studentId);
-                                          learningTextController.clear();
-                                        },
 
+                                          await provider.getLongTermGoal(
+                                            widget.studentId,
+                                          );
+
+                                          learningTextController.clear();
+
+                                          if (mounted) {
+                                            WidgetsBinding.instance
+                                                .addPostFrameCallback((_) {
+                                                  if (mounted) {
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Goal added successfully!',
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                });
+                                          }
+                                        },
                                         child: CustomContainer(
                                           borderRadius: 20.r,
                                           text: 'Back',
@@ -155,19 +174,22 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                 ),
               ),
               if (longTermGoals == null || longTermGoals.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Text("No long term goals found."),
                 )
               else
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: longTermGoals.length,
                   itemBuilder: (context, index) {
                     final goal = longTermGoals[index];
                     return Container(
-                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 10,
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(8),
@@ -196,7 +218,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 3.sp),
-                              child: Divider(thickness: 1),
+                              child: const Divider(thickness: 1),
                             ),
                             CustomText(
                               text: 'Goals',

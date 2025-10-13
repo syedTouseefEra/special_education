@@ -40,8 +40,7 @@ class StudentDashboardProvider with ChangeNotifier {
 
   final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
 
-  static const String _token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwMDczNzUzLCJleHAiOjE3NjAxMzM3NTMsImlhdCI6MTc2MDA3Mzc1M30.pQjc9i1U7H55WiF6OdxCH16ia6Rcix8oB0OkbvdOGO8';
+  static const String _token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwMzM0NDE1LCJleHAiOjE3NjAzOTQ0MTUsImlhdCI6MTc2MDMzNDQxNX0.ZSh9DWRO4_StdblE-mNO83RELlKB1w2NkJzZea5oXEo';
 
   Future<bool> fetchStudentList() async {
     _setLoading(true);
@@ -178,14 +177,40 @@ class StudentDashboardProvider with ChangeNotifier {
     return false;
   }
 
-  Future<bool> addLongTermCourse(String id, String longTermGoal) async {
+  Future<bool> addLongTermCourse(String studentId, String longTermGoal) async {
     _setLoading(true);
 
     try {
       final response = await _api.postApiCall(
         url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.addLongTermCourse}",
         body: {
-          "studentId": id,
+          "studentId": studentId,
+          "longTermGoal": longTermGoal,
+        },
+        token: _token,
+      );
+      final body = json.decode(response.body);
+      if (response.statusCode == 201 && body["responseStatus"] == true && body["data"] is List) {
+        return true;
+      }
+      _setError(body["responseMessage"] ?? "Something went wrong");
+    } catch (e) {
+      _setError("Exception: $e");
+    } finally {
+      _setLoading(false);
+    }
+
+    return false;
+  }
+
+  Future<bool> updateLongTermCourse(String id, String longTermGoal) async {
+    _setLoading(true);
+
+    try {
+      final response = await _api.putApiCall(
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
+        body: {
+          "id": id,
           "longTermGoal": longTermGoal,
         },
         token: _token,
