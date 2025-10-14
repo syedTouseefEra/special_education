@@ -44,8 +44,8 @@ class _ProfileViewState extends State<ProfileView> {
                     moduleName: "Profile Detail",
                   ),
                   CustomText(
-                    text: 'Add Weekly Goal And Possible Outcome !',
-                    fontSize: 17.sp,
+                    text: 'Add Weekly Goal And Possible Outcome!',
+                    fontSize: 18.sp,
                     color: AppColors.textGrey,
                     fontWeight: FontWeight.w400,
                   ),
@@ -232,10 +232,20 @@ class _ProfileViewState extends State<ProfileView> {
                         child: InkWell(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
-                          onTap: () {
-                            setState(() {
-                              selectedTab = 'Time Frame';
-                            });
+                          onTap: () async {
+                            final provider = Provider.of<StudentDashboardProvider>(context, listen: false);
+
+                            final success = await provider.getWeeklyGoals(widget.student.studentId.toString());
+
+                            if (success) {
+                              setState(() {
+                                selectedTab = 'Time Frame';
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(provider.error ?? 'Failed to load long-term goals')),
+                              );
+                            }
                           },
                           child: CustomContainer(
                             textAlign: TextAlign.center,
@@ -255,10 +265,25 @@ class _ProfileViewState extends State<ProfileView> {
                         child: InkWell(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
-                          onTap: () {
-                            setState(() {
-                              selectedTab = 'All Videos';
-                            });
+                          // onTap: () {
+                          //   setState(() {
+                          //     selectedTab = '';
+                          //   });
+                          // },
+                          onTap: () async {
+                            final provider = Provider.of<StudentDashboardProvider>(context, listen: false);
+
+                            final success = await provider.getLongTermGoal(widget.student.studentId.toString());
+
+                            if (success) {
+                              setState(() {
+                                selectedTab = 'All Videos';
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(provider.error ?? 'Failed to load long-term goals')),
+                              );
+                            }
                           },
                           child: CustomContainer(
                             textAlign: TextAlign.center,
@@ -282,19 +307,19 @@ class _ProfileViewState extends State<ProfileView> {
                     padding: EdgeInsets.symmetric(horizontal: 5.sp),
                     child: CustomText(
                       text: selectedTab,
-                      fontSize: 18.sp,
+                      fontSize: 22.sp,
+                      fontFamily: 'Dm Serif',
                       fontWeight: FontWeight.w500,
                       color: AppColors.themeColor,
                     ),
                   ),
                   SizedBox(height: 10.sp),
-
                   if (selectedTab == 'Profile Details')
                     ProfileDetailsView(student: widget.student,)
                   else if (selectedTab == 'Learning Objective')
-                    LongTermGoalView(studentId: widget.student.studentId.toString(),)
+                    LongTermGoalView(studentId: widget.student.studentId.toString())
                   else if (selectedTab == 'Time Frame')
-                    WeeklyGoalView()
+                    WeeklyGoalView(studentId: widget.student.studentId.toString())
                   else if (selectedTab == 'All Videos')
                     CustomText(text: 'AllVideosView'),
                 ],

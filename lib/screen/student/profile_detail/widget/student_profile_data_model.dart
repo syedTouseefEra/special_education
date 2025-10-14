@@ -190,7 +190,6 @@ class Quality {
   }
 }
 
-
 class LongTermGoal {
   int? id;
   String? longTermGoal;
@@ -215,3 +214,83 @@ class LongTermGoal {
     return data;
   }
 }
+
+class WeeklyGoal {
+  int? id;
+  String? durationDate;
+  String? goals;
+  String? intervention;
+  String? learningBarriers;
+  String? learningOutCome;
+  String? remarks;
+  int? goalStatus;
+  int? weekCount;
+  List<VideoList>? videoList;
+
+  WeeklyGoal(
+      {this.id,
+        this.durationDate,
+        this.goals,
+        this.intervention,
+        this.learningBarriers,
+        this.learningOutCome,
+        this.remarks,
+        this.goalStatus,
+        this.weekCount,
+        this.videoList});
+
+  WeeklyGoal.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    durationDate = json['durationDate'];
+    goals = json['goals'];
+    intervention = json['intervention'];
+    learningBarriers = json['learningBarriers'];
+    learningOutCome = json['learningOutCome'];
+    remarks = json['remarks'];
+    goalStatus = json['goalStatus'];
+    weekCount = json['weekCount'];
+    if (json['videoList'] != null) {
+      videoList = <VideoList>[];
+      json['videoList'].forEach((v) {
+        videoList!.add(VideoList.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['durationDate'] = durationDate;
+    data['goals'] = goals;
+    data['intervention'] = intervention;
+    data['learningBarriers'] = learningBarriers;
+    data['learningOutCome'] = learningOutCome;
+    data['remarks'] = remarks;
+    data['goalStatus'] = goalStatus;
+    data['weekCount'] = weekCount;
+    if (videoList != null) {
+      data['videoList'] = videoList!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class VideoList {
+  int? id;
+  String? videoName;
+
+  VideoList({this.id, this.videoName});
+
+  VideoList.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    videoName = json['videoName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['videoName'] = videoName;
+    return data;
+  }
+}
+

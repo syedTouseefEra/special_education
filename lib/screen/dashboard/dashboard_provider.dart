@@ -23,7 +23,7 @@ class DashboardProvider with ChangeNotifier {
 
   /// Token (should later come from login/session)
   static const _token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwMzM0NDE1LCJleHAiOjE3NjAzOTQ0MTUsImlhdCI6MTc2MDMzNDQxNX0.ZSh9DWRO4_StdblE-mNO83RELlKB1w2NkJzZea5oXEo';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNDIwMDMwLCJleHAiOjE3NjA0ODAwMzAsImlhdCI6MTc2MDQyMDAzMH0.wK3qKAfiPPPwNDQ2BQW9RDfCOJQ-C8L-ZrpZCGEuuW4';
 
   /// ============ WEEKLY GOAL DATA ============
   Future<bool> getDashboardWeekData() async {

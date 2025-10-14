@@ -33,19 +33,31 @@ class LabelValueText extends StatelessWidget {
     final children = <Widget>[
       Text(applyTextCase(label, labelCase), style: labelStyle),
       SizedBox(width: isRow ? spacing : 0, height: isRow ? 0 : spacing),
-      Expanded(child: Text(applyTextCase(value, valueCase), style: valueStyle)),
+      Flexible(
+        fit: FlexFit.loose,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 1),
+          child: Text(
+            textAlign: TextAlign.end,
+            applyTextCase(value, valueCase),
+            style: valueStyle,
+          ),
+        ),
+      ),
     ];
 
     return isRow
         ? Row(
-            mainAxisAlignment: mainAxisAlignment,
-            crossAxisAlignment: crossAxisAlignment,
-            children: children,
-          )
+      mainAxisAlignment: mainAxisAlignment,
+      crossAxisAlignment: crossAxisAlignment,
+      children: children,
+    )
         : Column(
-            mainAxisAlignment: mainAxisAlignment,
-            crossAxisAlignment: crossAxisAlignment,
-            children: children,
-          );
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: mainAxisAlignment,
+      crossAxisAlignment: crossAxisAlignment,
+      children: children,
+    );
   }
 }
+

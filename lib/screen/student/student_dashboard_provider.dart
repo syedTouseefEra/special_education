@@ -14,6 +14,7 @@ class StudentDashboardProvider with ChangeNotifier {
   List<StudentListDataModal>? _studentData;
   List<StudentListDataModal>? _filteredStudentData;
   List<LongTermGoal>? _longTermGoalData;
+  List<WeeklyGoal>? _weeklyGoalData;
 
   List<StudentProfileDataModel>? _studentProfileData;
 
@@ -38,9 +39,13 @@ class StudentDashboardProvider with ChangeNotifier {
     return _longTermGoalData;
   }
 
+  List<WeeklyGoal>? get weeklyGoalData {
+    return _weeklyGoalData;
+  }
+
   final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
 
-  static const String _token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwMzM0NDE1LCJleHAiOjE3NjAzOTQ0MTUsImlhdCI6MTc2MDMzNDQxNX0.ZSh9DWRO4_StdblE-mNO83RELlKB1w2NkJzZea5oXEo';
+  static const String _token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNDIwMDMwLCJleHAiOjE3NjA0ODAwMzAsImlhdCI6MTc2MDQyMDAzMH0.wK3qKAfiPPPwNDQ2BQW9RDfCOJQ-C8L-ZrpZCGEuuW4';
 
   Future<bool> fetchStudentList() async {
     _setLoading(true);
@@ -190,7 +195,7 @@ class StudentDashboardProvider with ChangeNotifier {
         token: _token,
       );
       final body = json.decode(response.body);
-      if (response.statusCode == 201 && body["responseStatus"] == true && body["data"] is List) {
+      if (response.statusCode == 201 && body["responseStatus"] == true) {
         return true;
       }
       _setError(body["responseMessage"] ?? "Something went wrong");
@@ -216,7 +221,7 @@ class StudentDashboardProvider with ChangeNotifier {
         token: _token,
       );
       final body = json.decode(response.body);
-      if (response.statusCode == 201 && body["responseStatus"] == true && body["data"] is List) {
+      if (response.statusCode == 200 && body["responseStatus"] == true) {
         return true;
       }
       _setError(body["responseMessage"] ?? "Something went wrong");
@@ -228,5 +233,33 @@ class StudentDashboardProvider with ChangeNotifier {
 
     return false;
   }
+
+  Future<bool> getWeeklyGoals(String id) async {
+    _setLoading(true);
+
+    try {
+      final response = await _api.getApiCall(
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentGoals}",
+        params: {"studentId": id},
+        token: _token,
+      );
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body["responseStatus"] == true && body["data"] is List) {
+        _weeklyGoalData = (body["data"] as List)
+            .map((e) => WeeklyGoal.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+        _setLoading(false);
+        return true;
+      }
+      _setError(body["responseMessage"] ?? "Something went wrong");
+    } catch (e) {
+      _setError("Exception: $e");
+    } finally {
+      _setLoading(false);
+    }
+
+    return false;
+  }
+
 
 }
