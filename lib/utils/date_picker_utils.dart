@@ -17,10 +17,11 @@ class DatePickerHelper {
       onTap: () async {
         final picked = await showDatePicker(
           context: context,
-          initialDate: date,
-          firstDate: DateTime(2000),
-          lastDate: DateTime.now(),
+          initialDate: date.isAfter(DateTime.now()) ? DateTime.now() : date,
+          firstDate: DateTime.now(),
+          lastDate: DateTime(2080),
         );
+
         if (picked != null) onChanged(picked);
       },
       child: Container(
@@ -30,6 +31,7 @@ class DatePickerHelper {
           borderRadius: BorderRadius.circular(4.w),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomText(
               text: DateFormat('dd-MM-yyyy').format(date),

@@ -7,7 +7,6 @@ import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/student/profile_detail/widget/student_profile_data_model.dart';
 
 class StudentDashboardProvider with ChangeNotifier {
-
   bool _isLoading = false;
   String? _error;
 
@@ -45,9 +44,11 @@ class StudentDashboardProvider with ChangeNotifier {
 
   final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
 
-  static const String _token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNDIwMDMwLCJleHAiOjE3NjA0ODAwMzAsImlhdCI6MTc2MDQyMDAzMH0.wK3qKAfiPPPwNDQ2BQW9RDfCOJQ-C8L-ZrpZCGEuuW4';
+  static const String _token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNDIwMDMwLCJleHAiOjE3NjA0ODAwMzAsImlhdCI6MTc2MDQyMDAzMH0.wK3qKAfiPPPwNDQ2BQW9RDfCOJQ-C8L-ZrpZCGEuuW4';
 
   Future<bool> fetchStudentList() async {
+    await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
@@ -119,6 +120,7 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> fetchProfileDetail(String id) async {
+    await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
@@ -156,16 +158,20 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> getLongTermGoal(String id) async {
+    await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final response = await _api.getApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getLongTermGoal}",
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getLongTermGoal}",
         params: {"studentId": id},
         token: _token,
       );
       final body = json.decode(response.body);
-      if (response.statusCode == 200 && body["responseStatus"] == true && body["data"] is List) {
+      if (response.statusCode == 200 &&
+          body["responseStatus"] == true &&
+          body["data"] is List) {
         _longTermGoalData = (body["data"] as List)
             .map((e) => LongTermGoal.fromJson(Map<String, dynamic>.from(e)))
             .toList();
@@ -183,15 +189,14 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> addLongTermCourse(String studentId, String longTermGoal) async {
+    await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final response = await _api.postApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.addLongTermCourse}",
-        body: {
-          "studentId": studentId,
-          "longTermGoal": longTermGoal,
-        },
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.addLongTermCourse}",
+        body: {"studentId": studentId, "longTermGoal": longTermGoal},
         token: _token,
       );
       final body = json.decode(response.body);
@@ -209,15 +214,14 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> updateLongTermCourse(String id, String longTermGoal) async {
+    await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final response = await _api.putApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
-        body: {
-          "id": id,
-          "longTermGoal": longTermGoal,
-        },
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
+        body: {"id": id, "longTermGoal": longTermGoal},
         token: _token,
       );
       final body = json.decode(response.body);
@@ -235,16 +239,20 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> getWeeklyGoals(String id) async {
+    await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final response = await _api.getApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentGoals}",
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentGoals}",
         params: {"studentId": id},
         token: _token,
       );
       final body = json.decode(response.body);
-      if (response.statusCode == 200 && body["responseStatus"] == true && body["data"] is List) {
+      if (response.statusCode == 200 &&
+          body["responseStatus"] == true &&
+          body["data"] is List) {
         _weeklyGoalData = (body["data"] as List)
             .map((e) => WeeklyGoal.fromJson(Map<String, dynamic>.from(e)))
             .toList();
@@ -261,5 +269,41 @@ class StudentDashboardProvider with ChangeNotifier {
     return false;
   }
 
+  Future<Map<String, dynamic>> addWeeklyGoal(
+      String studentId,
+      String durationDate,
+      String goals,
+      String intervention,
+      String learningBarriers,
+      ) async {
+    await Future.delayed(Duration(milliseconds: 10));
+    _setLoading(true);
+
+    try {
+      final response = await _api.postApiCall(
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveStudentGoals}",
+        body: {
+          "studentId": studentId,
+          "durationDate": durationDate,
+          "goals": goals,
+          "intervention": intervention,
+          "learningBarriers": learningBarriers,
+        },
+        token: _token,
+      );
+
+      final body = json.decode(response.body);
+
+      return body;
+    } catch (e) {
+      return {
+        "responseStatus": false,
+        "responseMessage": "Exception: $e",
+      };
+    } finally {
+      _setLoading(false);
+    }
+  }
 
 }

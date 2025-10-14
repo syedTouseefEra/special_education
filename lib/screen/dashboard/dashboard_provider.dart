@@ -25,8 +25,8 @@ class DashboardProvider with ChangeNotifier {
   static const _token =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNDIwMDMwLCJleHAiOjE3NjA0ODAwMzAsImlhdCI6MTc2MDQyMDAzMH0.wK3qKAfiPPPwNDQ2BQW9RDfCOJQ-C8L-ZrpZCGEuuW4';
 
-  /// ============ WEEKLY GOAL DATA ============
   Future<bool> getDashboardWeekData() async {
+    await Future.delayed(Duration(milliseconds: 10));
     return _getDashboardData<List<WeekGoalDataModal>>(
       cacheKey: 'weekGoalData',
       url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardWeek}",
@@ -46,6 +46,7 @@ class DashboardProvider with ChangeNotifier {
 
   /// ============ LONG GOAL DATA ============
   Future<bool> getDashboardLongGoalData() async {
+    await Future.delayed(Duration(milliseconds: 10));
     return _getDashboardData<List<LongGoalDataModal>>(
       cacheKey: 'longGoalData',
       url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardLongTermGoal}",
@@ -64,6 +65,7 @@ class DashboardProvider with ChangeNotifier {
   }
 
   Future<bool> getDashboardStudentListData() async {
+    await Future.delayed(Duration(milliseconds: 10));
     return _getDashboardData<List<StudentListDataModal>>(
       cacheKey: 'studentData',
       url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
@@ -81,13 +83,13 @@ class DashboardProvider with ChangeNotifier {
     );
   }
 
-  /// ============ COMMON GETTER METHOD ============
   Future<bool> _getDashboardData<T>({
     required String cacheKey,
     required String url,
     required Map<String, String> params,
     required Function(List<dynamic>) onSuccess,
   }) async {
+    await Future.delayed(Duration(milliseconds: 10));
     _isLoading = true;
     _error = null;
     notifyListeners();
