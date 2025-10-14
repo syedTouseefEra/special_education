@@ -183,7 +183,7 @@
 //     );
 //   }
 //
-//   void _showFullScreenImage(BuildContext context, Widget imageWidget) {
+//   void _showFullScreenImage(BuildContext context, widget imageWidget) {
 //     showDialog(
 //       context: context,
 //       builder: (_) => Dialog(
@@ -202,14 +202,14 @@
 //   }
 //
 //   @override
-//   Widget build(BuildContext context) {
+//   widget build(BuildContext context) {
 //     return ValueListenableBuilder<File?>(
 //       valueListenable: imageFileNotifier,
 //       builder: (context, imageFile, _) {
 //         return ValueListenableBuilder<String?>(
 //           valueListenable: uploadedFileNameNotifier,
 //           builder: (context, uploadedFileName, __) {
-//             Widget? previewImage;
+//             widget? previewImage;
 //
 //             if (imageFile != null) {
 //               previewImage = GestureDetector(

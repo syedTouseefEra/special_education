@@ -55,7 +55,7 @@
 //   }
 //
 //   @override
-//   Widget build(BuildContext context) {
+//   widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(title: const Text('Video Player')),
 //       body: SizedBox(

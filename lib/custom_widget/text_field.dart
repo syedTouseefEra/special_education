@@ -23,6 +23,7 @@ class CustomTextField extends StatefulWidget {
   final int? maxLines;
   final Color? fillColor;
   final bool isEditable;
+  final ValueChanged<String>? onChanged;
 
   const CustomTextField({
     super.key,
@@ -44,6 +45,7 @@ class CustomTextField extends StatefulWidget {
     this.maxLines,
     this.fillColor,
     this.isEditable = true,
+    this.onChanged,
   });
 
   @override
@@ -98,7 +100,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     final Color effectiveBorderColor =
-        widget.borderColor ?? AppColors.themeColor;
+        widget.borderColor ?? AppColors.themeBlue;
     final double effectiveBorderRadius = widget.borderRadius ?? 30.sp;
 
     return SizedBox(
@@ -124,7 +126,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: TextStyle(
               fontSize: widget.fontSize ?? 14.sp,
               color: widget.isEditable
-                  ? (widget.fontColor ?? AppColors.themeColor)
+                  ? (widget.fontColor ?? AppColors.themeBlue)
                   : AppColors.darkGrey,
             ),
             inputFormatters: widget.onlyLetters
@@ -139,6 +141,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               )
                   : const SizedBox.shrink();
             },
+            onChanged: widget.onChanged,  // this line passes onChanged callback
             decoration: InputDecoration(
               counterText: "",
               labelText: widget.label,
@@ -157,24 +160,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
               filled: widget.fillColor != null,
               fillColor: widget.fillColor,
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(effectiveBorderRadius),
-                borderSide: BorderSide(color: effectiveBorderColor),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(effectiveBorderRadius),
-                borderSide:
-                BorderSide(color: effectiveBorderColor, width: 1.w),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue, width: 1.w),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(effectiveBorderRadius),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
                 borderSide: const BorderSide(color: AppColors.red),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(effectiveBorderRadius),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
                 borderSide: const BorderSide(color: AppColors.red, width: 1),
               ),
             ),
-          ),
+          )
         ),
       ),
     );

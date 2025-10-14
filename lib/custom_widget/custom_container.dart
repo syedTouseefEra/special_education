@@ -1,11 +1,10 @@
-
-
 import 'package:flutter/Material.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/utils/text_case_utils.dart';
 
 class CustomContainer extends StatelessWidget {
+  final double? width; // ✅ Optional width added
   final double padding;
   final EdgeInsets innerPadding;
   final Color containerColor;
@@ -24,13 +23,14 @@ class CustomContainer extends StatelessWidget {
 
   const CustomContainer({
     super.key,
+    this.width, // ✅ Accept width in constructor
     this.padding = 15.0,
     this.innerPadding = const EdgeInsets.all(10.0),
     this.containerColor = Colors.orange,
     this.borderRadius = 5.0,
     this.borderWidth = 0.0,
     this.borderColor = Colors.transparent,
-    this.text = "Educational Development",
+    this.text = "Educational",
     this.textColor = AppColors.white,
     this.fontSize = 15.0,
     this.fontWeight = FontWeight.w600,
@@ -46,6 +46,7 @@ class CustomContainer extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(padding),
       child: Container(
+        width: width, // ✅ Apply the optional width
         decoration: BoxDecoration(
           color: containerColor,
           borderRadius: BorderRadius.circular(borderRadius),

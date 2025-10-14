@@ -47,7 +47,8 @@ class CustomHeaderView extends StatelessWidget {
                         () {
                       NavigationHelper.pop(context);
                     },
-                child: Icon(CupertinoIcons.back,size: 22.h,),
+                child: Icon(CupertinoIcons.back,size: 22.h,color:
+                  AppColors.themeColor,),
               ),
               SizedBox(width: 5.sp),
               Expanded(
@@ -60,7 +61,7 @@ class CustomHeaderView extends StatelessWidget {
                         secondaryColor: secondaryColor,
                         colorSplitIndex: colorSplitIndexValue,
                         text: displayText,
-                        fontSize: 16.h,
+                        fontSize: 18.h,
                         fontFamily: 'Dm Serif',
                         fontWeight: FontWeight.w500,
                         textCase: TextCase.title,
@@ -71,11 +72,7 @@ class CustomHeaderView extends StatelessWidget {
           ),
         ),
         SizedBox(height: 12.h),
-        Divider(
-          height: 1,
-          color: AppColors.themeColor,
-        ),
-        SizedBox(height: 10.h),
+
       ],
     );
   }

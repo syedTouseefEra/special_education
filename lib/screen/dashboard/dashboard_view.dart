@@ -6,6 +6,8 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_view.dart';
+import 'package:special_education/custom_widget/top_bottom_sheet.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dashboard_provider.dart';
 
@@ -63,7 +65,10 @@ class DashboardView extends StatelessWidget {
             child: SafeArea(
               child: Scaffold(
                 backgroundColor: AppColors.white,
-                appBar: CustomAppBar(enableTheming: false),
+                appBar: CustomAppBar(enableTheming: false,onNotificationTap: (){
+                  print('object');
+                  NavigationHelper.push(context, CustomTopView());
+                },),
                 body: provider.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : SingleChildScrollView(
@@ -72,81 +77,81 @@ class DashboardView extends StatelessWidget {
                       vertical: 2.sp,
                       horizontal: 10.sp,
                     ),
-                    child: Column(
-                      children: [
-                        /// --- Header Row ---
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              text: "Dashboard",
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'DMSerif',
-                              color: AppColors.themeColor,
-                            ),
-                            CustomContainer(
-                              text: "Add Student",
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Inter',
-                              borderRadius: 15,
-                              innerPadding: EdgeInsets.symmetric(
-                                vertical: 4.sp,
-                                horizontal: 10.sp,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.sp),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(
+                                text: "Dashboard",
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'DMSerif',
+                                color: AppColors.themeColor,
                               ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 10.sp),
-
-                        /// --- Weekly Goal Report ---
-                        _buildChartSection(
-                          title: 'Weekly Goal Report',
-                          chartData: weekChartData,
-                          tooltip: tooltip,
-                          yMax: 100,
-                        ),
-
-                        SizedBox(height: 20.sp),
-
-                        /// --- Long Goal Report ---
-                        _buildChartSection(
-                          title: 'Long Goal Report',
-                          chartData: longChartData,
-                          tooltip: tooltip,
-                          yMax: 100,
-                        ),
-
-                        SizedBox(height: 20.sp),
-
-                        provider.studentData != null &&
-                            provider.studentData!.isNotEmpty
-                            ? Column(
-                          children: provider.studentData!
-                              .map(
-                                (student) => CustomViewCard(
-                              student: student,
-                              onViewPressed: () {
-                                debugPrint(
-                                    'Viewing student: ${student.studentName}');
-                              },
-                            ),
-                          )
-                              .toList(),
-                        )
-                            : Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: CustomText(
-                            text: "No student data available",
-                            fontSize: 14.sp,
-                            color: Colors.grey,
+                              CustomContainer(
+                                text: "Add Student",
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Inter',
+                                borderRadius: 15,
+                                innerPadding: EdgeInsets.symmetric(
+                                  vertical: 4.sp,
+                                  horizontal: 10.sp,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
 
-                        SizedBox(height: 30.sp),
-                      ],
+                          SizedBox(height: 5.sp),
+
+                          _buildChartSection(
+                            title: 'Weekly Goal Report',
+                            chartData: weekChartData,
+                            tooltip: tooltip,
+                            yMax: 100,
+                          ),
+
+                          SizedBox(height: 15.sp),
+
+                          _buildChartSection(
+                            title: 'Long Goal Report',
+                            chartData: longChartData,
+                            tooltip: tooltip,
+                            yMax: 100,
+                          ),
+
+                          SizedBox(height: 15.sp),
+
+                          provider.studentData != null &&
+                              provider.studentData!.isNotEmpty
+                              ? Column(
+                            children: provider.studentData!
+                                .map(
+                                  (student) => CustomViewCard(
+                                student: student,
+                                onViewPressed: () {
+                                  debugPrint(
+                                      'Viewing student: ${student.studentName}');
+                                },
+                              ),
+                            )
+                                .toList(),
+                          )
+                              : Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: CustomText(
+                              text: "No student data available",
+                              fontSize: 14.sp,
+                              color: Colors.grey,
+                            ),
+                          ),
+
+                          SizedBox(height: 10.sp),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -158,7 +163,6 @@ class DashboardView extends StatelessWidget {
     );
   }
 
-  /// --- Chart Section Builder ---
   Widget _buildChartSection({
     required String title,
     required List<_ChartData> chartData,
@@ -168,26 +172,25 @@ class DashboardView extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
         border: Border.all(width: 1, color: AppColors.borderColor),
       ),
       child: Column(
         children: [
-          /// Title Bar
           Container(
             width: double.infinity,
             height: 55.sp,
-            decoration: const BoxDecoration(
+            decoration:  BoxDecoration(
               color: Colors.blue,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
+                topLeft: Radius.circular(10.r),
+                topRight: Radius.circular(10.r),
               ),
             ),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 16.sp),
                 child: CustomText(
                   text: title,
                   textAlign: TextAlign.start,
@@ -196,10 +199,9 @@ class DashboardView extends StatelessWidget {
             ),
           ),
 
-          /// Chart or Empty State
           chartData.isEmpty
               ? Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.sp),
             child: CustomText(
               text: "No data available",
               fontSize: 14.sp,
@@ -230,7 +232,6 @@ class DashboardView extends StatelessWidget {
   }
 }
 
-/// Chart Data Model
 class _ChartData {
   _ChartData(this.x, double? y, this.color) : y = y ?? 0;
   final String x;
