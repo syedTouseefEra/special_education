@@ -8,6 +8,7 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/student/profile_detail/widget/all_videos_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/long_term_goal_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/profile_details_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/student_profile_data_model.dart';
@@ -15,7 +16,7 @@ import 'package:special_education/screen/student/profile_detail/widget/weekly_go
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 
 class ProfileView extends StatefulWidget {
-  final StudentProfileDataModel student; 
+  final StudentProfileDataModel student;
   const ProfileView({super.key, required this.student});
 
   @override
@@ -102,10 +103,18 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
                                   ),
                                   SizedBox(height: 5.sp),
-                                  CustomText(text: 'Age- ${widget.student.age}'),
-                                  CustomText(text: 'PID- ${widget.student.pidNumber}'),
-                                  CustomText(text: 'Gender- ${widget.student.gender}'),
-                                  CustomText(text: 'D.O.B- ${widget.student.dob}'),
+                                  CustomText(
+                                    text: 'Age- ${widget.student.age}',
+                                  ),
+                                  CustomText(
+                                    text: 'PID- ${widget.student.pidNumber}',
+                                  ),
+                                  CustomText(
+                                    text: 'Gender- ${widget.student.gender}',
+                                  ),
+                                  CustomText(
+                                    text: 'D.O.B- ${widget.student.dob}',
+                                  ),
                                 ],
                               ),
                             ],
@@ -194,9 +203,15 @@ class _ProfileViewState extends State<ProfileView> {
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
-                            final provider = Provider.of<StudentDashboardProvider>(context, listen: false);
+                            final provider =
+                                Provider.of<StudentDashboardProvider>(
+                                  context,
+                                  listen: false,
+                                );
 
-                            final success = await provider.getLongTermGoal(widget.student.studentId.toString());
+                            final success = await provider.getLongTermGoal(
+                              widget.student.studentId.toString(),
+                            );
 
                             if (success) {
                               setState(() {
@@ -204,7 +219,12 @@ class _ProfileViewState extends State<ProfileView> {
                               });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(provider.error ?? 'Failed to load long-term goals')),
+                                SnackBar(
+                                  content: Text(
+                                    provider.error ??
+                                        'Failed to load long-term goals',
+                                  ),
+                                ),
                               );
                             }
                           },
@@ -233,9 +253,15 @@ class _ProfileViewState extends State<ProfileView> {
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
-                            final provider = Provider.of<StudentDashboardProvider>(context, listen: false);
+                            final provider =
+                                Provider.of<StudentDashboardProvider>(
+                                  context,
+                                  listen: false,
+                                );
 
-                            final success = await provider.getWeeklyGoals(widget.student.studentId.toString());
+                            final success = await provider.getWeeklyGoals(
+                              widget.student.studentId.toString(),
+                            );
 
                             if (success) {
                               setState(() {
@@ -243,7 +269,12 @@ class _ProfileViewState extends State<ProfileView> {
                               });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(provider.error ?? 'Failed to load long-term goals')),
+                                SnackBar(
+                                  content: Text(
+                                    provider.error ??
+                                        'Failed to load long-term goals',
+                                  ),
+                                ),
                               );
                             }
                           },
@@ -271,9 +302,15 @@ class _ProfileViewState extends State<ProfileView> {
                           //   });
                           // },
                           onTap: () async {
-                            final provider = Provider.of<StudentDashboardProvider>(context, listen: false);
+                            final provider =
+                                Provider.of<StudentDashboardProvider>(
+                                  context,
+                                  listen: false,
+                                );
 
-                            final success = await provider.getLongTermGoal(widget.student.studentId.toString());
+                            final success = await provider.getLongTermGoal(
+                              widget.student.studentId.toString(),
+                            );
 
                             if (success) {
                               setState(() {
@@ -281,7 +318,12 @@ class _ProfileViewState extends State<ProfileView> {
                               });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(provider.error ?? 'Failed to load long-term goals')),
+                                SnackBar(
+                                  content: Text(
+                                    provider.error ??
+                                        'Failed to load long-term goals',
+                                  ),
+                                ),
                               );
                             }
                           },
@@ -315,13 +357,17 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   SizedBox(height: 10.sp),
                   if (selectedTab == 'Profile Details')
-                    ProfileDetailsView(student: widget.student,)
+                    ProfileDetailsView(student: widget.student)
                   else if (selectedTab == 'Learning Objective')
-                    LongTermGoalView(studentId: widget.student.studentId.toString())
+                    LongTermGoalView(
+                      studentId: widget.student.studentId.toString(),
+                    )
                   else if (selectedTab == 'Time Frame')
-                    WeeklyGoalView(studentId: widget.student.studentId.toString())
+                    WeeklyGoalView(
+                      studentId: widget.student.studentId.toString(),
+                    )
                   else if (selectedTab == 'All Videos')
-                    CustomText(text: 'AllVideosView'),
+                    AllVideosView(studentId: widget.student.studentId.toString(),),
                 ],
               ),
             ),

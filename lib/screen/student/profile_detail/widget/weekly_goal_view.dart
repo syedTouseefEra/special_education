@@ -26,12 +26,14 @@ class WeeklyGoalView extends StatefulWidget {
 }
 
 class _WeeklyGoalViewState extends State<WeeklyGoalView> {
-  final TextEditingController learningOutcomeController = TextEditingController();
+  final TextEditingController learningOutcomeController =
+      TextEditingController();
   final TextEditingController remarkController = TextEditingController();
 
   final TextEditingController goalController = TextEditingController();
   final TextEditingController interventionController = TextEditingController();
-  final TextEditingController learningBarrierController = TextEditingController();
+  final TextEditingController learningBarrierController =
+      TextEditingController();
 
   File? _pickedVideo;
   DateTime selectedDate = DateTime.now();
@@ -147,7 +149,8 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                 children: [
                                   InkWell(
                                     onTap: () async {
-                                      final picked = await ImagePickerHelper.pickVideoFromGallery();
+                                      final picked =
+                                          await ImagePickerHelper.pickVideoFromGallery();
                                       if (picked != null) {
                                         setDialogState(() {
                                           _pickedVideo = File(picked.path);
@@ -175,7 +178,9 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                       child: Padding(
                                         padding: EdgeInsets.only(left: 10.sp),
                                         child: CustomText(
-                                          text: _pickedVideo!.path.split('/').last,
+                                          text: _pickedVideo!.path
+                                              .split('/')
+                                              .last,
                                           color: AppColors.textGrey,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -193,19 +198,31 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                             children: [
                               InkWell(
                                 onTap: () async {
-                                  final provider = Provider.of<StudentDashboardProvider>(
-                                    context,
-                                    listen: false,
-                                  );
-                                  final text = learningOutcomeController.text.trim();
-                                  bool success = await provider.addLongTermCourse(widget.studentId, text);
+                                  final provider =
+                                      Provider.of<StudentDashboardProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+                                  final text = learningOutcomeController.text
+                                      .trim();
+                                  bool success = await provider
+                                      .addLongTermCourse(
+                                        widget.studentId,
+                                        text,
+                                      );
 
                                   if (success && context.mounted) {
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Goal added successfully!')),
+                                      const SnackBar(
+                                        content: Text(
+                                          'Goal added successfully!',
+                                        ),
+                                      ),
                                     );
-                                    await provider.getLongTermGoal(widget.studentId);
+                                    await provider.getLongTermGoal(
+                                      widget.studentId,
+                                    );
                                     learningOutcomeController.clear();
                                   }
                                 },
@@ -235,12 +252,25 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
     );
   }
 
-  void showAddUpdateDialog({String? initialText, String? goalId}) {
+  void showAddUpdateDialog({
+    String? goalId,
+    String? goalText,
+    String? interventionText,
+    String? learningBarrierText,
+    DateTime? durationDate,
+  }) {
     _pickedVideo = null;
-    if (initialText != null) {
-      learningOutcomeController.text = initialText;
+
+    if (goalId != null) {
+      goalController.text = goalText ?? '';
+      interventionController.text = interventionText ?? '';
+      learningBarrierController.text = learningBarrierText ?? '';
+      selectedDate = durationDate ?? DateTime.now();
     } else {
-      learningOutcomeController.clear();
+      goalController.clear();
+      interventionController.clear();
+      learningBarrierController.clear();
+      selectedDate = DateTime.now();
     }
 
     showDialog(
@@ -262,36 +292,23 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: 'Add Weekly Goal',
+                            text: goalId == null
+                                ? 'Add Weekly Goal'
+                                : 'Edit Weekly Goal',
                             fontWeight: FontWeight.w600,
                             fontSize: 18.sp,
                             color: AppColors.themeColor,
                           ),
                           CustomText(
-                            text: 'Add Weekly Learning Outcome!',
+                            text: goalId == null
+                                ? 'Add Weekly Learning Outcome!'
+                                : 'Update this Weekly Goal!',
                             fontWeight: FontWeight.w400,
                             fontSize: 16.sp,
                             color: AppColors.textGrey,
                           ),
                           SizedBox(height: 15.h),
 
-                          Row(
-                            children: [
-                              Consumer<StudentDashboardProvider>(
-                                builder: (_, provider, __) => CustomText(
-                                  text: 'Week ${provider.weeklyGoalData!.length + 1}',
-                                  color: AppColors.black,
-                                  fontSize: 14.h,
-                                ),
-                              ),
-                              Icon(
-                                Icons.star,
-                                size: 10.sp,
-                                color: AppColors.themeColor,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10.h),
                           DatePickerHelper.datePicker(
                             context,
                             date: selectedDate,
@@ -302,117 +319,72 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                             },
                           ),
                           SizedBox(height: 10.h),
-                          Row(
-                            children: [
-                              CustomText(
-                                text: 'Goal',
-                                color: AppColors.black,
-                                fontSize: 14.h,
-                              ),
-                              Icon(
-                                Icons.star,
-                                size: 10.sp,
-                                color: AppColors.themeColor,
-                              ),
-                            ],
+
+                          _buildTextField('Goal', goalController),
+                          _buildTextField(
+                            'Intervention',
+                            interventionController,
                           ),
-                          SizedBox(height: 10.h),
-                          CustomTextField(
-                            controller: goalController,
-                            maxLines: 10,
-                            borderRadius: 0,
-                            borderColor: AppColors.grey,
-                            height: 120.sp,
-                            label: '',
+                          _buildTextField(
+                            'Learning Barrier',
+                            learningBarrierController,
                           ),
 
-                          SizedBox(height: 10.h),
-                          Row(
-                            children: [
-                              CustomText(
-                                text: 'Intervention',
-                                color: AppColors.black,
-                                fontSize: 14.h,
-                              ),
-                              Icon(
-                                Icons.star,
-                                size: 10.sp,
-                                color: AppColors.themeColor,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10.h),
-                          CustomTextField(
-                            controller: interventionController,
-                            maxLines: 10,
-                            borderRadius: 0,
-                            borderColor: AppColors.grey,
-                            height: 120.sp,
-                            label: '',
-                          ),
-
-                          SizedBox(height: 10.h),
-                          Row(
-                            children: [
-                              CustomText(
-                                text: 'Learning Barrier',
-                                color: AppColors.black,
-                                fontSize: 14.h,
-                              ),
-                              Icon(
-                                Icons.star,
-                                size: 10.sp,
-                                color: AppColors.themeColor,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10.h),
-                          CustomTextField(
-                            controller: learningBarrierController,
-                            maxLines: 10,
-                            borderRadius: 0,
-                            borderColor: AppColors.grey,
-                            height: 120.sp,
-                            label: '',
-                          ),
-
-
-
-                          SizedBox(height: 40.h),
+                          SizedBox(height: 30.h),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               InkWell(
                                 onTap: () async {
-                                  final provider = Provider.of<StudentDashboardProvider>(
-                                    context,
-                                    listen: false,
-                                  );
+                                  final provider =
+                                      Provider.of<StudentDashboardProvider>(
+                                        context,
+                                        listen: false,
+                                      );
 
-                                  final response = await provider.addWeeklyGoal(
-                                    widget.studentId,
-                                    fmt(selectedDate),
-                                    goalController.text.trim(),
-                                    interventionController.text.trim(),
-                                    learningBarrierController.text.trim(),
-                                  );
+                                  final response = goalId == null
+                                      ? await provider.addWeeklyGoal(
+                                          widget.studentId,
+                                          fmt(selectedDate),
+                                          goalController.text.trim(),
+                                          interventionController.text.trim(),
+                                          learningBarrierController.text.trim(),
+                                        )
+                                      : await provider.updateWeeklyGoal(
+                                          goalId,
+                                          fmt(selectedDate),
+                                          goalController.text.trim(),
+                                          interventionController.text.trim(),
+                                          learningBarrierController.text.trim(),
+                                        );
 
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(response["responseMessage"] ?? "Something went wrong")),
+                                      SnackBar(
+                                        content: Text(
+                                          response["responseMessage"] ??
+                                              (goalId == null
+                                                  ? "Goal added successfully!"
+                                                  : "Goal updated successfully!"),
+                                        ),
+                                      ),
                                     );
                                   }
 
-                                  if (response["responseStatus"] == true && context.mounted) {
+                                  if (response["responseStatus"] == true &&
+                                      context.mounted) {
                                     Navigator.pop(context);
-                                    await provider.getLongTermGoal(widget.studentId);
-                                    learningOutcomeController.clear();
+                                    await provider.getWeeklyGoals(
+                                      widget.studentId,
+                                    );
                                   }
                                 },
                                 child: CustomContainer(
                                   borderRadius: 20.r,
-                                  text: 'Add Weekly Goal',
+                                  text: goalId == null
+                                      ? 'Add Weekly Goal'
+                                      : 'Update Goal',
                                   containerColor: AppColors.yellow,
                                   padding: 1,
                                   innerPadding: EdgeInsets.symmetric(
@@ -436,6 +408,30 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
     );
   }
 
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            CustomText(text: label, color: AppColors.black, fontSize: 14.h),
+            Icon(Icons.star, size: 10.sp, color: AppColors.themeColor),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        CustomTextField(
+          controller: controller,
+          maxLines: 10,
+          borderRadius: 0,
+          borderColor: AppColors.grey,
+          height: 120.sp,
+          label: '',
+        ),
+        SizedBox(height: 10.h),
+      ],
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -452,7 +448,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
     final provider = Provider.of<StudentDashboardProvider>(context);
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(8.sp),
+      padding: EdgeInsets.symmetric(horizontal: 10.sp),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -477,7 +473,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
             )
           else
             ...provider.weeklyGoalData!.map(
-                  (goal) => Padding(
+              (goal) => Padding(
                 padding: EdgeInsets.only(bottom: 15.sp),
                 child: Container(
                   width: double.infinity,
@@ -518,22 +514,29 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                             ),
-
                           ],
                         ),
                         Divider(thickness: 1),
                         _buildGoalField("Duration", goal.durationDate),
                         _buildGoalField("Goal", goal.goals),
                         _buildGoalField("Intervention", goal.intervention),
-                        _buildGoalField("Learning Barrier", goal.learningBarriers),
+                        _buildGoalField(
+                          "Learning Barrier",
+                          goal.learningBarriers,
+                        ),
                         Visibility(
-                          visible: goal.videoList != null && goal.videoList!.isNotEmpty,
-                          child: _buildGoalField("Learning Outcome", goal.learningOutCome),
+                          visible:
+                              goal.videoList != null &&
+                              goal.videoList!.isNotEmpty,
+                          child: _buildGoalField(
+                            "Learning Outcome",
+                            goal.learningOutCome,
+                          ),
                         ),
                         InkWell(
                           onTap: () => showAddVideoDialog(),
                           child: Visibility(
-                            visible: goal.goalStatus ==1,
+                            visible: goal.goalStatus == 1,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -554,10 +557,12 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                           ),
                         ),
                         Visibility(
-                          visible: goal.remarks != null && goal.remarks!.isNotEmpty,
+                          visible:
+                              goal.remarks != null && goal.remarks!.isNotEmpty,
                           child: _buildGoalField("Remark", goal.remarks),
                         ),
-                        if (goal.videoList != null && goal.videoList!.isNotEmpty)
+                        if (goal.videoList != null &&
+                            goal.videoList!.isNotEmpty)
                           Padding(
                             padding: EdgeInsets.only(top: 10.sp),
                             child: SizedBox(
@@ -569,31 +574,43 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                   final mainUrl =
                                       'https://hamaaresitaareapi.edumation.in/FileUploads/weeklyGoal/';
                                   final video = goal.videoList![index];
-                                  final fullUrl = '$mainUrl${video.videoName ?? ''}';
+                                  final fullUrl =
+                                      '$mainUrl${video.videoName ?? ''}';
 
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         height: 100.h,
                                         width: 160.w,
                                         decoration: BoxDecoration(
-                                          color: AppColors.grey.withOpacity(0.2),
-                                          borderRadius: BorderRadius.circular(8.sp),
+                                          color: AppColors.grey.withOpacity(
+                                            0.2,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8.sp,
+                                          ),
                                           border: Border.all(
                                             color: AppColors.grey,
                                             width: 1.sp,
                                           ),
                                         ),
                                         child: FutureBuilder<String?>(
-                                          future: VideoThumbnailGenerator.generateThumbnail(fullUrl),
+                                          future:
+                                              VideoThumbnailGenerator.generateThumbnail(
+                                                fullUrl,
+                                              ),
                                           builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
                                               return const Center(
-                                                child: CircularProgressIndicator(),
+                                                child:
+                                                    CircularProgressIndicator(),
                                               );
                                             }
-                                            if (snapshot.hasError || snapshot.data == null) {
+                                            if (snapshot.hasError ||
+                                                snapshot.data == null) {
                                               return const Center(
                                                 child: Icon(
                                                   Icons.broken_image,
@@ -607,7 +624,10 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (_) => VideoPlayerScreen(videoUrl: fullUrl),
+                                                    builder: (_) =>
+                                                        VideoPlayerScreen(
+                                                          videoUrl: fullUrl,
+                                                        ),
                                                   ),
                                                 );
                                               },
@@ -615,7 +635,10 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                                 alignment: Alignment.center,
                                                 children: [
                                                   ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8.sp),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8.sp,
+                                                        ),
                                                     child: Image.file(
                                                       File(snapshot.data!),
                                                       width: 160.w,
@@ -626,7 +649,8 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                                   Icon(
                                                     Icons.play_circle_fill,
                                                     size: 40.sp,
-                                                    color: Colors.white.withOpacity(0.8),
+                                                    color: Colors.white
+                                                        .withOpacity(0.8),
                                                   ),
                                                 ],
                                               ),
@@ -647,7 +671,17 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  showAddUpdateDialog(
+                                    goalId: goal.id.toString(),
+                                    goalText: parseHtmlToMultiline(goal.goals.toString()),
+                                    interventionText: parseHtmlToMultiline(goal.intervention.toString()),
+                                    learningBarrierText: parseHtmlToMultiline(goal.learningBarriers.toString()),
+                                    durationDate: DateTime.tryParse(
+                                      goal.durationDate ?? '',
+                                    ),
+                                  );
+                                },
                                 child: CustomContainer(
                                   borderRadius: 7.r,
                                   text: 'Edit',
@@ -661,7 +695,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -678,13 +712,16 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                 },
                 child: CustomContainer(
                   text: '+ Add More Weekly Goal',
-                  innerPadding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 10.sp),
+                  innerPadding: EdgeInsets.symmetric(
+                    horizontal: 15.sp,
+                    vertical: 10.sp,
+                  ),
                   borderRadius: 20.r,
                   containerColor: AppColors.themeColor,
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

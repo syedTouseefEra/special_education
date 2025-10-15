@@ -21,9 +21,6 @@ class DashboardProvider with ChangeNotifier {
   final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
   final GetStorage _userBox = GetStorage('user');
 
-  /// Token (should later come from login/session)
-  static const _token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNDIwMDMwLCJleHAiOjE3NjA0ODAwMzAsImlhdCI6MTc2MDQyMDAzMH0.wK3qKAfiPPPwNDQ2BQW9RDfCOJQ-C8L-ZrpZCGEuuW4';
 
   Future<bool> getDashboardWeekData() async {
     await Future.delayed(Duration(milliseconds: 10));
@@ -103,7 +100,7 @@ class DashboardProvider with ChangeNotifier {
         return false;
       }
 
-      final response = await _api.getApiCall(url: url, params: params, token: _token);
+      final response = await _api.getApiCall(url: url, params: params, token: ApiServiceUrl.token);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

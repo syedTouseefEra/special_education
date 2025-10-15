@@ -294,3 +294,35 @@ class VideoList {
   }
 }
 
+class StudentAllVideo {
+  int? id;
+  int? goalStatus;
+  int? weekCount;
+  List<VideoList>? videoList;
+
+  StudentAllVideo({this.id, this.goalStatus, this.weekCount, this.videoList});
+
+  StudentAllVideo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    goalStatus = json['goalStatus'];
+    weekCount = json['weekCount'];
+    if (json['videoList'] != null) {
+      videoList = <VideoList>[];
+      json['videoList'].forEach((v) {
+        videoList!.add(VideoList.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['goalStatus'] = goalStatus;
+    data['weekCount'] = weekCount;
+    if (videoList != null) {
+      data['videoList'] = videoList!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
