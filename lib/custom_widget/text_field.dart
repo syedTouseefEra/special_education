@@ -24,6 +24,7 @@ class CustomTextField extends StatefulWidget {
   final Color? fillColor;
   final bool isEditable;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onTap;
 
   const CustomTextField({
     super.key,
@@ -46,6 +47,7 @@ class CustomTextField extends StatefulWidget {
     this.fillColor,
     this.isEditable = true,
     this.onChanged,
+    this.onTap,
   });
 
   @override
@@ -141,7 +143,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               )
                   : const SizedBox.shrink();
             },
-            onChanged: widget.onChanged,  // this line passes onChanged callback
+            onChanged: widget.onChanged,
+            onTap: widget.onTap,// this line passes onChanged callback
             decoration: InputDecoration(
               counterText: "",
               labelText: widget.label,

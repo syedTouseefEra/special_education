@@ -39,4 +39,9 @@ class ApiServiceUrl{
   static String updateStudentGoal = "StudentSkill/UpdateStudentGoal";
   static String getStudentVideos = "StudentSkill/GetStudentVideos";
 
+  static String saveStudent = "Student";
+  static String getCountry ="Universal/GetCountry";
+  static String getState ="Universal/GetState";
+  static String getCity = "Universal/GetCity";
+
   }

@@ -11,7 +11,7 @@ import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/student/profile_detail/widget/all_videos_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/long_term_goal_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/profile_details_view.dart';
-import 'package:special_education/screen/student/profile_detail/widget/student_profile_data_model.dart';
+import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/widget/weekly_goal_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 

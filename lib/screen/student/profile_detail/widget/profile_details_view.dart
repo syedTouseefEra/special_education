@@ -6,7 +6,7 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
-import 'package:special_education/screen/student/profile_detail/widget/student_profile_data_model.dart';
+import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
 import 'package:special_education/utils/text_case_utils.dart';
 
 class ProfileDetailsView extends StatelessWidget {

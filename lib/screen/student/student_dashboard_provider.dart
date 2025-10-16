@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/custom_api_call.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
-import 'package:special_education/screen/student/profile_detail/widget/student_profile_data_model.dart';
+import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
+import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
 
 class StudentDashboardProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -15,6 +17,11 @@ class StudentDashboardProvider with ChangeNotifier {
   List<LongTermGoal>? _longTermGoalData;
   List<WeeklyGoal>? _weeklyGoalData;
   List<StudentAllVideo>? _allVideoData;
+
+
+  List<CountryDataModal>? _countryData;
+  List<StateDataModel>? _stateData;
+  List<CityDataModel>? _cityData;
 
   List<StudentProfileDataModel>? _studentProfileData;
 
@@ -45,6 +52,16 @@ class StudentDashboardProvider with ChangeNotifier {
 
   List<StudentAllVideo>? get allVideoData {
     return _allVideoData;
+  }
+
+  List<CountryDataModal>? get countryData {
+    return _countryData;
+  }
+  List<StateDataModel>? get stateData {
+    return _stateData;
+  }
+  List<CityDataModel>? get cityData {
+    return _cityData;
   }
 
   final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
@@ -374,5 +391,128 @@ class StudentDashboardProvider with ChangeNotifier {
 
     return false;
   }
+
+
+  Future<bool> addStudent({
+    required String firstName,
+    String? middleName,
+    required String lastName,
+    required String mobileNumber,
+    String? emailId,
+    required String diagnosis,
+    required DateTime dob,
+    required int genderId,
+    required int pidNumber,
+    String? pinCode,
+    String? addressLine1,
+    String? addressLine2,
+    required int countryId,
+    required int stateId,
+    required int cityId,
+    required int nationalityId,
+    required String aadharCardNumber,
+    String? aadharCardImageName,
+    String? studentImageName,
+  }) async {
+    _setLoading(true);
+
+    try {
+      final response = await _api.postApiCall(
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveStudent}",
+        body: {
+          "instituteId": 40,
+          "firstName": firstName,
+          "middleName": middleName ?? "",
+          "lastName": lastName,
+          "mobileNumber": mobileNumber,
+          "emailId": emailId ?? "",
+          "diagnosis": diagnosis,
+          "dob": dob.toIso8601String().split("T")[0], // format YYYY-MM-DD
+          "genderId": genderId,
+          "pidNumber": pidNumber,
+          "pinCode": pinCode ?? "",
+          "addressLine1": addressLine1 ?? "",
+          "addressLine2": addressLine2 ?? "",
+          "countryId": countryId,
+          "stateId": stateId,
+          "cityId": cityId,
+          "nationalityId": nationalityId,
+          "aadharCardNumber": aadharCardNumber,
+          "aadharCardImage": aadharCardImageName ?? "",
+          "studentImage": studentImageName ?? "",
+        },
+        token: ApiServiceUrl.token,
+      );
+
+      final body = json.decode(response.body);
+      if (response.statusCode == 201 && body["responseStatus"] == true) {
+        return true;
+      }
+      _setError(body["responseMessage"] ?? "Something went wrong");
+    } catch (e) {
+      _setError("Exception: $e");
+    } finally {
+      _setLoading(false);
+    }
+
+    return false;
+  }
+  // final locationService = LocationService();
+  //
+  //
+  // Future<void> loadCountries() async {
+  //   try {
+  //     final countries = await locationService.fetchLocationData<CountryDataModal>(
+  //       url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getCountry}",
+  //       fromJson: (json) => CountryDataModal.fromJson(json),
+  //     );
+  //
+  //     setState(() {
+  //       _countries = countries;
+  //     });
+  //   } catch (e) {
+  //     // handle error
+  //   }
+  // }
+
+// Future<void> loadState(String selectedCountryId) async {
+  //   try {
+  //     final states = await locationService.fetchLocationData<StateDataModel>(
+  //       url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getState}",
+  //       params: {'countryId': selectedCountryId.toString()},
+  //       fromJson: (json) => StateDataModel.fromJson(json),
+  //     );
+  //
+  //   );
+  //
+  //   // Use setState if you want to update UI with the loaded countries
+  //   // setState(() {
+  //   //   _countries = countries;
+  //   // });
+  //
+  //   } catch (e) {
+  //   // handle error here or show message
+  //   }
+  // }
+  // Future<void> loadCity() async {
+  //   try {
+  //     final states = await locationService.fetchLocationData<CityDataModel>(
+  //       url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getCity}",
+  //       params: {'stateId': selectedStateId.toString()},
+  //       fromJson: (json) => CityDataModel.fromJson(json),
+  //     );
+  //
+  //   );
+  //
+  //   // Use setState if you want to update UI with the loaded countries
+  //   // setState(() {
+  //   //   _countries = countries;
+  //   // });
+  //
+  //   } catch (e) {
+  //   // handle error here or show message
+  //   }
+  // }
+
 
 }
