@@ -146,6 +146,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               counterText: "",
               labelText: widget.label,
               labelStyle: TextStyle(
+                color: AppColors.grey,
                 fontSize: widget.fontSize ?? 14.sp,
               ),
               suffixIcon: widget.suffixIcon,

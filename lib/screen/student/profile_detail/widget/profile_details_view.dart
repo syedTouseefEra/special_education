@@ -15,6 +15,24 @@ class ProfileDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    String getRatingDescription(int ratingId) {
+      switch (ratingId) {
+        case 1:
+          return "Poor";
+        case 2:
+          return "Average";
+        case 3:
+          return "Good";
+        case 4:
+          return "Excellent";
+        case 0:
+          return "Not Applicable";
+        default:
+          return "Unknown Rating";
+      }
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5.sp),
       child: Container(
@@ -62,7 +80,7 @@ class ProfileDetailsView extends StatelessWidget {
                               child: LabelValueText(
                                 isRow: true,
                                 label: "${quality.name!}:",
-                                value: quality.ratingId.toString(),
+                                value: getRatingDescription(quality.ratingId ?? 0),
                                 labelStyle: TextStyle(
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w400,
@@ -181,14 +199,13 @@ class ProfileDetailsView extends StatelessWidget {
                       final qualityNames = rating.quality!.map((q) => q.name).join(", ");
                       label += " ($qualityNames)";
                     }
-                    String value = rating.ratingId.toString();
 
                     return Padding(
                       padding: EdgeInsets.fromLTRB(10.sp, 0, 10.sp, 5.sp),
                       child: LabelValueText(
                         isRow: true,
                         label: "$label:",
-                        value: value,
+                        value: getRatingDescription(rating.ratingId ?? 0),
                         labelStyle: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,

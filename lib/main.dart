@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
@@ -8,11 +9,15 @@ import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
 
-// Declare a global RouteObserver
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await FlutterDownloader.initialize(
+    debug: true,
+    ignoreSsl: true,
+  );
 
   await GetStorage.init('user');
   await GetStorage.init('registered');
@@ -42,15 +47,16 @@ class MyApp extends StatelessWidget {
           } else {
             homeScreen = LoginPage();
           }
-
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Special Education',
             home: homeScreen,
-            navigatorObservers: [routeObserver],  // <-- Add RouteObserver here
+            navigatorObservers: [routeObserver],
           );
         },
       ),
     );
   }
 }
+
+

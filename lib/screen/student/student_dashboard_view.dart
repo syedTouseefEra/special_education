@@ -10,6 +10,7 @@ import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/main.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_view.dart';
+import 'package:special_education/screen/student/profile_detail/widget/add_student_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
@@ -77,15 +78,22 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                           fontFamily: 'DMSerif',
                           color: AppColors.themeColor,
                         ),
-                        CustomContainer(
-                          text: "Add Student",
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Inter',
-                          borderRadius: 15,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 4.sp,
-                            horizontal: 10.sp,
+                        InkWell(
+                          splashColor: AppColors.transparent,
+                          highlightColor: AppColors.transparent,
+                          onTap: (){
+                            NavigationHelper.push(context, AddStudentView());
+                          },
+                          child: CustomContainer(
+                            text: "Add Student",
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Inter',
+                            borderRadius: 15,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 4.sp,
+                              horizontal: 10.sp,
+                            ),
                           ),
                         ),
                       ],
