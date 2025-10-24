@@ -10,7 +10,7 @@ import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/main.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_view.dart';
-import 'package:special_education/screen/student/profile_detail/widget/add_student_view.dart';
+import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 

@@ -7,14 +7,14 @@ class ApiServiceUrl{
   static String hamaareSitaareApiBaseUrl= "https://hamaaresitaareapi.edumation.in/api/";
   static String countryBaseUrl= "https://apiapp.edumation.in/api/";
   static String urlLauncher = "https://hamaaresitaareapi.edumation.in/FileUploads/";
-  static String fileUpload = "https://elearningapi.edumation.in/api/CommonDropdown/FileUpload";
+  static String uploadFile = "https://hamaaresitaareapi.edumation.in/api/Institute/UploadFile";
 
   // static String apiBaseUrl= "http://172.16.82.6:50/api/";
   // static String urlLauncher = "http://172.16.82.6:50/FileUploads/";
   // static String fileUpload = "http://172.16.82.6:50/api/CommonDropdown/FileUpload";
 
   static const String token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNTkzODE4LCJleHAiOjE3NjA2NTM4MTgsImlhdCI6MTc2MDU5MzgxOH0.fAjp-uf8OoMezipC18ReChkFoDDDJz_hVsvTZU4CIa4';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNjc3NTUyLCJleHAiOjE3NjA3Mzc1NTIsImlhdCI6MTc2MDY3NzU1Mn0.w4zVNY3vbstWnXUHkLwpWvPRzXb0Rz3D1GBlGnj2twY';
 
 
   static String login = "User/Login";

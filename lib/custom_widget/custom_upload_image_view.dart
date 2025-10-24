@@ -33,7 +33,7 @@ class UploadBox extends StatelessWidget {
           children: [
             FieldLabel(
               text: title,
-              isRequired: true,
+              isRequired: requiredField,
               fontSize: 14.sp,
               color: AppColors.black,
             ),

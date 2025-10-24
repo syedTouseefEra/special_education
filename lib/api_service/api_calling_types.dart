@@ -110,33 +110,46 @@ class ApiCallingTypes {
   }
 
 
-  Future<String> uploadFile({
+  Future<String> uploadFileByMultipart({
     required String filePath,
-    required String folderId,
+    required String folderName,
     String? url,
+    String? authToken,
   }) async {
     try {
-      final uploadUrl = url ?? ApiServiceUrl.fileUpload;
+      final uploadUrl = ApiServiceUrl.uploadFile;
+      print('Uploading to URL: $uploadUrl');  // <--- Add this
 
       var request = http.MultipartRequest('POST', Uri.parse(uploadUrl));
 
+      if (authToken != null && authToken.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $authToken';
+      }
+
       request.fields.addAll({
-        'folderId': folderId,
+        'folderName': folderName,
       });
 
       request.files.add(await http.MultipartFile.fromPath('file', filePath));
 
       http.StreamedResponse response = await request.send();
 
+      final responseBody = await response.stream.bytesToString();
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: $responseBody');
+
       if (response.statusCode == 200) {
-        return await response.stream.bytesToString();
+        return responseBody;
       } else {
-        return 'Failed to upload: ${response.reasonPhrase}';
+        return 'Failed to upload: ${response.reasonPhrase}\n$responseBody';
       }
     } catch (e) {
       return 'Error: $e';
     }
   }
+
+
 
 
   void _logRequest(

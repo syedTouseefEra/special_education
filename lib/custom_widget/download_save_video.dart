@@ -11,7 +11,7 @@ Future<void> downloadAndShareVideo(String url, String fileName) async {
   final status = await Permission.storage.request();
 
   if (!status.isGranted) {
-    AlertView().alertToast("Storage permission is required");
+    alertToast("Storage permission is required");
     return;
   }
 
@@ -43,11 +43,11 @@ Future<void> downloadAndShareVideo(String url, String fileName) async {
             ),
           );
         } else {
-          AlertView().alertToast("Downloaded file not found");
+          alertToast("Downloaded file not found");
         }
       } else if (task.status == DownloadTaskStatus.failed) {
         timer.cancel();
-        AlertView().alertToast("Download failed");
+        alertToast("Download failed");
       }
     }
   });

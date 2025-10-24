@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_api_call.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
@@ -420,7 +423,7 @@ class StudentDashboardProvider with ChangeNotifier {
       final response = await _api.postApiCall(
         url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveStudent}",
         body: {
-          "instituteId": 40,
+          "instituteId": 22,
           "firstName": firstName,
           "middleName": middleName ?? "",
           "lastName": lastName,
@@ -457,62 +460,36 @@ class StudentDashboardProvider with ChangeNotifier {
 
     return false;
   }
-  // final locationService = LocationService();
-  //
-  //
-  // Future<void> loadCountries() async {
-  //   try {
-  //     final countries = await locationService.fetchLocationData<CountryDataModal>(
-  //       url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getCountry}",
-  //       fromJson: (json) => CountryDataModal.fromJson(json),
-  //     );
-  //
-  //     setState(() {
-  //       _countries = countries;
-  //     });
-  //   } catch (e) {
-  //     // handle error
-  //   }
-  // }
 
-// Future<void> loadState(String selectedCountryId) async {
-  //   try {
-  //     final states = await locationService.fetchLocationData<StateDataModel>(
-  //       url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getState}",
-  //       params: {'countryId': selectedCountryId.toString()},
-  //       fromJson: (json) => StateDataModel.fromJson(json),
-  //     );
-  //
-  //   );
-  //
-  //   // Use setState if you want to update UI with the loaded countries
-  //   // setState(() {
-  //   //   _countries = countries;
-  //   // });
-  //
-  //   } catch (e) {
-  //   // handle error here or show message
-  //   }
-  // }
-  // Future<void> loadCity() async {
-  //   try {
-  //     final states = await locationService.fetchLocationData<CityDataModel>(
-  //       url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getCity}",
-  //       params: {'stateId': selectedStateId.toString()},
-  //       fromJson: (json) => CityDataModel.fromJson(json),
-  //     );
-  //
-  //   );
-  //
-  //   // Use setState if you want to update UI with the loaded countries
-  //   // setState(() {
-  //   //   _countries = countries;
-  //   // });
-  //
-  //   } catch (e) {
-  //   // handle error here or show message
-  //   }
-  // }
+
+  Future<String?> uploadImage(String filePath, BuildContext context) async {
+    final apiCaller = ApiCallingTypes(baseUrl: '');
+
+    try {
+      String result = await apiCaller.uploadFileByMultipart(
+        filePath: filePath,
+        folderName: 'Uploads',
+        authToken: ApiServiceUrl.token,
+      );
+
+      if (result.startsWith('Failed') || result.startsWith('Error')) {
+        throw Exception(result);
+      }
+
+      final decoded = jsonDecode(result);
+      final uploadImageName = decoded['data'];
+      if (kDebugMode) {
+        print('📁 File Name: $uploadImageName');
+      }
+      return uploadImageName;
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error uploading or updating profile image: $e');
+      }
+      showSnackBar('Failed to upload image', context);
+      return null;
+    }
+  }
 
 
 }

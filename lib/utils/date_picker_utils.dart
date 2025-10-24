@@ -11,14 +11,19 @@ class DatePickerHelper {
         required ValueChanged<DateTime> onChanged,
         Color? borderColor,
         Color? iconColor,
+        Color? dateColor,
+        DateTime? firstDate,
+        DateTime? lastDate,
       }) {
+    final now = DateTime.now();
+
     return InkWell(
       onTap: () async {
         final picked = await showDatePicker(
           context: context,
-          initialDate: date.isAfter(DateTime.now()) ? DateTime.now() : date,
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2080),
+          initialDate: date.isAfter(now) ? now : date,
+          firstDate: firstDate ?? DateTime(1900),
+          lastDate: lastDate ?? DateTime(2080),
         );
 
         if (picked != null) onChanged(picked);
@@ -36,9 +41,9 @@ class DatePickerHelper {
           children: [
             CustomText(
               text: DateFormat('dd-MM-yyyy').format(date),
-              fontSize: 16.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w400,
-              color: borderColor ?? AppColors.themeColor,
+              color: dateColor ?? AppColors.themeColor,  // use dateColor first, then fallback
             ),
             SizedBox(width: 15.w),
             Icon(

@@ -25,6 +25,7 @@ class CustomTextField extends StatefulWidget {
   final bool isEditable;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onTap;
+  final FormFieldValidator<String>? validator;
 
   const CustomTextField({
     super.key,
@@ -48,6 +49,7 @@ class CustomTextField extends StatefulWidget {
     this.isEditable = true,
     this.onChanged,
     this.onTap,
+    this.validator,
   });
 
   @override
@@ -113,9 +115,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
             validateInput();
           }
         },
-        child: SizedBox(
-          height: widget.height ?? 50.h,
-          child: TextField(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: widget.height ?? 50.h + 10.h, // add extra height for error space
+          ),
+          child: TextFormField(
             controller: widget.controller,
             keyboardType: widget.keyboardType,
             obscureText: widget.obscureText,
@@ -144,7 +148,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   : const SizedBox.shrink();
             },
             onChanged: widget.onChanged,
-            onTap: widget.onTap,// this line passes onChanged callback
+            onTap: widget.onTap,
+            validator: widget.validator,
             decoration: InputDecoration(
               counterText: "",
               labelText: widget.label,
@@ -154,6 +159,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
               suffixIcon: widget.suffixIcon,
               errorText: errorText,
+              helperText: ' ', // reserve space for error message
               isDense: true,
               contentPadding: EdgeInsets.symmetric(
                 vertical: widget.maxLines != null && widget.maxLines! > 1
@@ -180,9 +186,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderSide: const BorderSide(color: AppColors.red, width: 1),
               ),
             ),
-          )
+          ),
         ),
       ),
     );
   }
+
 }
