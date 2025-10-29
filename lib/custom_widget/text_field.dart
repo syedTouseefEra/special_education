@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +14,7 @@ class CustomTextField extends StatefulWidget {
   final bool isEmail;
   final bool isMobile;
   final bool onlyLetters;
+  final bool onlyLettersAndNumbers; // ✅ New property
   final Color? borderColor;
   final double? borderRadius;
   final double? fontSize;
@@ -39,6 +39,7 @@ class CustomTextField extends StatefulWidget {
     this.isEmail = false,
     this.isMobile = false,
     this.onlyLetters = false,
+    this.onlyLettersAndNumbers = false, // ✅ Default false
     this.borderColor,
     this.borderRadius,
     this.fontSize,
@@ -75,6 +76,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return lettersRegex.hasMatch(input);
   }
 
+  bool isOnlyLettersAndNumbers(String input) {
+    final regex = RegExp(r'^[a-zA-Z0-9\s]*$');
+    return regex.hasMatch(input);
+  }
+
   void validateInput() {
     final text = widget.controller.text.trim();
 
@@ -96,6 +102,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
       } else {
         setState(() => errorText = 'Only letters are allowed');
       }
+    } else if (widget.onlyLettersAndNumbers) {
+      if (text.isEmpty || isOnlyLettersAndNumbers(text)) {
+        setState(() => errorText = null);
+      } else {
+        setState(() => errorText = 'Only letters and numbers are allowed');
+      }
     } else {
       setState(() => errorText = null);
     }
@@ -103,10 +115,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final Color effectiveBorderColor =
-        widget.borderColor ?? AppColors.themeBlue;
-    final double effectiveBorderRadius = widget.borderRadius ?? 30.sp;
-
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
       child: Focus(
@@ -117,7 +125,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
         },
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            minHeight: widget.height ?? 50.h + 10.h, // add extra height for error space
+            minHeight:
+            widget.height ?? 50.h + 10.h, // extra height for error space
           ),
           child: TextFormField(
             controller: widget.controller,
@@ -138,6 +147,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
             inputFormatters: widget.onlyLetters
                 ? <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+            ]
+                : widget.onlyLettersAndNumbers
+                ? <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(
+                  RegExp(r'[a-zA-Z0-9\s]')),
             ]
                 : null,
             contextMenuBuilder: (context, editableTextState) {
@@ -170,19 +184,26 @@ class _CustomTextFieldState extends State<CustomTextField> {
               filled: widget.fillColor != null,
               fillColor: widget.fillColor,
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue),
+                borderRadius:
+                BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(
+                    color: widget.borderColor ?? AppColors.themeBlue),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue, width: 1.w),
+                borderRadius:
+                BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(
+                    color: widget.borderColor ?? AppColors.themeBlue,
+                    width: 1.w),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderRadius:
+                BorderRadius.circular(widget.borderRadius ?? 30.sp),
                 borderSide: const BorderSide(color: AppColors.red),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderRadius:
+                BorderRadius.circular(widget.borderRadius ?? 30.sp),
                 borderSide: const BorderSide(color: AppColors.red, width: 1),
               ),
             ),
@@ -191,5 +212,4 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
     );
   }
-
 }

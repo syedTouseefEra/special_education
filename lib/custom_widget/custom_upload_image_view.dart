@@ -13,6 +13,7 @@ class UploadBox extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onClear;
   final bool requiredField;
+  final bool isUploading;
 
   const UploadBox({
     super.key,
@@ -21,6 +22,7 @@ class UploadBox extends StatelessWidget {
     this.imageFile,
     this.onClear,
     this.requiredField = false,
+    this.isUploading = false,
   });
 
   @override
@@ -28,7 +30,6 @@ class UploadBox extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// 🔹 Title + required mark
         Row(
           children: [
             FieldLabel(
@@ -41,70 +42,86 @@ class UploadBox extends StatelessWidget {
         ),
         const SizedBox(height: 8),
 
-        /// 🔹 Upload area
-        GestureDetector(
-          onTap: onTap,
-          child: DottedBorder(
-            options: RoundedRectDottedBorderOptions(
-              color: Colors.grey.shade400,
-              strokeWidth: 1,
-              dashPattern: const [6, 4],
-              radius: const Radius.circular(6),
-              padding: EdgeInsets.zero,
-            ),
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: 12.sp,
-                vertical: imageFile == null ? 10.sp : 2.sp,
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            GestureDetector(
+              onTap: isUploading ? null : onTap,
+              child: DottedBorder(
+                options: RoundedRectDottedBorderOptions(
+                  color: Colors.grey.shade400,
+                  strokeWidth: 1,
+                  dashPattern: const [6, 4],
+                  radius: const Radius.circular(6),
+                  padding: EdgeInsets.zero,
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.sp,
+                    vertical: imageFile == null ? 10.sp : 2.sp,
+                  ),
+                  child: Row(
+                    children: [
+                      if (imageFile == null) ...[
+                        Container(
+                          height: 25.sp,
+                          width: 25.sp,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          child: Icon(Icons.upload_file, size: 20.sp),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CustomText(
+                            text: 'Upload File',
+                            color: Colors.grey.shade700,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                      ] else ...[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Image.file(
+                            imageFile!,
+                            width: 30.sp,
+                            height: 30.sp,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CustomText(
+                            text: p.basename(imageFile!.path),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (onClear != null)
+                          IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: onClear,
+                          ),
+                      ],
+                    ],
+                  ),
+                ),
               ),
-              child: Row(
-                children: [
-                  if (imageFile == null) ...[
-                    Container(
-                      height: 25.sp,
-                      width: 25.sp,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(6.r),
-                      ),
-                      child: Icon(Icons.upload_file, size: 20.sp),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: CustomText(
-                        text: 'Upload File',
-                        color: Colors.grey.shade700,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                  ] else ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: Image.file(
-                        imageFile!,
-                        width: 30.sp,
-                        height: 30.sp,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: CustomText(
-                        text: p.basename(imageFile!.path),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (onClear != null)
-                      IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: onClear,
-                      ),
-                  ],
-                ],
-              ),
             ),
-          ),
+
+            if (isUploading)
+              const Center(
+                child: SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.themeColor,
+                  ),
+                ),
+              ),
+          ],
         ),
 
         const SizedBox(height: 6),

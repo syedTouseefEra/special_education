@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:special_education/api_service/api_service_url.dart';
@@ -10,9 +8,12 @@ import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
-import 'package:special_education/screen/student/student_dashboard_provider.dart';
 
 import 'package:special_education/components/custom_api_call.dart';
+import 'package:special_education/screen/teacher/add_teacher/widgets/role_picker_modal.dart';
+import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
+import 'package:special_education/screen/teacher/teacher_data_model.dart';
+import 'package:special_education/utils/image_upload_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'widgets/section_header.dart';
 import 'widgets/form_text_field.dart';
@@ -23,47 +24,48 @@ import 'widgets/state_picker_modal.dart';
 import 'widgets/city_picker_modal.dart';
 import 'widgets/save_button.dart';
 
-class AddStudentView extends StatefulWidget {
-  const AddStudentView({super.key});
+class AddTeacherView extends StatefulWidget {
+  const AddTeacherView({super.key});
 
   @override
-  State<AddStudentView> createState() => _AddStudentViewState();
+  State<AddTeacherView> createState() => _AddTeacherViewState();
 }
 
-class _AddStudentViewState extends State<AddStudentView> {
+class _AddTeacherViewState extends State<AddTeacherView> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController middleNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController diagnosisController = TextEditingController();
+  final TextEditingController employeeIdController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
-  final TextEditingController pidController = TextEditingController();
+
   final TextEditingController pincodeController = TextEditingController();
   final TextEditingController addressLine1Controller = TextEditingController();
   final TextEditingController addressLine2Controller = TextEditingController();
   final TextEditingController countryController = TextEditingController();
   final TextEditingController stateController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
+
+  final TextEditingController roleIdController = TextEditingController();
+  final TextEditingController joiningDateController = TextEditingController();
+
   final TextEditingController nationalityController = TextEditingController();
   final TextEditingController aadharCardController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
-
-  File? _aadharCardImage;
-  File? _studentImage;
-
-  String? _uploadedAadharImageName;
-  String? _uploadedStudentImageName;
+  DateTime joiningDate = DateTime.now();
 
   List<CountryDataModal> _countries = [];
   List<StateDataModel> _states = [];
   List<CityDataModel> _cities = [];
+  List<RoleDataModal> _role = [];
 
   int selectedCountryId = 0;
   int selectedStateId = 0;
   int selectedCityId = 0;
   int selectedNationality = 0;
+  int selectedRoleId = 0;
 
   final locationService = LocationService();
 
@@ -71,41 +73,14 @@ class _AddStudentViewState extends State<AddStudentView> {
   void initState() {
     super.initState();
     loadCountries();
+    loadRole();
+    final imageProvider = Provider.of<ImageUploadProvider>(context, listen: false);
+    imageProvider.clearImage('teacher');
+    imageProvider.clearImage('aadhar');
+    imageProvider.clearImage('signature');
   }
 
-  Future<void> _pickImage(bool isAadhar) async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      final provider = Provider.of<StudentDashboardProvider>(
-        context,
-        listen: false,
-      );
-
-      setState(() {
-        if (isAadhar) {
-          _aadharCardImage = File(picked.path);
-        } else {
-          _studentImage = File(picked.path);
-        }
-      });
-
-      String? uploadedImageName = await provider.uploadImage(
-        picked.path,
-        context,
-      );
-
-      if (uploadedImageName != null) {
-        setState(() {
-          if (isAadhar) {
-            _uploadedAadharImageName = uploadedImageName;
-          } else {
-            _uploadedStudentImageName = uploadedImageName;
-          }
-        });
-      }
-    }
-  }
-
+  // --- Loaders ---
   Future<void> loadCountries() async {
     final countries = await locationService.fetchLocationData<CountryDataModal>(
       url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getCountry}",
@@ -132,7 +107,16 @@ class _AddStudentViewState extends State<AddStudentView> {
     setState(() => _cities = cities);
   }
 
-  var updateGender = [
+  Future<void> loadRole() async {
+    final role = await locationService.fetchLocationData<RoleDataModal>(
+      params: {"": ""},
+      url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.masterRole}",
+      fromJson: RoleDataModal.fromJson,
+    );
+    setState(() => _role = role);
+  }
+
+  final List<Map<String, dynamic>> updateGender = [
     {'id': 1, 'status': "Male"},
     {'id': 2, 'status': "Female"},
     {'id': 3, 'status': "Others"},
@@ -186,6 +170,7 @@ class _AddStudentViewState extends State<AddStudentView> {
       ).showSnackBar(const SnackBar(content: Text("Select a country first")));
       return;
     }
+
     showModalBottomSheet(
       context: context,
       builder: (_) => StatePickerModal(
@@ -207,6 +192,7 @@ class _AddStudentViewState extends State<AddStudentView> {
       ).showSnackBar(const SnackBar(content: Text("Select a state first")));
       return;
     }
+
     showModalBottomSheet(
       context: context,
       builder: (_) => CityPickerModal(
@@ -219,128 +205,120 @@ class _AddStudentViewState extends State<AddStudentView> {
     );
   }
 
+  void _openRolePicker() {
+    if (_role.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Select Your Role")));
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => RolePickerModal(
+        role: _role,
+        onRoleSelected: (item) {
+          roleIdController.text = item.name.toString();
+          selectedRoleId = item.id ?? 0;
+        },
+      ),
+    );
+  }
+
   void _submitForm() {
     print("_submitForm Pressed");
 
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final mobileNumber = mobileNumberController.text.trim();
-    final diagnosis = diagnosisController.text.trim();
+    final employeeId = employeeIdController.text.trim();
     final gender = genderController.text.trim();
-    final pid = pidController.text.trim();
     final pincode = pincodeController.text.trim();
     final country = countryController.text.trim();
     final state = stateController.text.trim();
     final city = cityController.text.trim();
     final nationality = nationalityController.text.trim();
 
-    // Validation
+    final aadharCard = aadharCardController.text.trim();
+
+    final imageProvider = Provider.of<ImageUploadProvider>(
+      context,
+      listen: false,
+    );
+
     if (firstName.isEmpty) {
-      showSnackBar("First name is required", context);
-      return;
+      return showSnackBar("First name is required", context);
     }
-
+    if (lastName.isEmpty) {
+      return showSnackBar("Last name is required", context);
+    }
     if (mobileNumber.isEmpty) {
-      showSnackBar("Mobile number is required", context);
-      return;
+      return showSnackBar("Mobile number is required", context);
     }
-
     if (mobileNumber.length < 10) {
-      showSnackBar("Mobile number is invalid", context);
-      return;
+      return showSnackBar("Mobile number is invalid", context);
+    }
+    if (gender.isEmpty) return showSnackBar("Gender is required", context);
+    if (pincode.isNotEmpty) {
+      if (pincode.length != 6) {
+        return showSnackBar("Pincode is invalid", context);
+      }
     }
 
-    if (diagnosis.isEmpty) {
-      showSnackBar("Diagnosis is required", context);
-      return;
-    }
-
-    if (gender.isEmpty) {
-      showSnackBar("Gender is required", context);
-      return;
-    }
-
-    if (pid.isEmpty) {
-      showSnackBar("PID number is required", context);
-      return;
-    }
-
-    if (pincode.length < 6) {
-      showSnackBar("Pincode is invalid", context);
-      return;
-    }
-
-    if (country.isEmpty) {
-      showSnackBar("Country is required", context);
-      return;
-    }
-
-    if (state.isEmpty) {
-      showSnackBar("State is required", context);
-      return;
-    }
-
-    if (city.isEmpty) {
-      showSnackBar("City is required", context);
-      return;
-    }
-
+    if (country.isEmpty) return showSnackBar("Country is required", context);
+    if (state.isEmpty) return showSnackBar("State is required", context);
+    if (city.isEmpty) return showSnackBar("City is required", context);
     if (nationality.isEmpty) {
-      showSnackBar("Nationality is required", context);
-      return;
+      return showSnackBar("Nationality is required", context);
+    }
+    if (aadharCard.isEmpty) {
+      return showSnackBar("Aadhar card number is required", context);
+    }
+    if (aadharCard.length < 12) {
+      return showSnackBar("Aadhar card number is invalid", context);
     }
 
-    if (_studentImage == null) {
-      showSnackBar("Student image is required", context);
-      return;
-    }
+    final provider = Provider.of<TeacherDashboardProvider>(
+      context,
+      listen: false,
+    );
 
-    final middleName = middleNameController.text.trim();
-    final emailId = emailController.text.trim();
-    final dob = selectedDate;
-    final genderId = gender == 'Male'
-        ? 1
-        : gender == 'Female'
-        ? 2
-        : 3;
-    final pidNumber = pid;
-    final pinCode = pincodeController.text.trim();
-    final addressLine1 = addressLine1Controller.text.trim();
-    final addressLine2 = addressLine2Controller.text.trim();
-    final countryId = selectedCountryId;
-    final stateId = selectedStateId;
-    final cityId = selectedCityId;
-    final nationalityId = selectedNationality;
-    final aadharCardNumber = aadharCardController.text.trim();
-
-    final aadharCardImageName = _aadharCardImage?.path.split('/').last;
-    final studentImageName = _studentImage?.path.split('/').last;
-
-    Provider.of<StudentDashboardProvider>(context, listen: false).addStudent(
+    provider.addTeacher(
+      aadharCardImage: imageProvider.aadharImage?.path.split('/').last,
+      aadharCardNumber: aadharCardController.text.trim(),
+      addressLine1: addressLine1Controller.text.trim(),
+      addressLine2: addressLine2Controller.text.trim(),
+      cityId: selectedCityId,
+      countryId: selectedCountryId,
+      dateOfBirth: selectedDate,
+      emailId: emailController.text.trim().isEmpty
+          ? null
+          : emailController.text.trim(),
+      employeeId: employeeId,
       firstName: firstName,
-      middleName: middleName.isEmpty ? null : middleName,
-      lastName: lastName,
+      genderId: gender == 'Male'
+          ? 1
+          : gender == 'Female'
+          ? 2
+          : 3,
+      instituteId: 22,
+      joiningDate: joiningDate,
+        lastName: lastNameController.text.trim().isEmpty ? "" : lastNameController.text.trim(),
+        middleName: middleNameController.text.trim().isEmpty ? "" : middleNameController.text.trim(),
       mobileNumber: mobileNumber,
-      emailId: emailId.isEmpty ? null : emailId,
-      diagnosis: diagnosis,
-      dob: dob,
-      genderId: genderId,
-      pidNumber: pidNumber,
-      pinCode: pinCode.isEmpty ? null : pinCode,
-      addressLine1: addressLine1.isEmpty ? null : addressLine1,
-      addressLine2: addressLine2.isEmpty ? null : addressLine2,
-      countryId: countryId,
-      stateId: stateId,
-      cityId: cityId,
-      nationalityId: nationalityId,
-      aadharCardNumber: aadharCardNumber,
-      aadharCardImageName: aadharCardImageName,
-      studentImageName: studentImageName,
+      nationalityId: selectedNationality,
+      pinCode: pincodeController.text.trim(),
+      roleId: 7,
+      signature: imageProvider.signatureImage?.path.split('/').last,
+      stateId: selectedStateId,
+      image: imageProvider.teacherImage?.path.split('/').last,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final imageProvider = Provider.of<ImageUploadProvider>(context);
+
     return Container(
       color: AppColors.themeColor,
       child: SafeArea(
@@ -368,7 +346,7 @@ class _AddStudentViewState extends State<AddStudentView> {
                           ),
                         ),
                         CustomText(
-                          text: 'Add Student',
+                          text: 'Add New Teacher',
                           fontSize: 22.sp,
                           color: AppColors.themeColor,
                           fontFamily: 'Dm Serif',
@@ -376,6 +354,7 @@ class _AddStudentViewState extends State<AddStudentView> {
                         ),
                       ],
                     ),
+
                     SizedBox(height: 10.sp),
 
                     const SectionHeader(title: 'General Information'),
@@ -395,6 +374,7 @@ class _AddStudentViewState extends State<AddStudentView> {
                       label: "Last Name",
                       controller: lastNameController,
                       onlyLetters: true,
+                      isRequired: true,
                     ),
                     FormTextField(
                       label: "Mobile Number",
@@ -409,9 +389,10 @@ class _AddStudentViewState extends State<AddStudentView> {
                       isEmail: true,
                     ),
                     FormTextField(
-                      label: "Diagnosis",
-                      controller: diagnosisController,
+                      label: "Employee ID",
+                      controller: employeeIdController,
                       isRequired: true,
+                      onlyLettersAndNumbers: true,
                     ),
                     DateOfBirthPicker(
                       selectedDate: selectedDate,
@@ -425,18 +406,9 @@ class _AddStudentViewState extends State<AddStudentView> {
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
                       onTap: _openGenderPicker,
                     ),
-                    FormTextField(
-                      label: "PID Number",
-                      controller: pidController,
-                      isRequired: true,
-                      keyboardType: TextInputType.number,
-                      maxLength: 10,
-                    ),
-
-                    SizedBox(height: 25.sp),
+                    SizedBox(height: 10.sp),
 
                     const SectionHeader(title: 'Address Details'),
-
                     FormTextField(
                       label: "Pincode",
                       controller: pincodeController,
@@ -476,9 +448,25 @@ class _AddStudentViewState extends State<AddStudentView> {
                       onTap: _openCityPicker,
                     ),
 
-                    SizedBox(height: 25.sp),
-                    const SectionHeader(title: 'Additional Details'),
+                    SizedBox(height: 10.sp),
+                    const SectionHeader(title: 'Employment Details'),
+                    FormTextField(
+                      label: "Role",
+                      controller: roleIdController,
+                      isEditable: false,
+                      isRequired: true,
+                      suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                      onTap: _openRolePicker,
+                    ),
+                    DateOfBirthPicker(
+                      isRequired: false,
+                      labelText: 'Joining Date',
+                      selectedDate: joiningDate,
+                      onChanged: (date) => setState(() => joiningDate = date),
+                    ),
 
+                    SizedBox(height: 10.sp),
+                    const SectionHeader(title: 'Additional Details'),
                     FormTextField(
                       label: "Nationality",
                       controller: nationalityController,
@@ -492,24 +480,35 @@ class _AddStudentViewState extends State<AddStudentView> {
                       controller: aadharCardController,
                       keyboardType: TextInputType.number,
                       maxLength: 12,
+                      isRequired: true,
                     ),
 
                     UploadImageBox(
                       title: "Aadhar Card Image",
-                      imageFile: _aadharCardImage,
-                      onTap: () => _pickImage(true),
-                      onClear: () => setState(() => _aadharCardImage = null),
-                      requiredField: false,
+                      imageFile: imageProvider.aadharImage,
+                      onTap: () =>
+                          imageProvider.pickAndUploadImage(context, 'aadhar'),
+                      onClear: () => imageProvider.clearImage('aadhar'),
+                    ),
+
+                    SizedBox(height: 15.sp),
+                    UploadImageBox(
+                      title: "Teacher Image",
+                      imageFile: imageProvider.teacherImage,
+                      onTap: () =>
+                          imageProvider.pickAndUploadImage(context, 'teacher'),
+                      onClear: () => imageProvider.clearImage('teacher'),
                     ),
                     SizedBox(height: 15.sp),
                     UploadImageBox(
-                      title: "Student Image",
-                      imageFile: _studentImage,
-                      onTap: () => _pickImage(false),
-                      onClear: () => setState(() => _studentImage = null),
-                      requiredField: true,
+                      title: "Teacher Signature",
+                      imageFile: imageProvider.signatureImage,
+                      onTap: () => imageProvider.pickAndUploadImage(
+                        context,
+                        'signature',
+                      ),
+                      onClear: () => imageProvider.clearImage('signature'),
                     ),
-
                     SizedBox(height: 40.sp),
                     SaveButton(onPressed: _submitForm),
                   ],
@@ -529,9 +528,7 @@ class _AddStudentViewState extends State<AddStudentView> {
     lastNameController.dispose();
     mobileNumberController.dispose();
     emailController.dispose();
-    diagnosisController.dispose();
     genderController.dispose();
-    pidController.dispose();
     pincodeController.dispose();
     addressLine1Controller.dispose();
     addressLine2Controller.dispose();

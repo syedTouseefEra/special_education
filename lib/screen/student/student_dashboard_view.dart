@@ -103,7 +103,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                       suffixIcon: Icon(
                         Icons.search,
                         size: 18.sp,
-                        color: AppColors.themeBlue,
+                        color: AppColors.themeColor,
                       ),
                       borderColor: AppColors.grey,
                       label: 'Search',

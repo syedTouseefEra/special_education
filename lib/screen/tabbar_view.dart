@@ -3,6 +3,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:special_education/screen/dashboard/dashboard_view.dart';
 import 'package:special_education/screen/student/student_dashboard_view.dart';
+import 'package:special_education/screen/teacher/teacher_dashboard_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     DashboardView(),
     StudentDashboard(),
-    Center(child: Text('Teacher Page', style: TextStyle(fontSize: 24))),
+    TeacherDashboard(),
     Center(child: Text('Profile Page', style: TextStyle(fontSize: 24))),
   ];
 

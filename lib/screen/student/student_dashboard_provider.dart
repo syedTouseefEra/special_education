@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
-import 'package:special_education/components/custom_api_call.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
@@ -81,13 +80,13 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> fetchStudentList() async {
-    await Future.delayed(Duration(milliseconds: 10));
-    _setLoading(true);
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
     try {
       final response = await _api.getApiCall(
-        url:
-            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
         params: {"instituteId": "22"},
         token: ApiServiceUrl.token,
       );
@@ -96,17 +95,14 @@ class StudentDashboardProvider with ChangeNotifier {
         final body = json.decode(response.body);
         if (body["responseStatus"] == true && body["data"] is List) {
           _studentData = (body["data"] as List)
-              .map(
-                (e) =>
-                    StudentListDataModal.fromJson(Map<String, dynamic>.from(e)),
-              )
+              .map((e) => StudentListDataModal.fromJson(Map<String, dynamic>.from(e)))
               .toList();
 
-          // Reset filtered data on new fetch
           _filteredStudentData = null;
           _searchQuery = "";
 
           _setLoading(false);
+          notifyListeners();
           return true;
         } else {
           _setError(body["responseMessage"] ?? "Invalid data received");
@@ -118,6 +114,7 @@ class StudentDashboardProvider with ChangeNotifier {
       _setError("Exception: $e");
     }
 
+    notifyListeners();
     return false;
   }
 
@@ -316,7 +313,6 @@ class StudentDashboardProvider with ChangeNotifier {
       );
 
       final body = json.decode(response.body);
-
       return body;
     } catch (e) {
       return {
@@ -405,7 +401,7 @@ class StudentDashboardProvider with ChangeNotifier {
     required String diagnosis,
     required DateTime dob,
     required int genderId,
-    required int pidNumber,
+    required String pidNumber,
     String? pinCode,
     String? addressLine1,
     String? addressLine2,
@@ -430,7 +426,7 @@ class StudentDashboardProvider with ChangeNotifier {
           "mobileNumber": mobileNumber,
           "emailId": emailId ?? "",
           "diagnosis": diagnosis,
-          "dob": dob.toIso8601String().split("T")[0], // format YYYY-MM-DD
+          "dob": dob.toIso8601String().split("T")[0],
           "genderId": genderId,
           "pidNumber": pidNumber,
           "pinCode": pinCode ?? "",
@@ -446,7 +442,6 @@ class StudentDashboardProvider with ChangeNotifier {
         },
         token: ApiServiceUrl.token,
       );
-
       final body = json.decode(response.body);
       if (response.statusCode == 201 && body["responseStatus"] == true) {
         return true;
@@ -457,7 +452,6 @@ class StudentDashboardProvider with ChangeNotifier {
     } finally {
       _setLoading(false);
     }
-
     return false;
   }
 

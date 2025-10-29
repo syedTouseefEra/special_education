@@ -8,6 +8,8 @@ import 'package:special_education/screen/student/student_dashboard_provider.dart
 import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
+import 'package:special_education/utils/image_upload_provider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
@@ -27,6 +29,8 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()..loadUserData()),
         ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
+        ChangeNotifierProvider(create: (_) => TeacherDashboardProvider()),
+        ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
       ],
       child: MyApp(),
     ),
@@ -34,6 +38,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(

@@ -260,10 +260,9 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        // Open dialog with existing data for editing
                                         showLongTermGoalDialog(
                                           initialText: goal.longTermGoal,
-                                          goalId: goal.id.toString(), // Assuming goal.id exists
+                                          goalId: goal.id.toString(),
                                         );
                                       },
                                       child: CustomContainer(
