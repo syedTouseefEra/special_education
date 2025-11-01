@@ -15,7 +15,7 @@ class ApiServiceUrl{
   // static String fileUpload = "http://172.16.82.6:50/api/CommonDropdown/FileUpload";
 
   static const String token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYxNzE5ODc5LCJleHAiOjE3NjE3Nzk4NzksImlhdCI6MTc2MTcxOTg3OX0.EIgKUuONlFrwB0F4cdkB0aEJLQVx7aUyyPQbTAumxVM';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYxODg4MjcxLCJleHAiOjE3NjE5NDgyNzEsImlhdCI6MTc2MTg4ODI3MX0.zBGPPt0w0yZefDieFLqISWJdvW34rNM_fCKqOtpQjTs';
 
   static String login = "User/Login";
   static String generateOtp = "User/GenerateOtp";

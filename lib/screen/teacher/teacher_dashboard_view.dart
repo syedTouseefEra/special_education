@@ -11,6 +11,7 @@ import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/main.dart';
 import 'package:special_education/screen/teacher/add_teacher/add_teacher_view.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
+import 'package:special_education/screen/teacher/teacher_profile_details/teacher_profile_details_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class TeacherDashboard extends StatefulWidget {
@@ -51,7 +52,6 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
 
   @override
   void didPopNext() {
-    // Refresh list when coming back to this screen
     Provider.of<TeacherDashboardProvider>(context, listen: false)
         .fetchTeacherList();
   }
@@ -266,7 +266,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                             splashColor: Colors.transparent,
                                             highlightColor: Colors.transparent,
                                             onTap: () async {
-                                              // TODO: Implement view profile functionality
+                                              NavigationHelper.push(context, TeacherProfileDetailsView(id: teacher.userId!,));
                                             },
                                             child: CustomContainer(
                                               text: 'View',

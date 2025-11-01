@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-
-import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
-
-import 'package:special_education/components/custom_api_call.dart';
-import 'package:special_education/screen/teacher/add_teacher/widgets/role_picker_modal.dart';
+import 'package:special_education/screen/teacher/add_teacher/widgets/add_teacher_helper.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
 import 'package:special_education/screen/teacher/teacher_data_model.dart';
 import 'package:special_education/utils/image_upload_provider.dart';
@@ -19,9 +15,6 @@ import 'widgets/section_header.dart';
 import 'widgets/form_text_field.dart';
 import 'widgets/date_of_birth_picker.dart';
 import 'widgets/upload_image_box.dart';
-import 'widgets/country_picker_modal.dart';
-import 'widgets/state_picker_modal.dart';
-import 'widgets/city_picker_modal.dart';
 import 'widgets/save_button.dart';
 
 class AddTeacherView extends StatefulWidget {
@@ -32,6 +25,7 @@ class AddTeacherView extends StatefulWidget {
 }
 
 class _AddTeacherViewState extends State<AddTeacherView> {
+  // Controllers
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController middleNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -39,219 +33,86 @@ class _AddTeacherViewState extends State<AddTeacherView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController employeeIdController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
-
   final TextEditingController pincodeController = TextEditingController();
   final TextEditingController addressLine1Controller = TextEditingController();
   final TextEditingController addressLine2Controller = TextEditingController();
   final TextEditingController countryController = TextEditingController();
   final TextEditingController stateController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
-
   final TextEditingController roleIdController = TextEditingController();
   final TextEditingController joiningDateController = TextEditingController();
-
   final TextEditingController nationalityController = TextEditingController();
   final TextEditingController aadharCardController = TextEditingController();
 
+  // Dates
   DateTime selectedDate = DateTime.now();
   DateTime joiningDate = DateTime.now();
 
+  // Data lists
   List<CountryDataModal> _countries = [];
   List<StateDataModel> _states = [];
   List<CityDataModel> _cities = [];
-  List<RoleDataModal> _role = [];
+  List<RoleDataModal> _roles = [];
 
+  // Selected IDs
   int selectedCountryId = 0;
   int selectedStateId = 0;
   int selectedCityId = 0;
   int selectedNationality = 0;
   int selectedRoleId = 0;
 
-  final locationService = LocationService();
+  final helper = AddTeacherHelper();
 
   @override
   void initState() {
     super.initState();
-    loadCountries();
-    loadRole();
-    final imageProvider = Provider.of<ImageUploadProvider>(context, listen: false);
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    _countries = await helper.loadCountries();
+    _roles = await helper.loadRoles();
+    final imageProvider = Provider.of<ImageUploadProvider>(
+      context,
+      listen: false,
+    );
     imageProvider.clearImage('teacher');
     imageProvider.clearImage('aadhar');
     imageProvider.clearImage('signature');
+    setState(() {});
   }
 
-  // --- Loaders ---
-  Future<void> loadCountries() async {
-    final countries = await locationService.fetchLocationData<CountryDataModal>(
-      url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getCountry}",
-      fromJson: CountryDataModal.fromJson,
-    );
-    setState(() => _countries = countries);
+  Future<void> _loadStates(String countryId) async {
+    _states = await helper.loadStates(countryId);
+    setState(() {});
   }
 
-  Future<void> loadStates(String countryId) async {
-    final states = await locationService.fetchLocationData<StateDataModel>(
-      params: {"countryId": countryId},
-      url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getState}",
-      fromJson: StateDataModel.fromJson,
-    );
-    setState(() => _states = states);
-  }
-
-  Future<void> loadCities(String stateId) async {
-    final cities = await locationService.fetchLocationData<CityDataModel>(
-      params: {"stateId": stateId},
-      url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.getCity}",
-      fromJson: CityDataModel.fromJson,
-    );
-    setState(() => _cities = cities);
-  }
-
-  Future<void> loadRole() async {
-    final role = await locationService.fetchLocationData<RoleDataModal>(
-      params: {"": ""},
-      url: "${ApiServiceUrl.countryBaseUrl}${ApiServiceUrl.masterRole}",
-      fromJson: RoleDataModal.fromJson,
-    );
-    setState(() => _role = role);
-  }
-
-  final List<Map<String, dynamic>> updateGender = [
-    {'id': 1, 'status': "Male"},
-    {'id': 2, 'status': "Female"},
-    {'id': 3, 'status': "Others"},
-  ];
-
-  void _openGenderPicker() {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return ListView(
-          shrinkWrap: true,
-          children: updateGender.map((gender) {
-            return ListTile(
-              title: CustomText(text: gender['status']?.toString() ?? ''),
-              onTap: () {
-                genderController.text = gender['status'].toString();
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-
-  void _openCountryPicker({required bool isNationality}) {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) => CountryPickerModal(
-        countries: _countries,
-        onCountrySelected: (country) {
-          if (isNationality) {
-            nationalityController.text = country.countryName ?? '';
-            selectedNationality = country.countryId ?? 0;
-          } else {
-            countryController.text = country.countryName ?? '';
-            selectedCountryId = country.countryId ?? 0;
-            stateController.clear();
-            cityController.clear();
-            loadStates(country.countryId.toString());
-          }
-        },
-      ),
-    );
-  }
-
-  void _openStatePicker() {
-    if (_states.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Select a country first")));
-      return;
-    }
-
-    showModalBottomSheet(
-      context: context,
-      builder: (_) => StatePickerModal(
-        states: _states,
-        onStateSelected: (state) {
-          stateController.text = state.stateName ?? '';
-          selectedStateId = state.stateId ?? 0;
-          cityController.clear();
-          loadCities(state.stateId.toString());
-        },
-      ),
-    );
-  }
-
-  void _openCityPicker() {
-    if (_cities.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Select a state first")));
-      return;
-    }
-
-    showModalBottomSheet(
-      context: context,
-      builder: (_) => CityPickerModal(
-        cities: _cities,
-        onCitySelected: (city) {
-          cityController.text = city.cityName ?? '';
-          selectedCityId = city.cityId ?? 0;
-        },
-      ),
-    );
-  }
-
-  void _openRolePicker() {
-    if (_role.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Select Your Role")));
-      return;
-    }
-
-    showModalBottomSheet(
-      context: context,
-      builder: (_) => RolePickerModal(
-        role: _role,
-        onRoleSelected: (item) {
-          roleIdController.text = item.name.toString();
-          selectedRoleId = item.id ?? 0;
-        },
-      ),
-    );
+  Future<void> _loadCities(String stateId) async {
+    _cities = await helper.loadCities(context, stateId);
+    setState(() {});
   }
 
   void _submitForm() {
-    print("_submitForm Pressed");
-
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final mobileNumber = mobileNumberController.text.trim();
-    final employeeId = employeeIdController.text.trim();
     final gender = genderController.text.trim();
     final pincode = pincodeController.text.trim();
     final country = countryController.text.trim();
     final state = stateController.text.trim();
     final city = cityController.text.trim();
     final nationality = nationalityController.text.trim();
-
     final aadharCard = aadharCardController.text.trim();
-
     final imageProvider = Provider.of<ImageUploadProvider>(
       context,
       listen: false,
     );
 
+    // --- Validation ---
     if (firstName.isEmpty) {
       return showSnackBar("First name is required", context);
     }
-    if (lastName.isEmpty) {
-      return showSnackBar("Last name is required", context);
-    }
+    if (lastName.isEmpty) return showSnackBar("Last name is required", context);
     if (mobileNumber.isEmpty) {
       return showSnackBar("Mobile number is required", context);
     }
@@ -259,12 +120,6 @@ class _AddTeacherViewState extends State<AddTeacherView> {
       return showSnackBar("Mobile number is invalid", context);
     }
     if (gender.isEmpty) return showSnackBar("Gender is required", context);
-    if (pincode.isNotEmpty) {
-      if (pincode.length != 6) {
-        return showSnackBar("Pincode is invalid", context);
-      }
-    }
-
     if (country.isEmpty) return showSnackBar("Country is required", context);
     if (state.isEmpty) return showSnackBar("State is required", context);
     if (city.isEmpty) return showSnackBar("City is required", context);
@@ -285,7 +140,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
 
     provider.addTeacher(
       aadharCardImage: imageProvider.aadharImage?.path.split('/').last,
-      aadharCardNumber: aadharCardController.text.trim(),
+      aadharCardNumber: aadharCard,
       addressLine1: addressLine1Controller.text.trim(),
       addressLine2: addressLine2Controller.text.trim(),
       cityId: selectedCityId,
@@ -294,7 +149,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
       emailId: emailController.text.trim().isEmpty
           ? null
           : emailController.text.trim(),
-      employeeId: employeeId,
+      employeeId: employeeIdController.text.trim(),
       firstName: firstName,
       genderId: gender == 'Male'
           ? 1
@@ -303,12 +158,12 @@ class _AddTeacherViewState extends State<AddTeacherView> {
           : 3,
       instituteId: 22,
       joiningDate: joiningDate,
-        lastName: lastNameController.text.trim().isEmpty ? "" : lastNameController.text.trim(),
-        middleName: middleNameController.text.trim().isEmpty ? "" : middleNameController.text.trim(),
+      lastName: lastName,
+      middleName: middleNameController.text.trim(),
       mobileNumber: mobileNumber,
       nationalityId: selectedNationality,
-      pinCode: pincodeController.text.trim(),
-      roleId: 7,
+      pinCode: pincode,
+      roleId: selectedRoleId,
       signature: imageProvider.signatureImage?.path.split('/').last,
       stateId: selectedStateId,
       image: imageProvider.teacherImage?.path.split('/').last,
@@ -333,12 +188,11 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Header
                     Row(
                       children: [
                         InkWell(
-                          onTap: () {
-                            NavigationHelper.pop(context);
-                          },
+                          onTap: () => NavigationHelper.pop(context),
                           child: Icon(
                             Icons.arrow_back_ios,
                             size: 20.sp,
@@ -354,11 +208,10 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 10.sp),
 
+                    // General Info
                     const SectionHeader(title: 'General Information'),
-
                     FormTextField(
                       label: "First Name",
                       controller: firstNameController,
@@ -404,10 +257,14 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       isEditable: false,
                       isRequired: true,
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: _openGenderPicker,
+                      onTap: () => helper.openGenderPicker(
+                        context: context,
+                        controller: genderController,
+                      ),
                     ),
                     SizedBox(height: 10.sp),
 
+                    // Address
                     const SectionHeader(title: 'Address Details'),
                     FormTextField(
                       label: "Pincode",
@@ -429,7 +286,17 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       isEditable: false,
                       isRequired: true,
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: () => _openCountryPicker(isNationality: false),
+                      onTap: () => helper.openCountryPicker(
+                        context: context,
+                        countries: _countries,
+                        onCountrySelected: (country) {
+                          countryController.text = country.countryName ?? '';
+                          selectedCountryId = country.countryId ?? 0;
+                          stateController.clear();
+                          cityController.clear();
+                          _loadStates(country.countryId.toString());
+                        },
+                      ),
                     ),
                     FormTextField(
                       label: "State",
@@ -437,7 +304,16 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       isEditable: false,
                       isRequired: true,
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: _openStatePicker,
+                      onTap: () => helper.openStatePicker(
+                        context: context,
+                        states: _states,
+                        onStateSelected: (state) {
+                          stateController.text = state.stateName ?? '';
+                          selectedStateId = state.stateId ?? 0;
+                          cityController.clear();
+                          _loadCities(state.stateId.toString());
+                        },
+                      ),
                     ),
                     FormTextField(
                       label: "City/Town",
@@ -445,7 +321,14 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       isEditable: false,
                       isRequired: true,
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: _openCityPicker,
+                      onTap: () => helper.openCityPicker(
+                        context: context,
+                        cities: _cities,
+                        onCitySelected: (city) {
+                          cityController.text = city.cityName ?? '';
+                          selectedCityId = city.cityId ?? 0;
+                        },
+                      ),
                     ),
 
                     SizedBox(height: 10.sp),
@@ -456,7 +339,14 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       isEditable: false,
                       isRequired: true,
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: _openRolePicker,
+                      onTap: () => helper.openRolePicker(
+                        context: context,
+                        roles: _roles,
+                        onRoleSelected: (role) {
+                          roleIdController.text = role.name ?? '';
+                          selectedRoleId = role.id ?? 0;
+                        },
+                      ),
                     ),
                     DateOfBirthPicker(
                       isRequired: false,
@@ -473,7 +363,15 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       isEditable: false,
                       isRequired: true,
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: () => _openCountryPicker(isNationality: true),
+                      onTap: () => helper.openCountryPicker(
+                        context: context,
+                        countries: _countries,
+                        onCountrySelected: (country) {
+                          nationalityController.text =
+                              country.countryName ?? '';
+                          selectedNationality = country.countryId ?? 0;
+                        },
+                      ),
                     ),
                     FormTextField(
                       label: "Aadhar Card Number",
@@ -490,7 +388,6 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                           imageProvider.pickAndUploadImage(context, 'aadhar'),
                       onClear: () => imageProvider.clearImage('aadhar'),
                     ),
-
                     SizedBox(height: 15.sp),
                     UploadImageBox(
                       title: "Teacher Image",
@@ -528,6 +425,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
     lastNameController.dispose();
     mobileNumberController.dispose();
     emailController.dispose();
+    employeeIdController.dispose();
     genderController.dispose();
     pincodeController.dispose();
     addressLine1Controller.dispose();
@@ -535,6 +433,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
     countryController.dispose();
     stateController.dispose();
     cityController.dispose();
+    roleIdController.dispose();
     nationalityController.dispose();
     aadharCardController.dispose();
     super.dispose();

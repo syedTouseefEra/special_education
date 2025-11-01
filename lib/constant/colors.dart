@@ -17,10 +17,13 @@ class AppColors {
 
   static const Color lineColor = Color(0xffE5E5EA);
 
-  static const Color themeColor = Colors.pink;
+  static const Color themeColor = Color(0xFFF1205E);
   static const Color themeBlue = Color(0xff357CFF);
   static const Color borderColor = Colors.grey;
   static const Color grey = Colors.grey;
+
+  static const Color gradientColorOne = Color(0xFFFFF9E2);
+  static const Color gradientColorTwo = Color(0xFFFEF1BB);
 
 
 

@@ -14,6 +14,7 @@ class TeacherDashboardProvider with ChangeNotifier {
   String? get error => _error;
 
   List<TeacherListDataModal>? _teacherData;
+  List<TeacherListDataModal>? _selectedTeacherData;
   List<TeacherListDataModal>? _filteredTeacherData;
   List<RoleDataModal>? _roleData;
 
@@ -38,6 +39,10 @@ class TeacherDashboardProvider with ChangeNotifier {
     } else {
       return _filteredTeacherData;
     }
+  }
+
+  List<TeacherListDataModal>? get selectedTeacherData {
+    return _selectedTeacherData;
   }
 
   Future<bool> fetchTeacherList() async {
@@ -65,6 +70,44 @@ class TeacherDashboardProvider with ChangeNotifier {
 
           _filteredTeacherData = List.from(_teacherData!);
           _searchQuery = "";
+        } else {
+          _error = body["responseMessage"] ?? "Invalid data received";
+        }
+      } else {
+        _error = "Server error: ${response.statusCode}";
+      }
+    } catch (e) {
+      _error = "Exception: $e";
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+
+    return _teacherData != null && _teacherData!.isNotEmpty;
+  }
+
+  Future<bool> fetchTeacherProfileDetails( int id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await _api.getApiCall(
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTeacherList}",
+        params: {"instituteId": "22","id":id.toString()},
+        token: ApiServiceUrl.token,
+      );
+
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        if (body["responseStatus"] == true && body["data"] is List) {
+          _selectedTeacherData = (body["data"] as List)
+              .map(
+                (e) =>
+                    TeacherListDataModal.fromJson(Map<String, dynamic>.from(e)),
+              )
+              .toList();
         } else {
           _error = body["responseMessage"] ?? "Invalid data received";
         }
