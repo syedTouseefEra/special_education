@@ -9,17 +9,51 @@ class ApiCallingTypes {
 
   ApiCallingTypes({required this.baseUrl});
 
-  Future<http.Response> getApiCall({
+  // Future<http.Response> getApiCall({
+  //   required String url,
+  //   Map<String, String>? params,
+  //   String? token,
+  // }) async {
+  //   try {
+  //     if (params != null && params.isNotEmpty) {
+  //       String queryString = Uri(queryParameters: params).query;
+  //       url = '$url?$queryString';
+  //     }
+  //
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //     };
+  //
+  //     if (token != null && token.isNotEmpty) {
+  //       headers['Authorization'] = 'Bearer $token';
+  //     }
+  //
+  //     final response = await http.get(
+  //       Uri.parse(url),
+  //       headers: headers,
+  //     );
+  //
+  //     _logRequest('GET', url, headers, null, response, params: params);
+  //
+  //     return response;
+  //   } catch (e) {
+  //     throw Exception('Failed to make GET request: $e');
+  //   }
+  // }
+
+  Future<dynamic> getApiCall({
     required String url,
     Map<String, String>? params,
     String? token,
   }) async {
     try {
+      // Append query parameters if any
       if (params != null && params.isNotEmpty) {
         String queryString = Uri(queryParameters: params).query;
         url = '$url?$queryString';
       }
 
+      // Headers
       Map<String, String> headers = {
         'Content-Type': 'application/json',
       };
@@ -28,20 +62,67 @@ class ApiCallingTypes {
         headers['Authorization'] = 'Bearer $token';
       }
 
+      // Make GET request
       final response = await http.get(
         Uri.parse(url),
         headers: headers,
       );
 
+      // Log request (if you have a logger)
       _logRequest('GET', url, headers, null, response, params: params);
 
-      return response;
+      // Check for valid status codes
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        // ✅ Automatically decode JSON
+        return jsonDecode(response.body);
+      } else {
+        // Optionally, decode JSON error response
+        final decodedError = jsonDecode(response.body);
+        throw Exception(decodedError['responseMessage'] ??
+            'API request failed with status ${response.statusCode}');
+      }
     } catch (e) {
       throw Exception('Failed to make GET request: $e');
     }
   }
 
-  Future<http.Response> postApiCall({
+
+  // Future<http.Response> postApiCall({
+  //   required String url,
+  //   required Map<String, dynamic> body,
+  //   Map<String, String>? headers,
+  //   String? token,
+  //   Map<String, String>? params,
+  // }) async {
+  //   final defaultHeaders = {
+  //     'Content-Type': 'application/json',
+  //     if (token != null) 'Authorization': 'Bearer $token',
+  //     ...?headers,
+  //   };
+  //
+  //   try {
+  //     if (params != null && params.isNotEmpty) {
+  //       String queryString = Uri(queryParameters: params).query;
+  //       url = '$url?$queryString';
+  //     }
+  //
+  //     final response = await http.post(
+  //       Uri.parse(url),
+  //       headers: defaultHeaders,
+  //       body: json.encode(body),
+  //     );
+  //
+  //     _logRequest('POST', url, defaultHeaders, body, response, params: params);
+  //
+  //     return response;
+  //   } catch (e) {
+  //     print('❌ Exception during POST: $e');
+  //     throw Exception('POST request failed: $e');
+  //   }
+  // }
+
+
+  Future<Map<String, dynamic>> postApiCall({
     required String url,
     required Map<String, dynamic> body,
     Map<String, String>? headers,
@@ -50,13 +131,14 @@ class ApiCallingTypes {
   }) async {
     final defaultHeaders = {
       'Content-Type': 'application/json',
-      if (token != null) 'Authorization': 'Bearer $token',
+      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
       ...?headers,
     };
 
     try {
+      // Add query parameters to URL if provided
       if (params != null && params.isNotEmpty) {
-        String queryString = Uri(queryParameters: params).query;
+        final queryString = Uri(queryParameters: params).query;
         url = '$url?$queryString';
       }
 
@@ -68,12 +150,49 @@ class ApiCallingTypes {
 
       _logRequest('POST', url, defaultHeaders, body, response, params: params);
 
-      return response;
+      // Decode JSON response
+      final decoded = json.decode(response.body);
+      if (decoded is Map<String, dynamic>) {
+        return decoded;
+      } else {
+        throw Exception('Unexpected response format: ${response.body}');
+      }
     } catch (e) {
       print('❌ Exception during POST: $e');
       throw Exception('POST request failed: $e');
     }
   }
+
+
+  Future<http.Response> deleteDataApiCall({
+    required String url,
+    Map<String, dynamic>? body, // 👈 now optional
+    Map<String, String>? headers,
+    String? token,
+    Map<String, String>? params,
+  }) async {
+    final defaultHeaders = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+      ...?headers,
+    };
+
+    if (params != null && params.isNotEmpty) {
+      String queryString = Uri(queryParameters: params).query;
+      url = '$url?$queryString';
+    }
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: defaultHeaders,
+      body: body != null ? json.encode(body) : null, // 👈 only include if exists
+    );
+
+    _logRequest('DELETE', url, defaultHeaders, body, response, params: params);
+
+    return response;
+  }
+
 
   Future<http.Response> putApiCall({
     required String url,
@@ -108,6 +227,8 @@ class ApiCallingTypes {
       throw Exception('PUT request failed: $e');
     }
   }
+
+
 
 
   Future<String> uploadFileByMultipart({

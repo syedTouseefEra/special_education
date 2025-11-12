@@ -96,11 +96,14 @@ class _AddTeacherViewState extends State<AddTeacherView> {
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final mobileNumber = mobileNumberController.text.trim();
+    final emailId = emailController.text.trim();
     final gender = genderController.text.trim();
     final pincode = pincodeController.text.trim();
+    final employeeId = employeeIdController.text.trim();
     final country = countryController.text.trim();
     final state = stateController.text.trim();
     final city = cityController.text.trim();
+    final role = roleIdController.text.trim();
     final nationality = nationalityController.text.trim();
     final aadharCard = aadharCardController.text.trim();
     final imageProvider = Provider.of<ImageUploadProvider>(
@@ -108,7 +111,6 @@ class _AddTeacherViewState extends State<AddTeacherView> {
       listen: false,
     );
 
-    // --- Validation ---
     if (firstName.isEmpty) {
       return showSnackBar("First name is required", context);
     }
@@ -119,27 +121,44 @@ class _AddTeacherViewState extends State<AddTeacherView> {
     if (mobileNumber.length < 10) {
       return showSnackBar("Mobile number is invalid", context);
     }
-    if (gender.isEmpty) return showSnackBar("Gender is required", context);
+    if (emailId.isEmpty) return showSnackBar("Email is required", context);
+    if (employeeId.isEmpty) return showSnackBar("Employee ID is required", context);
     if (country.isEmpty) return showSnackBar("Country is required", context);
     if (state.isEmpty) return showSnackBar("State is required", context);
     if (city.isEmpty) return showSnackBar("City is required", context);
+
+    if (role.isEmpty) {
+      return showSnackBar("Role is required", context);
+    }
     if (nationality.isEmpty) {
       return showSnackBar("Nationality is required", context);
     }
-    if (aadharCard.isEmpty) {
-      return showSnackBar("Aadhar card number is required", context);
+    if (aadharCard.isNotEmpty) {
+      if (aadharCard.length <12) {
+        return showSnackBar("Aadhar card number is invalid", context);
+      }
     }
-    if (aadharCard.length < 12) {
-      return showSnackBar("Aadhar card number is invalid", context);
+
+    if (imageProvider.aadharImage?.path.isEmpty ?? true) {
+      return showSnackBar("Aadhar card image is required", context);
     }
+
+    if (imageProvider.teacherImage?.path.isEmpty ?? true) {
+      return showSnackBar("Teacher image is required", context);
+    }
+    if (imageProvider.signatureImage?.path.isEmpty ?? true) {
+      return showSnackBar("Signature image is required", context);
+    }
+
 
     final provider = Provider.of<TeacherDashboardProvider>(
       context,
       listen: false,
     );
 
-    provider.addTeacher(
-      aadharCardImage: imageProvider.aadharImage?.path.split('/').last,
+
+    provider.addTeacher(context,
+      aadharCardImage: imageProvider.aadharImageUrl,
       aadharCardNumber: aadharCard,
       addressLine1: addressLine1Controller.text.trim(),
       addressLine2: addressLine2Controller.text.trim(),
@@ -164,9 +183,9 @@ class _AddTeacherViewState extends State<AddTeacherView> {
       nationalityId: selectedNationality,
       pinCode: pincode,
       roleId: selectedRoleId,
-      signature: imageProvider.signatureImage?.path.split('/').last,
+      signature: imageProvider.signatureImageUrl,
       stateId: selectedStateId,
-      image: imageProvider.teacherImage?.path.split('/').last,
+      image: imageProvider.teacherImageUrl,
     );
   }
 
@@ -234,12 +253,13 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       controller: mobileNumberController,
                       isRequired: true,
                       keyboardType: TextInputType.number,
-                      maxLength: 10,
+                      maxLength: 15,
                     ),
                     FormTextField(
                       label: "Email ID",
                       controller: emailController,
                       isEmail: true,
+                      isRequired: true,
                     ),
                     FormTextField(
                       label: "Employee ID",
@@ -255,7 +275,6 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       label: "Gender",
                       controller: genderController,
                       isEditable: false,
-                      isRequired: true,
                       suffixIcon: const Icon(Icons.keyboard_arrow_down),
                       onTap: () => helper.openGenderPicker(
                         context: context,
@@ -378,11 +397,11 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       controller: aadharCardController,
                       keyboardType: TextInputType.number,
                       maxLength: 12,
-                      isRequired: true,
                     ),
 
                     UploadImageBox(
                       title: "Aadhar Card Image",
+                      requiredField: true,
                       imageFile: imageProvider.aadharImage,
                       onTap: () =>
                           imageProvider.pickAndUploadImage(context, 'aadhar'),
@@ -391,6 +410,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                     SizedBox(height: 15.sp),
                     UploadImageBox(
                       title: "Teacher Image",
+                      requiredField: true,
                       imageFile: imageProvider.teacherImage,
                       onTap: () =>
                           imageProvider.pickAndUploadImage(context, 'teacher'),
@@ -399,6 +419,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                     SizedBox(height: 15.sp),
                     UploadImageBox(
                       title: "Teacher Signature",
+                      requiredField: true,
                       imageFile: imageProvider.signatureImage,
                       onTap: () => imageProvider.pickAndUploadImage(
                         context,

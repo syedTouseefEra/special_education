@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
@@ -29,8 +30,10 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TeacherDashboardProvider>(context, listen: false)
-          .fetchTeacherList();
+      Provider.of<TeacherDashboardProvider>(
+        context,
+        listen: false,
+      ).fetchTeacherList();
     });
   }
 
@@ -52,8 +55,10 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
 
   @override
   void didPopNext() {
-    Provider.of<TeacherDashboardProvider>(context, listen: false)
-        .fetchTeacherList();
+    Provider.of<TeacherDashboardProvider>(
+      context,
+      listen: false,
+    ).fetchTeacherList();
   }
 
   @override
@@ -68,7 +73,10 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
               backgroundColor: AppColors.white,
               appBar: CustomAppBar(enableTheming: false),
               body: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 15.sp),
+                padding: EdgeInsets.symmetric(
+                  vertical: 8.sp,
+                  horizontal: 15.sp,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -105,26 +113,41 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                             ),
                           ),
                         ),
-                        InkWell(
-                          splashColor: AppColors.transparent,
-                          highlightColor: AppColors.transparent,
-                          onTap: () {
-                            NavigationHelper.push(context, AddTeacherView());
+                        Consumer<TeacherDashboardProvider>(
+                          builder: (context, provider, _) {
+                            // 👇 Button will only show if data is available and not empty
+                            bool showAddButton = provider.teacherData != null &&
+                                provider.teacherData!.isNotEmpty &&
+                                !provider.isLoading &&
+                                provider.error == null;
+
+                            return Visibility(
+                              visible: showAddButton,
+                              child: InkWell(
+                                splashColor: AppColors.transparent,
+                                highlightColor: AppColors.transparent,
+                                onTap: () {
+                                  NavigationHelper.push(context, const AddTeacherView());
+                                },
+                                child: CustomContainer(
+                                  text: "Add Teacher",
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Inter',
+                                  borderRadius: 20.r,
+                                  innerPadding: EdgeInsets.symmetric(
+                                    vertical: 10.sp,
+                                    horizontal: 18.sp,
+                                  ),
+                                ),
+                              ),
+                            );
                           },
-                          child: CustomContainer(
-                            text: "Add Teacher",
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Inter',
-                            borderRadius: 20.r,
-                            innerPadding: EdgeInsets.symmetric(
-                              vertical: 10.sp,
-                              horizontal: 18.sp,
-                            ),
-                          ),
                         ),
                       ],
                     ),
+
+
                     SizedBox(height: 5.sp),
                     Expanded(
                       child: Consumer<TeacherDashboardProvider>(
@@ -134,7 +157,43 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                               child: CircularProgressIndicator(),
                             );
                           } else if (provider.error != null) {
-                            return Center(child: Text(provider.error!));
+                            return Center(
+                              child: Column(
+                                children: [
+                                  Image(
+                                    fit: BoxFit.contain,
+                                    height: 350.sp,
+                                    width: 500.sp,
+                                    image: AssetImage(ImgAssets.girl),
+                                  ),
+                                  CustomText(
+                                    text: 'No Teacher Is Added Yet',
+                                    fontSize: 18.sp,
+                                    color: AppColors.themeColor,
+                                    fontWeight: FontWeight.w600,
+
+                                  ),
+                                  InkWell(
+                                    splashColor: AppColors.transparent,
+                                    highlightColor: AppColors.transparent,
+                                    onTap: () {
+                                      NavigationHelper.push(context, const AddTeacherView());
+                                    },
+                                    child: CustomContainer(
+                                      text: "Add Teacher",
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                      borderRadius: 20.r,
+                                      innerPadding: EdgeInsets.symmetric(
+                                        vertical: 10.sp,
+                                        horizontal: 18.sp,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
                           } else if (provider.teacherData == null ||
                               provider.teacherData!.isEmpty) {
                             return const Center(
@@ -173,30 +232,32 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                             color: AppColors.themeColor
                                                 .withOpacity(0.1),
                                             shape: BoxShape.circle,
-                                            image: teacher.image != null &&
-                                                teacher.image!.isNotEmpty
+                                            image:
+                                                teacher.image != null &&
+                                                    teacher.image!.isNotEmpty
                                                 ? DecorationImage(
-                                              image: NetworkImage(
-                                                '${ApiServiceUrl.urlLauncher}uploads/${teacher.image}',
-                                              ),
-                                              fit: BoxFit.cover,
-                                            )
+                                                    image: NetworkImage(
+                                                      '${ApiServiceUrl.urlLauncher}uploads/${teacher.image}',
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                  )
                                                 : const DecorationImage(
-                                              image: AssetImage(
-                                                ImgAssets.user,
-                                              ),
-                                              fit: BoxFit.cover,
-                                            ),
+                                                    image: AssetImage(
+                                                      ImgAssets.user,
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                         ),
                                         SizedBox(width: 10.sp),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               CustomText(
-                                                text: teacher.teacherName ??
+                                                text:
+                                                    teacher.teacherName ??
                                                     "Unknown Teacher",
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w600,
@@ -205,7 +266,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                               SizedBox(height: 2.sp),
                                               CustomText(
                                                 text:
-                                                "PID - ${teacher.employeeId ?? "N/A"}",
+                                                    "PID - ${teacher.employeeId ?? "N/A"}",
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: AppColors.textGrey,
@@ -213,7 +274,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                               SizedBox(height: 2.sp),
                                               CustomText(
                                                 text:
-                                                "Designation - ${teacher.designation ?? "N/A"}",
+                                                    "Designation - ${teacher.designation ?? "N/A"}",
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: AppColors.textGrey,
@@ -223,7 +284,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                               SizedBox(height: 2.sp),
                                               CustomText(
                                                 text:
-                                                "Mobile Number - ${teacher.mobileNumber ?? "N/A"}",
+                                                    "Mobile Number - ${teacher.mobileNumber ?? "N/A"}",
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: AppColors.textGrey,
@@ -239,22 +300,33 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                       alignment: Alignment.centerRight,
                                       child: Row(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.end,
+                                            CrossAxisAlignment.end,
                                         mainAxisAlignment:
-                                        MainAxisAlignment.end,
+                                            MainAxisAlignment.end,
                                         children: [
                                           InkWell(
                                             splashColor: Colors.transparent,
                                             highlightColor: Colors.transparent,
                                             onTap: () async {
-                                              // TODO: Implement remove functionality
+                                              doubleButton(
+                                                context,
+                                                "",
+                                                "Are you sure? You can't undo this action afterwards.",
+                                                () {
+                                                  provider.deleteTeacher(
+                                                    context,
+                                                    teacher.userId.toString(),
+                                                  );
+                                                },
+                                              );
                                             },
                                             child: CustomContainer(
                                               text: 'Remove',
                                               innerPadding:
-                                              EdgeInsets.symmetric(
-                                                  vertical: 4.sp,
-                                                  horizontal: 22.sp),
+                                                  EdgeInsets.symmetric(
+                                                    vertical: 4.sp,
+                                                    horizontal: 22.sp,
+                                                  ),
                                               containerColor: Colors.red,
                                               textColor: AppColors.white,
                                               fontSize: 12.sp,
@@ -266,14 +338,20 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                             splashColor: Colors.transparent,
                                             highlightColor: Colors.transparent,
                                             onTap: () async {
-                                              NavigationHelper.push(context, TeacherProfileDetailsView(id: teacher.userId!,));
+                                              NavigationHelper.push(
+                                                context,
+                                                TeacherProfileDetailsView(
+                                                  id: teacher.userId!,
+                                                ),
+                                              );
                                             },
                                             child: CustomContainer(
                                               text: 'View',
                                               innerPadding:
-                                              EdgeInsets.symmetric(
-                                                  vertical: 3.sp,
-                                                  horizontal: 22.sp),
+                                                  EdgeInsets.symmetric(
+                                                    vertical: 3.sp,
+                                                    horizontal: 22.sp,
+                                                  ),
                                               containerColor: Colors.white,
                                               textColor: AppColors.yellow,
                                               fontSize: 12.sp,

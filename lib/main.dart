@@ -3,12 +3,14 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:special_education/provider/login/login_provider.dart';
+import 'package:special_education/screen/choose_account/choose_account_provider.dart';
+import 'package:special_education/screen/login/login_provider.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
+import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/image_upload_provider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -27,7 +29,10 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LoginProvider()..loadUserData()),
+        userDataProvider,
+        // ChangeNotifierProvider(create: (_) => LoginProvider()..loadUserData()),
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
+        ChangeNotifierProvider(create: (_) => ChooseAccountProvider()),
         ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
         ChangeNotifierProvider(create: (_) => TeacherDashboardProvider()),
         ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
@@ -48,11 +53,12 @@ class MyApp extends StatelessWidget {
         builder: (context, loginProvider, _) {
           Widget homeScreen;
 
-          if (loginProvider.userData != null) {
-            homeScreen = HomeScreen();
-          } else {
-            homeScreen = LoginPage();
-          }
+          // if (loginProvider.userData != null) {
+          //   homeScreen = HomeScreen();
+          // } else {
+          //   homeScreen = LoginPage();
+          // }
+          homeScreen = LoginPage();
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Special Education',

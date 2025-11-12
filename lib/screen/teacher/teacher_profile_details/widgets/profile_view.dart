@@ -1,5 +1,4 @@
 import 'package:flutter/Material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -177,7 +176,7 @@ class ProfileViewWidget extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.sp,vertical: 5.sp),
+                  padding: EdgeInsets.symmetric(horizontal: 15.sp,vertical: 3.sp),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -202,9 +201,9 @@ class ProfileViewWidget extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.sp,vertical: 5.sp),
+                  padding: EdgeInsets.symmetric(horizontal: 15.sp),
                   child: Container(
-                    height: 320.h,
+                    height:680.h,
                     width: MediaQuery.sizeOf(context).width,
                     decoration: BoxDecoration(
                         border: Border.all(
@@ -227,24 +226,243 @@ class ProfileViewWidget extends StatelessWidget {
                           Divider(
                             color: AppColors.grey,
                             thickness: 1,
-
                           ),
                           SizedBox(height: 3.sp),
                           LabelValueText(
                             isRow: true,
-                            label: "Employee Id:",
+                            label: "Employee Id: ",
                             value: teacher?.employeeId?.toString() ?? "N/A",
                             labelStyle: TextStyle(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w400,
-                              color: AppColors.grey,
+                              color: AppColors.textGrey,
                             ),
                             valueStyle: TextStyle(
                               fontSize: 13.sp,
-                              color: AppColors.textGrey,
+                              color: AppColors.black,
                             ),
                             valueCase: TextCase.title,
                           ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "DOB: ",
+                            value: teacher?.dateOfBirth?.toString() ?? "N/A",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "Gender: ",
+                            value: teacher?.gender?.toString() ?? "N/A",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          Divider(
+                            color: AppColors.grey,
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 3.sp),
+                          CustomText(
+                            text: 'Additional Details',
+                            fontSize: 16.sp,
+                            color: AppColors.themeColor,
+                            fontFamily: 'Dm Serif',
+                            fontWeight: FontWeight.w600,
+                          ),
+                          Divider(
+                            color: AppColors.grey,
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "Address: ",
+                            value: "${teacher?.addressLine1?.toString() ?? 'N/A'}, ${teacher?.addressLine2 ?? ''}",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "City/Town: ",
+                            value: teacher?.cityName?.toString() ?? "N/A",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "State: ",
+                            value: teacher?.stateName?.toString() ?? "N/A",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "Pincode: ",
+                            value: teacher?.pinCode?.toString() ?? "N/A",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "Country: ",
+                            value: teacher?.countryName?.toString() ?? "N/A",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          SizedBox(height: 3.sp),
+                          LabelValueText(
+                            isRow: true,
+                            label: "Nationality: ",
+                            value: teacher?.nationality?.toString() ?? "N/A",
+                            labelStyle: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textGrey,
+                            ),
+                            valueStyle: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.black,
+                            ),
+                            valueCase: TextCase.title,
+                          ),
+                          Divider(
+                            color: AppColors.grey,
+                            thickness: 1,
+                          ),
+
+
+                          Row(
+                            children: [
+                              CustomText(
+                                text: 'Aadhar Card : ',
+                                fontSize: 16.sp,
+                                color: AppColors.themeColor,
+                                fontFamily: 'Dm Serif',
+                                fontWeight: FontWeight.w600,
+                              ),
+                              CustomText(text:  teacher?.aadharCardNumber?.toString() ?? "N/A",color: AppColors.black,fontSize: 20,)
+                            ],
+                          ),
+                          Divider(
+                            color: AppColors.grey,
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 3.sp),
+                          Container(
+                            height: 120.sp,
+                            width: 220.sp,
+                            decoration: BoxDecoration(
+                              color: AppColors.themeColor.withOpacity(0.1),
+
+                              image: DecorationImage(
+                                image: (teacher?.aadharCardImage != null &&
+                                    teacher!.aadharCardImage!.isNotEmpty)
+                                    ? NetworkImage(
+                                  '${ApiServiceUrl.urlLauncher}uploads/${teacher.aadharCardImage}',
+                                )
+                                    : const AssetImage(ImgAssets.user) as ImageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Divider(
+                            color: AppColors.grey,
+                            thickness: 1,
+                          ),
+
+
+                          CustomText(
+                            text: 'Signature',
+                            fontSize: 16.sp,
+                            color: AppColors.themeColor,
+                            fontFamily: 'Dm Serif',
+                            fontWeight: FontWeight.w600,
+                          ),
+                          Divider(
+                            color: AppColors.grey,
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 3.sp),
+                          Container(
+                            height: 120.sp,
+                            width: 220.sp,
+                            decoration: BoxDecoration(
+                              color: AppColors.themeColor.withOpacity(0.1),
+
+                              image: DecorationImage(
+                                image: (teacher?.signature != null &&
+                                    teacher!.signature!.isNotEmpty)
+                                    ? NetworkImage(
+                                  '${ApiServiceUrl.urlLauncher}uploads/${teacher.signature}',
+                                )
+                                    : const AssetImage(ImgAssets.user) as ImageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+
                         ],
                       ),
                     ),
@@ -255,7 +473,7 @@ class ProfileViewWidget extends StatelessWidget {
             ),
           )
         ],
-      ),
+      )
     );
   }
 

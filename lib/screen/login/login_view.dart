@@ -6,9 +6,7 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/button.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
-import 'package:special_education/provider/login/login_provider.dart';
-import 'package:special_education/screen/tabbar_view.dart';
-import 'package:special_education/utils/navigation_utils.dart';
+import 'package:special_education/screen/login/login_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -37,17 +35,15 @@ class _LoginPageState extends State<LoginPage> {
       final success = await authProvider.login(
         _usernameController.text.trim(),
         _passwordController.text.trim(),
+        context
       );
 
       if (success && mounted) {
-        await authProvider.getUserRole();
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("✅ Login Successful")),
-          );
-
-          NavigationHelper.replacePush(context, HomeScreen());
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("✅ Login successfully")));
         }
       } else {
         if (mounted) {
@@ -78,12 +74,9 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: EdgeInsets.only(top: 30.w),
                       child: Center(
-                        child: Image.asset(
-                          ImgAssets.eduCap,
-                          width: 200.w,
-                        ),
+                        child: Image.asset(ImgAssets.eduCap, width: 200.w),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 SizedBox(height: 20.h),
@@ -95,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: AppColors.themeBlue,
                 ),
                 SizedBox(height: 40.h),
-        
+
                 Form(
                   key: _formKey,
                   child: Column(
@@ -153,9 +146,9 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-        
+
                 SizedBox(height: 25.h),
-        
+
                 if (authProvider.error != null)
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.sp),
@@ -164,9 +157,9 @@ class _LoginPageState extends State<LoginPage> {
                       style: const TextStyle(color: Colors.red),
                     ),
                   ),
-        
+
                 SizedBox(height: 10),
-        
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.sp),
                   child: CustomButton(
@@ -187,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-        
+
                 // Remove the extra ElevatedButton login to avoid duplicate buttons
               ],
             ),

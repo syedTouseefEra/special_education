@@ -26,7 +26,7 @@ class CityPickerModal extends StatelessWidget {
           ),
           onTap: () {
             onCitySelected(city);
-            Navigator.pop(context);
+            // Navigator.pop(context);
           },
         );
       },

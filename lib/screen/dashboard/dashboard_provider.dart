@@ -1,9 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
+import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/user_data/user_data.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class DashboardProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -19,51 +23,54 @@ class DashboardProvider with ChangeNotifier {
   List<StudentListDataModal>? get studentData => _studentData;
 
   final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
-  final GetStorage _userBox = GetStorage('user');
+  final UserData _userData = UserData();
 
-
-  Future<bool> getDashboardWeekData() async {
+  Future<bool> getDashboardWeekData(context) async {
+    final instituteId = _userData.getUserData.instituteId;
     await Future.delayed(Duration(milliseconds: 10));
     return _getDashboardData<List<WeekGoalDataModal>>(
+      context,
       cacheKey: 'weekGoalData',
       url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardWeek}",
-      params: {"instituteId": "22"},
+      params: {"instituteId": instituteId.toString()},
       onSuccess: (list) => _weekData =
           list.map((e) => WeekGoalDataModal.fromJson(Map<String, dynamic>.from(e))).toList(),
     );
   }
 
-  void loadCachedWeekGoalData() {
-    _loadCachedList<WeekGoalDataModal>(
-      'weekGoalData',
-          (json) => WeekGoalDataModal.fromJson(json),
-          (list) => _weekData = list,
-    );
-  }
+  // void loadCachedWeekGoalData() {
+  //   _loadCachedList<WeekGoalDataModal>(
+  //     'weekGoalData',
+  //         (json) => WeekGoalDataModal.fromJson(json),
+  //         (list) => _weekData = list,
+  //   );
+  // }
 
-  /// ============ LONG GOAL DATA ============
-  Future<bool> getDashboardLongGoalData() async {
+  Future<bool> getDashboardLongGoalData(context) async {
+    final instituteId = _userData.getUserData.instituteId;
     await Future.delayed(Duration(milliseconds: 10));
     return _getDashboardData<List<LongGoalDataModal>>(
+      context,
       cacheKey: 'longGoalData',
       url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardLongTermGoal}",
-      params: {"instituteId": "22"},
+      params: {"instituteId": instituteId.toString()},
       onSuccess: (list) => _longGoalData =
           list.map((e) => LongGoalDataModal.fromJson(Map<String, dynamic>.from(e))).toList(),
     );
   }
 
-  void loadCachedLongGoalData() {
-    _loadCachedList<LongGoalDataModal>(
-      'longGoalData',
-          (json) => LongGoalDataModal.fromJson(json),
-          (list) => _longGoalData = list,
-    );
-  }
+  // void loadCachedLongGoalData() {
+  //   _loadCachedList<LongGoalDataModal>(
+  //     'longGoalData',
+  //         (json) => LongGoalDataModal.fromJson(json),
+  //         (list) => _longGoalData = list,
+  //   );
+  // }
 
-  Future<bool> getDashboardStudentListData() async {
+  Future<bool> getDashboardStudentListData(context) async {
     await Future.delayed(Duration(milliseconds: 10));
     return _getDashboardData<List<StudentListDataModal>>(
+      context,
       cacheKey: 'studentData',
       url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
       params: {"instituteId": "22"},
@@ -72,15 +79,15 @@ class DashboardProvider with ChangeNotifier {
     );
   }
 
-  void loadCachedStudentListData() {
-    _loadCachedList<StudentListDataModal>(
-      'studentData',
-          (json) => StudentListDataModal.fromJson(json),
-          (list) => _studentData = list,
-    );
-  }
+  // void loadCachedStudentListData() {
+  //   _loadCachedList<StudentListDataModal>(
+  //     'studentData',
+  //         (json) => StudentListDataModal.fromJson(json),
+  //         (list) => _studentData = list,
+  //   );
+  // }
 
-  Future<bool> _getDashboardData<T>({
+  Future<bool> _getDashboardData<T>(context,{
     required String cacheKey,
     required String url,
     required Map<String, String> params,
@@ -92,15 +99,9 @@ class DashboardProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final savedUser = _userBox.read('userData');
-      if (savedUser == null) {
-        _error = "No user data found";
-        _isLoading = false;
-        notifyListeners();
-        return false;
-      }
-
-      final response = await _api.getApiCall(url: url, params: params, token: ApiServiceUrl.token);
+      final savedUser = _userData.getUserData;
+      final token = savedUser.token ?? '';
+      final response = await _api.getApiCall(url: url, params: params, token: token);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -108,14 +109,16 @@ class DashboardProvider with ChangeNotifier {
         if (data["responseStatus"] == true && data["data"] is List) {
           final List<dynamic> list = data["data"];
           onSuccess(list);
-          await _userBox.write(cacheKey, list);
           _isLoading = false;
           notifyListeners();
           return true;
         } else {
           _error = data["responseMessage"] ?? "Failed to fetch data";
         }
-      } else {
+      } else if (response.statusCode == 401){
+        UserData().removeUserData();
+        NavigationHelper.pushAndClearStack(context,  LoginPage());
+      }else {
         _error = "Server error: ${response.statusCode}";
       }
     } catch (e) {
@@ -128,15 +131,15 @@ class DashboardProvider with ChangeNotifier {
   }
 
   /// ============ COMMON CACHING METHOD ============
-  void _loadCachedList<T>(
-      String cacheKey,
-      T Function(Map<String, dynamic>) fromJson,
-      void Function(List<T>) setList,
-      ) {
-    final saved = _userBox.read(cacheKey);
-    if (saved != null && saved is List) {
-      setList(saved.map((e) => fromJson(Map<String, dynamic>.from(e))).toList());
-      notifyListeners();
-    }
-  }
+  // void _loadCachedList<T>(
+  //     String cacheKey,
+  //     T Function(Map<String, dynamic>) fromJson,
+  //     void Function(List<T>) setList,
+  //     ) {
+  //   final saved = _userBox.read(cacheKey);
+  //   if (saved != null && saved is List) {
+  //     setList(saved.map((e) => fromJson(Map<String, dynamic>.from(e))).toList());
+  //     notifyListeners();
+  //   }
+  // }
 }

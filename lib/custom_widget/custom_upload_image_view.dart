@@ -40,7 +40,7 @@ class UploadBox extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.sp),
 
         Stack(
           alignment: Alignment.center,
@@ -52,7 +52,7 @@ class UploadBox extends StatelessWidget {
                   color: Colors.grey.shade400,
                   strokeWidth: 1,
                   dashPattern: const [6, 4],
-                  radius: const Radius.circular(6),
+                  radius: Radius.circular(6.r),
                   padding: EdgeInsets.zero,
                 ),
                 child: Container(
@@ -73,7 +73,7 @@ class UploadBox extends StatelessWidget {
                           ),
                           child: Icon(Icons.upload_file, size: 20.sp),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.sp),
                         Expanded(
                           child: CustomText(
                             text: 'Upload File',
@@ -83,7 +83,7 @@ class UploadBox extends StatelessWidget {
                         ),
                       ] else ...[
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(6.r),
                           child: Image.file(
                             imageFile!,
                             width: 30.sp,
@@ -91,7 +91,7 @@ class UploadBox extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.r),
                         Expanded(
                           child: CustomText(
                             text: p.basename(imageFile!.path),
@@ -111,10 +111,10 @@ class UploadBox extends StatelessWidget {
             ),
 
             if (isUploading)
-              const Center(
+              Center(
                 child: SizedBox(
-                  height: 24,
-                  width: 24,
+                  height: 24.sp,
+                  width: 24.sp,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     color: AppColors.themeColor,
@@ -124,7 +124,7 @@ class UploadBox extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 6),
+        SizedBox(height: 6.sp),
 
         Row(
           children: [
@@ -137,6 +137,7 @@ class UploadBox extends StatelessWidget {
             ),
           ],
         ),
+
       ],
     );
   }

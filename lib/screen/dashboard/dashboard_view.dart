@@ -7,6 +7,8 @@ import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_view.dart';
 import 'package:special_education/custom_widget/top_bottom_sheet.dart';
+import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dashboard_provider.dart';
@@ -20,12 +22,12 @@ class DashboardView extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (_) => DashboardProvider()
-        ..loadCachedWeekGoalData()
-        ..getDashboardWeekData()
-        ..loadCachedLongGoalData()
-        ..getDashboardLongGoalData()
-        ..loadCachedStudentListData()
-        ..getDashboardStudentListData(),
+        // ..loadCachedWeekGoalData()
+        ..getDashboardWeekData(context)
+        // ..loadCachedLongGoalData()
+        ..getDashboardLongGoalData(context)
+        // ..loadCachedStudentListData()
+        ..getDashboardStudentListData(context),
       child: Consumer<DashboardProvider>(
         builder: (context, provider, child) {
           final List<_ChartData> weekChartData = [];
@@ -70,8 +72,11 @@ class DashboardView extends StatelessWidget {
                 appBar: CustomAppBar(
                   enableTheming: false,
                   onNotificationTap: () {
-                    print('object');
-                    NavigationHelper.push(context, CustomTopView());
+                    UserData().removeUserData();
+                    NavigationHelper.pushAndClearStack(
+                      context,
+                      LoginPage(),
+                    );
                   },
                 ),
                 body: provider.isLoading

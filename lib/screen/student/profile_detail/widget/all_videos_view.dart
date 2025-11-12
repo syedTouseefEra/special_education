@@ -13,7 +13,6 @@ import 'package:special_education/screen/student/student_dashboard_provider.dart
 import 'package:special_education/utils/video_player_screen.dart';
 import 'package:special_education/utils/video_thumbnail_generator.dart';
 
-// Top-level callback for FlutterDownloader
 
 class AllVideosView extends StatefulWidget {
   final String studentId;

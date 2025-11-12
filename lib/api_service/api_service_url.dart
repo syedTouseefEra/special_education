@@ -1,21 +1,20 @@
+class ApiServiceUrl {
 
-
-
-class ApiServiceUrl{
-
-  static String apiBaseUrl= "https://elearningapi.edumation.in/api/";
-  static String
-  hamaareSitaareApiBaseUrl= "https://hamaaresitaareapi.edumation.in/api/";
-  static String countryBaseUrl= "https://apiapp.edumation.in/api/";
-  static String urlLauncher = "https://hamaaresitaareapi.edumation.in/FileUploads/";
-  static String uploadFile = "https://hamaaresitaareapi.edumation.in/api/Institute/UploadFile";
+  static String apiBaseUrl = "https://elearningapi.edumation.in/api/";
+  static String hamaareSitaareApiBaseUrl =
+      "https://hamaaresitaareapi.edumation.in/api/";
+  static String countryBaseUrl = "https://apiapp.edumation.in/api/";
+  static String urlLauncher =
+      "https://hamaaresitaareapi.edumation.in/FileUploads/";
+  static String uploadFile =
+      "https://hamaaresitaareapi.edumation.in/api/Institute/UploadFile";
 
   // static String apiBaseUrl= "http://172.16.82.6:50/api/";
   // static String urlLauncher = "http://172.16.82.6:50/FileUploads/";
   // static String fileUpload = "http://172.16.82.6:50/api/CommonDropdown/FileUpload";
 
   static const String token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYxODg4MjcxLCJleHAiOjE3NjE5NDgyNzEsImlhdCI6MTc2MTg4ODI3MX0.zBGPPt0w0yZefDieFLqISWJdvW34rNM_fCKqOtpQjTs';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYyODQzMzAxLCJleHAiOjE3NjI5MDMzMDEsImlhdCI6MTc2Mjg0MzMwMX0.OsY1vo9RLfWmVY4IL7mUJ9ui504ptAOXJwNLn7tb7k8';
 
   static String login = "User/Login";
   static String generateOtp = "User/GenerateOtp";
@@ -40,12 +39,13 @@ class ApiServiceUrl{
   static String getStudentVideos = "StudentSkill/GetStudentVideos";
 
   static String saveStudent = "Student";
-  static String getCountry ="Universal/GetCountry";
-  static String getState ="Universal/GetState";
+  static String getCountry = "Universal/GetCountry";
+  static String getState = "Universal/GetState";
   static String getCity = "Universal/GetCity";
 
   static String getTeacherList = "teacher/GetTeacherList";
   static String teacherRegistration = "teacher/TeacherRegistration";
+  static String deleteTeacherById = "teacher/DeleteTeacherById";
   static String masterRole = "MasterRole";
 
-  }
+}
