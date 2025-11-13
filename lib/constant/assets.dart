@@ -18,6 +18,7 @@ class ImgAssets{
   static const String classStrokeEdu = "${assets}class_strokeEdu.webp";
   static const String userStroke = "${assets}user_stroke.webp";
   static const String user = "${assets}user.webp";
+  static const String girl = "${assets}girl.webp";
   static const String changePassword = "${assets}change_password.webp";
   static const String purpleRightArrow = "${assets}purple_right_arrow.webp";
   static const String logoutButton = "${assets}logout_button.webp";

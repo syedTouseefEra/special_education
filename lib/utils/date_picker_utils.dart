@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -12,36 +9,47 @@ class DatePickerHelper {
       BuildContext context, {
         required DateTime date,
         required ValueChanged<DateTime> onChanged,
+        Color? borderColor,
+        Color? iconColor,
+        Color? dateColor,
+        DateTime? firstDate,
+        DateTime? lastDate,
       }) {
+    final now = DateTime.now();
+
     return InkWell(
       onTap: () async {
         final picked = await showDatePicker(
           context: context,
-          initialDate: date,
-          firstDate: DateTime(2000),
-          lastDate: DateTime.now(),
+          initialDate: date.isAfter(now) ? now : date,
+          firstDate: firstDate ?? DateTime(1900),
+          lastDate: lastDate ?? DateTime(2080),
         );
+
         if (picked != null) onChanged(picked);
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 15.sp),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.themeColor),
+          border: Border.all(
+            color: borderColor ?? AppColors.themeColor,
+          ),
           borderRadius: BorderRadius.circular(4.w),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomText(
               text: DateFormat('dd-MM-yyyy').format(date),
-              fontSize: 16.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w400,
-              color: AppColors.themeColor,
+              color: dateColor ?? AppColors.themeColor,  // use dateColor first, then fallback
             ),
             SizedBox(width: 15.w),
             Icon(
-              Icons.calendar_month_outlined,
+              Icons.calendar_month,
               size: 25.sp,
-              color: AppColors.themeColor,
+              color: iconColor ?? AppColors.themeColor,
             ),
           ],
         ),

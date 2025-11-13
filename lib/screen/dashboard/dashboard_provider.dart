@@ -1,13 +1,14 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
-import 'package:get_storage/get_storage.dart';
+
+import 'package:flutter/material.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
+import 'package:special_education/user_data/user_data.dart';
 
 class DashboardProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _error;
+
   List<WeekGoalDataModal>? _weekData;
   List<LongGoalDataModal>? _longGoalData;
   List<StudentListDataModal>? _studentData;
@@ -18,126 +19,110 @@ class DashboardProvider with ChangeNotifier {
   List<LongGoalDataModal>? get longGoalData => _longGoalData;
   List<StudentListDataModal>? get studentData => _studentData;
 
-  final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
-  final GetStorage _userBox = GetStorage('user');
+  final ApiCallingTypes _api =
+  ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
+  final UserData _userData = UserData();
 
-  /// Token (should later come from login/session)
-  static const _token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiMTAiLCJyb2xlIjoiMTAiLCJuYW1laWQiOiJBaG1hZCBCaWxhbCBTaWRkaXF1aSIsInByaW1hcnlncm91cHNpZCI6IjgiLCJpbnN0aXR1dGVJZCI6IjIyIiwibmJmIjoxNzYwNDIwMDMwLCJleHAiOjE3NjA0ODAwMzAsImlhdCI6MTc2MDQyMDAzMH0.wK3qKAfiPPPwNDQ2BQW9RDfCOJQ-C8L-ZrpZCGEuuW4';
+  Future<void> fetchDashboardData(BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
 
-  /// ============ WEEKLY GOAL DATA ============
-  Future<bool> getDashboardWeekData() async {
-    return _getDashboardData<List<WeekGoalDataModal>>(
+    await getDashboardWeekData(context);
+    await getDashboardLongGoalData(context);
+    await getDashboardStudentListData(context);
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> getDashboardWeekData(BuildContext context) async {
+    final instituteId = _userData.getUserData.instituteId ?? "0";
+
+    await _getDashboardData(
+      context,
       cacheKey: 'weekGoalData',
-      url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardWeek}",
-      params: {"instituteId": "22"},
-      onSuccess: (list) => _weekData =
-          list.map((e) => WeekGoalDataModal.fromJson(Map<String, dynamic>.from(e))).toList(),
+      url:
+      "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardWeek}",
+      params: {"instituteId": instituteId.toString()},
+      onSuccess: (list) {
+        _weekData = list
+            .map((e) => WeekGoalDataModal.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+        debugPrint("✅ Week data loaded: ${_weekData?.length}");
+      },
     );
   }
 
-  void loadCachedWeekGoalData() {
-    _loadCachedList<WeekGoalDataModal>(
-      'weekGoalData',
-          (json) => WeekGoalDataModal.fromJson(json),
-          (list) => _weekData = list,
-    );
-  }
+  Future<void> getDashboardLongGoalData(BuildContext context) async {
+    final instituteId = _userData.getUserData.instituteId ?? "0";
 
-  /// ============ LONG GOAL DATA ============
-  Future<bool> getDashboardLongGoalData() async {
-    return _getDashboardData<List<LongGoalDataModal>>(
+    await _getDashboardData(
+      context,
       cacheKey: 'longGoalData',
-      url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardLongTermGoal}",
-      params: {"instituteId": "22"},
-      onSuccess: (list) => _longGoalData =
-          list.map((e) => LongGoalDataModal.fromJson(Map<String, dynamic>.from(e))).toList(),
+      url:
+      "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getDashboardLongTermGoal}",
+      params: {"instituteId": instituteId.toString()},
+      onSuccess: (list) {
+        _longGoalData = list
+            .map((e) => LongGoalDataModal.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+        debugPrint("✅ Long goal data loaded: ${_longGoalData?.length}");
+      },
     );
   }
 
-  void loadCachedLongGoalData() {
-    _loadCachedList<LongGoalDataModal>(
-      'longGoalData',
-          (json) => LongGoalDataModal.fromJson(json),
-          (list) => _longGoalData = list,
-    );
-  }
+  Future<void> getDashboardStudentListData(BuildContext context) async {
+    final instituteId = _userData.getUserData.instituteId ?? "22";
 
-  Future<bool> getDashboardStudentListData() async {
-    return _getDashboardData<List<StudentListDataModal>>(
+    await _getDashboardData(
+      context,
       cacheKey: 'studentData',
-      url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
-      params: {"instituteId": "22"},
-      onSuccess: (list) => _studentData =
-          list.map((e) => StudentListDataModal.fromJson(Map<String, dynamic>.from(e))).toList(),
+      url:
+      "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
+      params: {"instituteId": instituteId.toString()},
+      onSuccess: (list) {
+        _studentData = list
+            .map(
+                (e) => StudentListDataModal.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+        debugPrint("✅ Student data loaded: ${_studentData?.length}");
+      },
     );
   }
 
-  void loadCachedStudentListData() {
-    _loadCachedList<StudentListDataModal>(
-      'studentData',
-          (json) => StudentListDataModal.fromJson(json),
-          (list) => _studentData = list,
-    );
-  }
-
-  /// ============ COMMON GETTER METHOD ============
-  Future<bool> _getDashboardData<T>({
-    required String cacheKey,
-    required String url,
-    required Map<String, String> params,
-    required Function(List<dynamic>) onSuccess,
-  }) async {
+  Future<bool> _getDashboardData(
+      BuildContext context, {
+        required String cacheKey,
+        required String url,
+        required Map<String, String> params,
+        required Function(List<dynamic>) onSuccess,
+      }) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final savedUser = _userBox.read('userData');
-      if (savedUser == null) {
-        _error = "No user data found";
+      final savedUser = _userData.getUserData;
+      final token = savedUser.token ?? '';
+      final data = await _api.getApiCall(url: url, params: params, token: token);
+
+      if (data["responseStatus"] == true && data["data"] is List) {
+        final List<dynamic> list = data["data"];
+        onSuccess(list);
         _isLoading = false;
         notifyListeners();
-        return false;
-      }
-
-      final response = await _api.getApiCall(url: url, params: params, token: _token);
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        if (data["responseStatus"] == true && data["data"] is List) {
-          final List<dynamic> list = data["data"];
-          onSuccess(list);
-          await _userBox.write(cacheKey, list);
-          _isLoading = false;
-          notifyListeners();
-          return true;
-        } else {
-          _error = data["responseMessage"] ?? "Failed to fetch data";
-        }
+        return true;
       } else {
-        _error = "Server error: ${response.statusCode}";
+        _error = data["responseMessage"] ?? "Failed to fetch $cacheKey";
+        debugPrint("⚠️ API Error ($cacheKey): $_error");
       }
     } catch (e) {
-      _error = "Exception: $e";
+      _error = "Exception fetching $cacheKey: $e";
+      debugPrint(_error);
     }
-
     _isLoading = false;
     notifyListeners();
     return false;
   }
 
-  /// ============ COMMON CACHING METHOD ============
-  void _loadCachedList<T>(
-      String cacheKey,
-      T Function(Map<String, dynamic>) fromJson,
-      void Function(List<T>) setList,
-      ) {
-    final saved = _userBox.read(cacheKey);
-    if (saved != null && saved is List) {
-      setList(saved.map((e) => fromJson(Map<String, dynamic>.from(e))).toList());
-      notifyListeners();
-    }
-  }
 }

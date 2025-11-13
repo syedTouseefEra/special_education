@@ -170,7 +170,9 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
         final longTermGoals = provider.longTermGoalData;
 
         return SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 5.sp),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
                 text: 'Add Long Term Goal Which Kid Achieve',
@@ -205,9 +207,8 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                   itemBuilder: (context, index) {
                     final goal = longTermGoals[index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 10,
+                      margin: EdgeInsets.symmetric(
+                        vertical: 8.sp,
                       ),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -259,10 +260,9 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        // Open dialog with existing data for editing
                                         showLongTermGoalDialog(
                                           initialText: goal.longTermGoal,
-                                          goalId: goal.id.toString(), // Assuming goal.id exists
+                                          goalId: goal.id.toString(),
                                         );
                                       },
                                       child: CustomContainer(
