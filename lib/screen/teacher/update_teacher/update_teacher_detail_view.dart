@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
@@ -17,14 +18,16 @@ import 'widgets/date_of_birth_picker.dart';
 import 'widgets/upload_image_box.dart';
 import 'widgets/save_button.dart';
 
-class AddTeacherView extends StatefulWidget {
-  const AddTeacherView({super.key});
+
+class UpdateTeacherDetailView extends StatefulWidget {
+  final TeacherListDataModal? teacher;
+  const UpdateTeacherDetailView({super.key, this.teacher});
 
   @override
-  State<AddTeacherView> createState() => _AddTeacherViewState();
+  State<UpdateTeacherDetailView> createState() => _UpdateTeacherDetailViewState();
 }
 
-class _AddTeacherViewState extends State<AddTeacherView> {
+class _UpdateTeacherDetailViewState extends State<UpdateTeacherDetailView> {
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController middleNameController = TextEditingController();
@@ -67,17 +70,48 @@ class _AddTeacherViewState extends State<AddTeacherView> {
   }
 
   Future<void> _initData() async {
-    _countries = await helper.loadCountries();
-    _roles = await helper.loadRoles();
-    final imageProvider = Provider.of<ImageUploadProvider>(
-      context,
-      listen: false,
-    );
+
+
+    final teacher = widget.teacher;
+    if (teacher != null) {
+      firstNameController.text = teacher.firstName ?? '';
+      middleNameController.text = teacher.middleName ?? '';
+      lastNameController.text = teacher.lastName ?? '';
+      mobileNumberController.text = teacher.mobileNumber ?? '';
+      emailController.text = teacher.emailId ?? '';
+      employeeIdController.text = teacher.employeeId ?? '';
+      genderController.text = teacher.gender ?? '';
+      pincodeController.text = teacher.pinCode.toString();
+      addressLine1Controller.text = teacher.addressLine1 ?? '';
+      addressLine2Controller.text = teacher.addressLine2 ?? '';
+      countryController.text = teacher.countryName ?? '';
+      stateController.text = teacher.stateName ?? '';
+      cityController.text = teacher.cityName ?? '';
+      nationalityController.text = teacher.nationality ?? '';
+      roleIdController.text = teacher.designation ?? '';
+      aadharCardController.text = teacher.aadharCardNumber ?? '';
+
+      joiningDateController.text = teacher.joiningDate ?? '';
+      joiningDate = DateTime.tryParse(teacher.joiningDate ?? '') ?? DateTime.now();
+
+      selectedDate = DateTime.tryParse(teacher.dateOfBirth ?? '') ?? DateTime.now();
+
+      selectedCountryId = teacher.countryId ?? 0;
+      selectedStateId = teacher.stateId ?? 0;
+      selectedCityId = teacher.cityId ?? 0;
+      selectedNationality = teacher.nationalityId ?? 0;
+      selectedRoleId = teacher.roleId ?? 0;
+    }
+
+    final imageProvider = Provider.of<ImageUploadProvider>(context, listen: false);
     imageProvider.clearImage('teacher');
     imageProvider.clearImage('aadhar');
     imageProvider.clearImage('signature');
     setState(() {});
+    _countries = await helper.loadCountries();
+    _roles = await helper.loadRoles();
   }
+
 
   Future<void> _loadStates(String countryId) async {
     _states = await helper.loadStates(countryId);
@@ -215,8 +249,8 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                           ),
                         ),
                         CustomText(
-                          text: 'Add New Teacher',
-                          fontSize: 22.sp,
+                          text: 'Update Teacher Details',
+                          fontSize: 20.sp,
                           color: AppColors.themeColor,
                           fontFamily: 'Dm Serif',
                           fontWeight: FontWeight.w600,
@@ -398,28 +432,33 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       title: "Aadhar Card Image",
                       requiredField: true,
                       imageFile: imageProvider.aadharImage,
-                      onTap: () =>
-                          imageProvider.pickAndUploadImage(context, 'aadhar'),
+                      imageUrl: imageProvider.aadharImage == null && (widget.teacher?.aadharCardImage?.isNotEmpty ?? false)
+                          ? '${ApiServiceUrl.urlLauncher}uploads/${widget.teacher!.aadharCardImage}'
+                          : null,
+                      onTap: () => imageProvider.pickAndUploadImage(context, 'aadhar'),
                       onClear: () => imageProvider.clearImage('aadhar'),
                     ),
-                    SizedBox(height: 15.sp),
+
+                    SizedBox(height: 10.sp),
                     UploadImageBox(
                       title: "Teacher Image",
                       requiredField: true,
                       imageFile: imageProvider.teacherImage,
-                      onTap: () =>
-                          imageProvider.pickAndUploadImage(context, 'teacher'),
+                      imageUrl: imageProvider.teacherImage == null && (widget.teacher?.image?.isNotEmpty ?? false)
+                          ? '${ApiServiceUrl.urlLauncher}uploads/${widget.teacher!.image}'
+                          : null,
+                      onTap: () => imageProvider.pickAndUploadImage(context, 'teacher'),
                       onClear: () => imageProvider.clearImage('teacher'),
                     ),
-                    SizedBox(height: 15.sp),
+                    SizedBox(height: 10.sp),
                     UploadImageBox(
                       title: "Teacher Signature",
                       requiredField: true,
                       imageFile: imageProvider.signatureImage,
-                      onTap: () => imageProvider.pickAndUploadImage(
-                        context,
-                        'signature',
-                      ),
+                      imageUrl: imageProvider.signatureImage == null && (widget.teacher?.signature?.isNotEmpty ?? false)
+                          ? '${ApiServiceUrl.urlLauncher}uploads/${widget.teacher!.signature}'
+                          : null,
+                      onTap: () => imageProvider.pickAndUploadImage(context, 'signature'),
                       onClear: () => imageProvider.clearImage('signature'),
                     ),
                     SizedBox(height: 40.sp),

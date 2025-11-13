@@ -7,9 +7,11 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/field_label_row.dart';
 
+
 class UploadBox extends StatelessWidget {
   final String title;
   final File? imageFile;
+  final String? imageUrl; // 🆕 Added
   final VoidCallback onTap;
   final VoidCallback? onClear;
   final bool requiredField;
@@ -20,6 +22,7 @@ class UploadBox extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.imageFile,
+    this.imageUrl, // 🆕 Optional network image
     this.onClear,
     this.requiredField = false,
     this.isUploading = false,
@@ -27,6 +30,9 @@ class UploadBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasLocalImage = imageFile != null;
+    final hasNetworkImage = imageUrl != null && imageUrl!.isNotEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -41,7 +47,6 @@ class UploadBox extends StatelessWidget {
           ],
         ),
         SizedBox(height: 8.sp),
-
         Stack(
           alignment: Alignment.center,
           children: [
@@ -59,11 +64,13 @@ class UploadBox extends StatelessWidget {
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.sp,
-                    vertical: imageFile == null ? 10.sp : 2.sp,
+                    vertical: (!hasLocalImage && !hasNetworkImage)
+                        ? 10.sp
+                        : 2.sp,
                   ),
                   child: Row(
                     children: [
-                      if (imageFile == null) ...[
+                      if (!hasLocalImage && !hasNetworkImage) ...[
                         Container(
                           height: 25.sp,
                           width: 25.sp,
@@ -82,19 +89,36 @@ class UploadBox extends StatelessWidget {
                           ),
                         ),
                       ] else ...[
+                        // 🆕 Display either network or local image
                         ClipRRect(
                           borderRadius: BorderRadius.circular(6.r),
-                          child: Image.file(
+                          child: hasLocalImage
+                              ? Image.file(
                             imageFile!,
-                            width: 30.sp,
-                            height: 30.sp,
+                            width: 40.sp,
+                            height: 40.sp,
                             fit: BoxFit.cover,
+                          )
+                              : Image.network(
+                            imageUrl!,
+                            width: 40.sp,
+                            height: 40.sp,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, _, __) => Container(
+                              width: 40.sp,
+                              height: 40.sp,
+                              color: Colors.grey.shade300,
+                              child: Icon(Icons.image_not_supported,
+                                  size: 20.sp),
+                            ),
                           ),
                         ),
                         SizedBox(width: 12.r),
                         Expanded(
                           child: CustomText(
-                            text: p.basename(imageFile!.path),
+                            text: hasLocalImage
+                                ? p.basename(imageFile!.path)
+                                : imageUrl!.split('/').last,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -123,9 +147,7 @@ class UploadBox extends StatelessWidget {
               ),
           ],
         ),
-
         SizedBox(height: 6.sp),
-
         Row(
           children: [
             Icon(Icons.error_outline, size: 16.sp, color: Colors.orange),
@@ -137,8 +159,26 @@ class UploadBox extends StatelessWidget {
             ),
           ],
         ),
-
+        SizedBox(height: 15.sp),
+        if (!hasLocalImage && !hasNetworkImage) ...[
+          Container()
+        ] else ...[
+          Image.network(
+            imageUrl!,
+            width: 150.sp,
+            height: 150.sp,
+            fit: BoxFit.cover,
+            errorBuilder: (context, _, __) => Container(
+              width: 40.sp,
+              height: 40.sp,
+              color: Colors.grey.shade300,
+              child: Icon(Icons.image_not_supported,
+                  size: 20.sp),
+            ),
+          )
+        ],
       ],
     );
   }
 }
+
