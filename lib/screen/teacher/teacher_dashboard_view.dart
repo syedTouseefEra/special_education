@@ -115,8 +115,8 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                         ),
                         Consumer<TeacherDashboardProvider>(
                           builder: (context, provider, _) {
-                            // 👇 Button will only show if data is available and not empty
-                            bool showAddButton = provider.teacherData != null &&
+                            bool showAddButton =
+                                provider.teacherData != null &&
                                 provider.teacherData!.isNotEmpty &&
                                 !provider.isLoading &&
                                 provider.error == null;
@@ -127,7 +127,10 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                 splashColor: AppColors.transparent,
                                 highlightColor: AppColors.transparent,
                                 onTap: () {
-                                  NavigationHelper.push(context, const AddTeacherView());
+                                  NavigationHelper.push(
+                                    context,
+                                    const AddTeacherView(),
+                                  );
                                 },
                                 child: CustomContainer(
                                   text: "Add Teacher",
@@ -146,7 +149,6 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                         ),
                       ],
                     ),
-
 
                     SizedBox(height: 5.sp),
                     Expanded(
@@ -171,13 +173,15 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                     fontSize: 18.sp,
                                     color: AppColors.themeColor,
                                     fontWeight: FontWeight.w600,
-
                                   ),
                                   InkWell(
                                     splashColor: AppColors.transparent,
                                     highlightColor: AppColors.transparent,
                                     onTap: () {
-                                      NavigationHelper.push(context, const AddTeacherView());
+                                      NavigationHelper.push(
+                                        context,
+                                        const AddTeacherView(),
+                                      );
                                     },
                                     child: CustomContainer(
                                       text: "Add Teacher",
@@ -190,7 +194,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                         horizontal: 18.sp,
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             );
@@ -200,7 +204,6 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                               child: Text("No Teacher found"),
                             );
                           }
-
                           return ListView.builder(
                             itemCount: provider.teacherData!.length,
                             itemBuilder: (context, index) {
@@ -229,8 +232,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                           height: 70.sp,
                                           width: 70.sp,
                                           decoration: BoxDecoration(
-                                            color: AppColors.themeColor
-                                                .withOpacity(0.1),
+                                            color: AppColors.themeColor,
                                             shape: BoxShape.circle,
                                             image:
                                                 teacher.image != null &&

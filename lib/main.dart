@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/screen/choose_account/choose_account_provider.dart';
+import 'package:special_education/screen/dashboard/dashboard_provider.dart';
 import 'package:special_education/screen/login/login_provider.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/screen/tabbar_view.dart';
-import 'package:special_education/screen/dashboard/dashboard_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
 import 'package:special_education/user_data/user_data.dart';
@@ -30,14 +30,14 @@ void main() async {
     MultiProvider(
       providers: [
         userDataProvider,
-        // ChangeNotifierProvider(create: (_) => LoginProvider()..loadUserData()),
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => ChooseAccountProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardProvider()),
         ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
         ChangeNotifierProvider(create: (_) => TeacherDashboardProvider()),
         ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -47,26 +47,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: Size(375, 812),
-      builder: (context, child) => Consumer<LoginProvider>(
-        builder: (context, loginProvider, _) {
-          Widget homeScreen;
+    final userData = UserData();
 
-          // if (loginProvider.userData != null) {
-          //   homeScreen = HomeScreen();
-          // } else {
-          //   homeScreen = LoginPage();
-          // }
-          homeScreen = LoginPage();
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Special Education',
-            home: homeScreen,
-            navigatorObservers: [routeObserver],
-          );
-        },
-      ),
+    Widget homeScreen;
+
+    if (userData.isLoggedIn) {
+      homeScreen = const HomeScreen();
+    } else {
+      homeScreen = const LoginPage();
+    }
+
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Special Education',
+          home: homeScreen,
+          navigatorObservers: [routeObserver],
+        );
+      },
     );
   }
 }

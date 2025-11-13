@@ -47,13 +47,12 @@ class ApiCallingTypes {
     String? token,
   }) async {
     try {
-      // Append query parameters if any
+
       if (params != null && params.isNotEmpty) {
         String queryString = Uri(queryParameters: params).query;
         url = '$url?$queryString';
       }
 
-      // Headers
       Map<String, String> headers = {
         'Content-Type': 'application/json',
       };
@@ -62,21 +61,15 @@ class ApiCallingTypes {
         headers['Authorization'] = 'Bearer $token';
       }
 
-      // Make GET request
       final response = await http.get(
         Uri.parse(url),
         headers: headers,
       );
 
-      // Log request (if you have a logger)
       _logRequest('GET', url, headers, null, response, params: params);
-
-      // Check for valid status codes
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        // ✅ Automatically decode JSON
         return jsonDecode(response.body);
       } else {
-        // Optionally, decode JSON error response
         final decodedError = jsonDecode(response.body);
         throw Exception(decodedError['responseMessage'] ??
             'API request failed with status ${response.statusCode}');

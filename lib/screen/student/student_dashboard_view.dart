@@ -112,7 +112,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                             .updateSearchQuery(value);
                       },
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10.sp),
                     Expanded(
                       child: Consumer<StudentDashboardProvider>(
                         builder: (context, provider, _) {

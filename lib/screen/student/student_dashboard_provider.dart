@@ -9,6 +9,7 @@ import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
+import 'package:special_education/user_data/user_data.dart';
 
 class StudentDashboardProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -31,6 +32,11 @@ class StudentDashboardProvider with ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  final UserData userData = UserData();
+  late var token = userData.getUserData.token;
+  late var instituteId = userData.getUserData.instituteId ?? "0";
+
 
   List<StudentListDataModal>? get studentData {
     if (_searchQuery.isEmpty) {
@@ -87,31 +93,26 @@ class StudentDashboardProvider with ChangeNotifier {
     try {
       final response = await _api.getApiCall(
         url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
-        params: {"instituteId": "22"},
-        token: ApiServiceUrl.token,
+        params: {"instituteId": instituteId.toString()},
+        token: token,
       );
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _studentData = (response["data"] as List)
+            .map((e) => StudentListDataModal.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
 
-      if (response.statusCode == 200) {
-        final body = json.decode(response.body);
-        if (body["responseStatus"] == true && body["data"] is List) {
-          _studentData = (body["data"] as List)
-              .map((e) => StudentListDataModal.fromJson(Map<String, dynamic>.from(e)))
-              .toList();
+        _filteredStudentData = null;
+        _searchQuery = "";
 
-          _filteredStudentData = null;
-          _searchQuery = "";
-
-          _setLoading(false);
-          notifyListeners();
-          return true;
-        } else {
-          _setError(body["responseMessage"] ?? "Invalid data received");
-        }
+        _setLoading(false);
+        notifyListeners();
+        return true;
       } else {
-        _setError("Server error: ${response.statusCode}");
+        _setError(response["responseMessage"] ?? "Invalid data received");
       }
     } catch (e) {
       _setError("Exception: $e");
+      print(e);
     }
 
     notifyListeners();
@@ -139,73 +140,68 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> fetchProfileDetail(String id) async {
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
+
       final response = await _api.getApiCall(
         url:
-            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentProfile}",
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentProfile}",
         params: {"id": id},
-        token: ApiServiceUrl.token,
+        token: token,
       );
 
-      if (response.statusCode == 200) {
-        final body = json.decode(response.body);
-        if (body["responseStatus"] == true && body["data"] is List) {
-          _studentProfileData = (body["data"] as List)
-              .map(
-                (e) => StudentProfileDataModel.fromJson(
-                  Map<String, dynamic>.from(e),
-                ),
-              )
-              .toList();
-
-          _setLoading(false);
-          return true;
-        } else {
-          _setError(body["responseMessage"] ?? "Invalid data received");
-        }
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _studentProfileData = (response["data"] as List)
+            .map((e) => StudentProfileDataModel.fromJson(
+          Map<String, dynamic>.from(e),
+        ))
+            .toList();
+        _setLoading(false);
+        return true;
       } else {
-        _setError("Server error: ${response.statusCode}");
+        _setError(response["responseMessage"] ?? "Invalid data received");
       }
     } catch (e) {
       _setError("Exception: $e");
+      print("Exception: $e");
     }
-
     return false;
   }
 
   Future<bool> getLongTermGoal(String id) async {
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final response = await _api.getApiCall(
         url:
-            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getLongTermGoal}",
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getLongTermGoal}",
         params: {"studentId": id},
-        token: ApiServiceUrl.token,
+        token: token,
       );
-      final body = json.decode(response.body);
-      if (response.statusCode == 200 &&
-          body["responseStatus"] == true &&
-          body["data"] is List) {
-        _weeklyGoalData = (body["data"] as List)
+
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _weeklyGoalData = (response["data"] as List)
             .map((e) => WeeklyGoal.fromJson(Map<String, dynamic>.from(e)))
             .toList();
+
         _setLoading(false);
         return true;
+      } else {
+        _setError(response["responseMessage"] ?? "Something went wrong");
       }
-      _setError(body["responseMessage"] ?? "Something went wrong");
     } catch (e) {
       _setError("Exception: $e");
+      print("Exception: $e");
     } finally {
       _setLoading(false);
     }
 
     return false;
   }
+
 
   // Future<bool> addLongTermCourse(String studentId, String longTermGoal) async {
   //   await Future.delayed(Duration(milliseconds: 10));
@@ -286,35 +282,37 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> getWeeklyGoals(String id) async {
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final response = await _api.getApiCall(
-        url:
-            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentGoals}",
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentGoals}",
         params: {"studentId": id},
-        token: ApiServiceUrl.token,
+        token: token,
       );
-      final body = json.decode(response.body);
-      if (response.statusCode == 200 &&
-          body["responseStatus"] == true &&
-          body["data"] is List) {
-        _weeklyGoalData = (body["data"] as List)
+
+      // response is already a Map, no need to decode or check statusCode
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _weeklyGoalData = (response["data"] as List)
             .map((e) => WeeklyGoal.fromJson(Map<String, dynamic>.from(e)))
             .toList();
+
         _setLoading(false);
         return true;
+      } else {
+        _setError(response["responseMessage"] ?? "Something went wrong");
       }
-      _setError(body["responseMessage"] ?? "Something went wrong");
     } catch (e) {
       _setError("Exception: $e");
+      print("Exception: $e");
     } finally {
       _setLoading(false);
     }
 
     return false;
   }
+
 
   // Future<Map<String, dynamic>> addWeeklyGoal(
   //     String studentId,
@@ -337,7 +335,7 @@ class StudentDashboardProvider with ChangeNotifier {
   //         "intervention": intervention,
   //         "learningBarriers": learningBarriers,
   //       },
-  //       token: ApiServiceUrl.token,
+  //       token: token,
   //     );
   //
   //     final body = json.decode(response.body);
@@ -372,7 +370,7 @@ class StudentDashboardProvider with ChangeNotifier {
           "intervention": intervention,
           "learningBarriers": learningBarriers,
         },
-        token: ApiServiceUrl.token,
+        token: token,
       );
 
       return data;
@@ -407,7 +405,7 @@ class StudentDashboardProvider with ChangeNotifier {
           "intervention": intervention,
           "learningBarriers": learningBarriers,
         },
-        token: ApiServiceUrl.token,
+        token: token,
       );
 
       final body = json.decode(response.body);
@@ -424,36 +422,35 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> getAllVideos(String id) async {
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final response = await _api.getApiCall(
-        url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentVideos}",
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentVideos}",
         params: {"studentId": id},
-        token: ApiServiceUrl.token,
+        token: token,
       );
-      final body = json.decode(response.body);
-      if (response.statusCode == 200 &&
-          body["responseStatus"] == true &&
-          body["data"] is List) {
-        _allVideoData = (body["data"] as List)
+
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _allVideoData = (response["data"] as List)
             .map((e) => StudentAllVideo.fromJson(Map<String, dynamic>.from(e)))
             .toList();
+
         _setLoading(false);
         return true;
+      } else {
+        _setError(response["responseMessage"] ?? "Something went wrong");
       }
-      _setError(body["responseMessage"] ?? "Something went wrong");
     } catch (e) {
       _setError("Exception: $e");
+      print("Exception: $e");
     } finally {
       _setLoading(false);
     }
 
     return false;
   }
-
 
   // Future<bool> addStudent({
   //   required String firstName,
@@ -503,7 +500,7 @@ class StudentDashboardProvider with ChangeNotifier {
   //         "aadharCardImage": aadharCardImageName ?? "",
   //         "studentImage": studentImageName ?? "",
   //       },
-  //       token: ApiServiceUrl.token,
+  //       token: token,
   //     );
   //
   //     final body = json.decode(response.body);
@@ -566,7 +563,7 @@ class StudentDashboardProvider with ChangeNotifier {
           "aadharCardImage": aadharCardImageName ?? "",
           "studentImage": studentImageName ?? "",
         },
-        token: ApiServiceUrl.token,
+        token: token,
       );
 
       if (data["responseStatus"] == true) {
@@ -590,7 +587,7 @@ class StudentDashboardProvider with ChangeNotifier {
       String result = await apiCaller.uploadFileByMultipart(
         filePath: filePath,
         folderName: 'Uploads',
-        authToken: ApiServiceUrl.token,
+        authToken: token,
       );
 
       if (result.startsWith('Failed') || result.startsWith('Error')) {

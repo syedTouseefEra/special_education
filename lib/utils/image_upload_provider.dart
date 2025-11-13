@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
+import 'package:special_education/user_data/user_data.dart';
 
 class ImageUploadProvider extends ChangeNotifier {
   final ImagePicker _picker = ImagePicker();
@@ -22,6 +23,8 @@ class ImageUploadProvider extends ChangeNotifier {
   final double maxSizeMB;
 
   ImageUploadProvider({this.maxSizeMB = 5});
+  final UserData userData = UserData();
+  late var token = userData.getUserData.token;
 
   Future<void> pickAndUploadImage(BuildContext context, String type) async {
     try {
@@ -58,6 +61,7 @@ class ImageUploadProvider extends ChangeNotifier {
       notifyListeners();
 
       final uploadedName = await uploadImageWithLoader(file.path, context);
+
       if (uploadedName != null) {
         switch (type.toLowerCase()) {
           case 'aadhar':
@@ -70,12 +74,16 @@ class ImageUploadProvider extends ChangeNotifier {
             signatureImageUrl = uploadedName;
             break;
         }
-        final capitalizedType = type[0].toUpperCase() + type.substring(1).toLowerCase();
 
+        final capitalizedType =
+            type[0].toUpperCase() + type.substring(1).toLowerCase();
         showSnackBar("✅ $capitalizedType image uploaded successfully", context);
+      } else {
+        clearImage(type);
+        showSnackBar("❌ Failed to upload $type image", context);
       }
-
     } catch (e) {
+      clearImage(type);
       showSnackBar("Error picking or uploading image: $e", context);
       if (kDebugMode) print('❌ pickAndUploadImage error: $e');
     } finally {
@@ -113,7 +121,7 @@ class ImageUploadProvider extends ChangeNotifier {
       String result = await apiCaller.uploadFileByMultipart(
         filePath: filePath,
         folderName: 'Uploads',
-        authToken: ApiServiceUrl.token,
+        authToken: token,
       );
 
       if (result.startsWith('Failed') || result.startsWith('Error')) {
@@ -131,11 +139,9 @@ class ImageUploadProvider extends ChangeNotifier {
       showSnackBar('Failed to upload image', context);
       return null;
     } finally {
-      // Hide loader
       Navigator.of(context, rootNavigator: true).pop();
     }
   }
-
 
   void clearImage(String type) {
     switch (type.toLowerCase()) {

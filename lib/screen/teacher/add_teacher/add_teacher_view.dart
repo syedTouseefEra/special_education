@@ -207,7 +207,6 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header
                     Row(
                       children: [
                         InkWell(
@@ -229,7 +228,6 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                     ),
                     SizedBox(height: 10.sp),
 
-                    // General Info
                     const SectionHeader(title: 'General Information'),
                     FormTextField(
                       label: "First Name",
@@ -253,7 +251,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                       controller: mobileNumberController,
                       isRequired: true,
                       keyboardType: TextInputType.number,
-                      maxLength: 15,
+                      maxLength: 10,
                     ),
                     FormTextField(
                       label: "Email ID",

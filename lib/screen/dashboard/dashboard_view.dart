@@ -6,7 +6,6 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_view.dart';
-import 'package:special_education/custom_widget/top_bottom_sheet.dart';
 import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
@@ -21,13 +20,7 @@ class DashboardView extends StatelessWidget {
     final tooltip = TooltipBehavior(enable: true);
 
     return ChangeNotifierProvider(
-      create: (_) => DashboardProvider()
-        // ..loadCachedWeekGoalData()
-        ..getDashboardWeekData(context)
-        // ..loadCachedLongGoalData()
-        ..getDashboardLongGoalData(context)
-        // ..loadCachedStudentListData()
-        ..getDashboardStudentListData(context),
+      create: (context) => DashboardProvider()..fetchDashboardData(context),
       child: Consumer<DashboardProvider>(
         builder: (context, provider, child) {
           final List<_ChartData> weekChartData = [];
@@ -51,7 +44,6 @@ class DashboardView extends StatelessWidget {
             }
           }
 
-          /// --- Long Goal Data ---
           if (provider.longGoalData != null) {
             for (int i = 0; i < provider.longGoalData!.length; i++) {
               final goal = provider.longGoalData![i];
@@ -64,6 +56,7 @@ class DashboardView extends StatelessWidget {
               );
             }
           }
+
           return Container(
             color: AppColors.themeColor,
             child: SafeArea(
@@ -73,100 +66,87 @@ class DashboardView extends StatelessWidget {
                   enableTheming: false,
                   onNotificationTap: () {
                     UserData().removeUserData();
-                    NavigationHelper.pushAndClearStack(
-                      context,
-                      LoginPage(),
-                    );
+                    NavigationHelper.pushAndClearStack(context, LoginPage());
                   },
                 ),
                 body: provider.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 2.sp,
-                            horizontal: 10.sp,
+                  padding: EdgeInsets.all(10.sp),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(
+                            text: "Dashboard",
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'DMSerif',
+                            color: AppColors.themeColor,
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.all(8.sp),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomText(
-                                      text: "Dashboard",
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'DMSerif',
-                                      color: AppColors.themeColor,
-                                    ),
-                                    CustomContainer(
-                                      text: "Add Student",
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: 'Inter',
-                                      borderRadius: 15,
-                                      innerPadding: EdgeInsets.symmetric(
-                                        vertical: 4.sp,
-                                        horizontal: 10.sp,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                SizedBox(height: 5.sp),
-
-                                _buildChartSection(
-                                  title: 'Weekly Goal Report',
-                                  chartData: weekChartData,
-                                  tooltip: tooltip,
-                                  yMax: 100,
-                                ),
-
-                                SizedBox(height: 15.sp),
-
-                                _buildChartSection(
-                                  title: 'Long Goal Report',
-                                  chartData: longChartData,
-                                  tooltip: tooltip,
-                                  yMax: 100,
-                                ),
-
-                                SizedBox(height: 15.sp),
-
-                                provider.studentData != null &&
-                                        provider.studentData!.isNotEmpty
-                                    ? Column(
-                                        children: provider.studentData!
-                                            .map(
-                                              (student) => CustomViewCard(
-                                                student: student,
-                                                onViewPressed: () {
-                                                  debugPrint(
-                                                    'Viewing student: ${student.studentName}',
-                                                  );
-                                                },
-                                              ),
-                                            )
-                                            .toList(),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: CustomText(
-                                          text: "No student data available",
-                                          fontSize: 14.sp,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-
-                                SizedBox(height: 10.sp),
-                              ],
+                          CustomContainer(
+                            text: "Add Student",
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Inter',
+                            borderRadius: 15,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 4.sp,
+                              horizontal: 10.sp,
                             ),
                           ),
-                        ),
+                        ],
                       ),
+                      SizedBox(height: 10.sp),
+
+                      /// Weekly Goal Chart
+                      _buildChartSection(
+                        title: 'Weekly Goal Report',
+                        chartData: weekChartData,
+                        tooltip: tooltip,
+                        yMax: 100,
+                      ),
+
+                      SizedBox(height: 20.sp),
+
+                      /// Long Goal Chart
+                      _buildChartSection(
+                        title: 'Long Goal Report',
+                        chartData: longChartData,
+                        tooltip: tooltip,
+                        yMax: 100,
+                      ),
+
+                      SizedBox(height: 20.sp),
+
+                      /// Student List
+                      if (provider.studentData != null &&
+                          provider.studentData!.isNotEmpty)
+                        Column(
+                          children: provider.studentData!
+                              .map(
+                                (student) => CustomViewCard(
+                              student: student,
+                              onViewPressed: () => debugPrint(
+                                'Viewing student: ${student.studentName}',
+                              ),
+                            ),
+                          )
+                              .toList(),
+                        )
+                      else
+                        Padding(
+                          padding: EdgeInsets.all(16.sp),
+                          child: CustomText(
+                            text: "No student data available",
+                            fontSize: 14.sp,
+                            color: Colors.grey,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
           );
@@ -199,42 +179,40 @@ class DashboardView extends StatelessWidget {
                 topRight: Radius.circular(10.r),
               ),
             ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.sp),
-                child: CustomText(text: title, textAlign: TextAlign.start),
-              ),
-            ),
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: 16.sp),
+            child: CustomText(text: title, textAlign: TextAlign.start),
           ),
-
           chartData.isEmpty
               ? Padding(
-                  padding: EdgeInsets.all(16.sp),
-                  child: CustomText(
-                    text: "No data available",
-                    fontSize: 14.sp,
-                    color: Colors.grey,
-                  ),
-                )
-              : SfCartesianChart(
-                  primaryXAxis: CategoryAxis(),
-                  primaryYAxis: NumericAxis(
-                    minimum: 0,
-                    maximum: yMax,
-                    interval: 20,
-                  ),
-                  tooltipBehavior: tooltip,
-                  series: <CartesianSeries<_ChartData, String>>[
-                    ColumnSeries<_ChartData, String>(
-                      dataSource: chartData,
-                      xValueMapper: (_ChartData data, _) => data.x,
-                      yValueMapper: (_ChartData data, _) => data.y,
-                      pointColorMapper: (_ChartData data, _) => data.color,
-                      name: 'Completion %',
-                    ),
-                  ],
+            padding: EdgeInsets.all(16.sp),
+            child: CustomText(
+              text: "No data available",
+              fontSize: 14.sp,
+              color: Colors.grey,
+            ),
+          )
+              : SizedBox(
+            height: 250,
+            child: SfCartesianChart(
+              primaryXAxis: CategoryAxis(),
+              primaryYAxis: NumericAxis(
+                minimum: 0,
+                maximum: yMax,
+                interval: 20,
+              ),
+              tooltipBehavior: tooltip,
+              series: <CartesianSeries<_ChartData, String>>[
+                ColumnSeries<_ChartData, String>(
+                  dataSource: chartData,
+                  xValueMapper: (_ChartData data, _) => data.x,
+                  yValueMapper: (_ChartData data, _) => data.y,
+                  pointColorMapper: (_ChartData data, _) => data.color,
+                  name: 'Completion %',
                 ),
+              ],
+            ),
+          ),
         ],
       ),
     );
