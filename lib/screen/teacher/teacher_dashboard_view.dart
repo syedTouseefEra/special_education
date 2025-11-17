@@ -95,13 +95,25 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(top: 10.sp),
-                            child: CustomTextField(
+                            child:  CustomTextField(
                               controller: searchController,
-                              suffixIcon: Icon(
-                                Icons.search,
-                                size: 18.sp,
-                                color: AppColors.themeColor,
+                              prefixIcon: SizedBox(
+                                width: 60.w,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.search, size: 20.sp, color: Colors.blueAccent),
+                                    SizedBox(width: 8.sp),
+                                    Container(
+                                      width: 1,
+                                      height: 22,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
                               ),
+                              fontSize: 15.sp,
+                              fontColor: AppColors.darkGrey,
                               borderColor: AppColors.grey,
                               label: 'Search',
                               onChanged: (value) {
@@ -150,7 +162,6 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                       ],
                     ),
 
-                    SizedBox(height: 5.sp),
                     Expanded(
                       child: Consumer<TeacherDashboardProvider>(
                         builder: (context, provider, _) {

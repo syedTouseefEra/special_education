@@ -9,27 +9,31 @@ import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/main.dart';
-import 'package:special_education/screen/student/profile_detail/student_profile_view.dart';
+import 'package:special_education/screen/report/report_dashboard_provider.dart';
 import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
-import 'package:special_education/screen/student/student_dashboard_provider.dart';
+import 'package:special_education/screen/student/profile_detail/student_profile_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
-
-class StudentDashboard extends StatefulWidget {
-  const StudentDashboard({super.key});
+class ReportDashboard extends StatefulWidget {
+  const ReportDashboard({super.key});
 
   @override
-  State<StudentDashboard> createState() => _StudentDashboardState();
+  State<ReportDashboard> createState() => _ReportDashboardState();
 }
 
-class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
+class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
   final searchController = TextEditingController();
   late BuildContext scaffoldContext;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ReportDashboardProvider>(
+        context,
+        listen: false,
+      ).fetchReportStudentList(context);
+    });
   }
 
   @override
@@ -50,7 +54,10 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
 
   @override
   void didPopNext() {
-    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList(context);
+    Provider.of<ReportDashboardProvider>(
+      context,
+      listen: false,
+    ).fetchReportStudentList(context);
   }
 
   @override
@@ -72,8 +79,8 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomText(
-                          text: "Student List",
-                          fontSize: 20.sp,
+                          text: "Trimester Report",
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'DMSerif',
                           color: AppColors.themeColor,
@@ -85,7 +92,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                             NavigationHelper.push(context, AddStudentView());
                           },
                           child: CustomContainer(
-                            text: "Add Student",
+                            text: "Add Weekly Report",
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Inter',
@@ -120,7 +127,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                       borderColor: AppColors.grey,
                       label: 'Search',
                       onChanged: (value) {
-                        Provider.of<StudentDashboardProvider>(
+                        Provider.of<ReportDashboardProvider>(
                           context,
                           listen: false,
                         ).updateSearchQuery(value);
@@ -128,14 +135,14 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                     ),
                     SizedBox(height: 5.sp),
                     Expanded(
-                      child: Consumer<StudentDashboardProvider>(
+                      child: Consumer<ReportDashboardProvider>(
                         builder: (context, provider, _) {
                           if (provider.isLoading) {
                             return const Center(child: CircularProgressIndicator());
                           } else if (provider.error != null) {
                             return Center(child: Text(provider.error!));
                           } else if (provider.studentData == null || provider.studentData!.isEmpty) {
-                            return const Center(child: Text("No students found"));
+                            return const Center(child: Text("No report found"));
                           }
 
                           return ListView.builder(
@@ -256,4 +263,3 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
     );
   }
 }
-

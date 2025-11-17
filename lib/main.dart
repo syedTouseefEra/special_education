@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:special_education/screen/choose_account/choose_account_provider.dart';
 import 'package:special_education/screen/dashboard/dashboard_provider.dart';
 import 'package:special_education/screen/login/login_provider.dart';
+import 'package:special_education/screen/report/report_dashboard_provider.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
@@ -36,6 +37,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
         ChangeNotifierProvider(create: (_) => TeacherDashboardProvider()),
         ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
+        ChangeNotifierProvider(create: (_) => ReportDashboardProvider()),
       ],
       child: const MyApp(),
     ),

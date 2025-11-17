@@ -89,7 +89,6 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
   Future<bool> fetchStudentList(context) async {
-
     _isLoading = true;
     _error = null;
     notifyListeners();

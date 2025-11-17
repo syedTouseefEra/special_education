@@ -9,6 +9,7 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final int? maxLength;
   final bool? must;
   final bool isEmail;
@@ -33,13 +34,14 @@ class CustomTextField extends StatefulWidget {
     this.label,
     this.obscureText = false,
     this.keyboardType,
+    this.prefixIcon,
     this.suffixIcon,
     this.maxLength,
     this.must,
     this.isEmail = false,
     this.isMobile = false,
     this.onlyLetters = false,
-    this.onlyLettersAndNumbers = false, // ✅ Default false
+    this.onlyLettersAndNumbers = false,
     this.borderColor,
     this.borderRadius,
     this.fontSize,
@@ -116,100 +118,86 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
+      height: 50.sp,
       child: Focus(
         onFocusChange: (hasFocus) {
           if (!hasFocus) {
             validateInput();
           }
         },
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight:
-            widget.height ?? 50.h + 10.h, // extra height for error space
+        child: TextFormField(
+          controller: widget.controller,
+          keyboardType: widget.keyboardType,
+          obscureText: widget.obscureText,
+          maxLines: 1,
+          maxLength: widget.maxLength,
+          readOnly: !widget.isEditable,
+
+          style: TextStyle(
+            fontSize: widget.fontSize ?? 15.sp,
+            color: widget.isEditable
+                ? (widget.fontColor ?? AppColors.themeBlue)
+                : AppColors.darkGrey,
           ),
-          child: TextFormField(
-            controller: widget.controller,
-            keyboardType: widget.keyboardType,
-            obscureText: widget.obscureText,
-            maxLines: widget.maxLines ?? 1,
-            maxLength: widget.maxLength,
-            readOnly: !widget.isEditable,
-            textAlignVertical: widget.maxLines != null && widget.maxLines! > 1
-                ? TextAlignVertical.top
-                : TextAlignVertical.center,
-            style: TextStyle(
-              fontSize: widget.fontSize ?? 14.sp,
-              color: widget.isEditable
-                  ? (widget.fontColor ?? AppColors.themeBlue)
-                  : AppColors.darkGrey,
+
+          inputFormatters: widget.onlyLetters
+              ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))]
+              : widget.onlyLettersAndNumbers
+              ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s]'))]
+              : null,
+
+          onChanged: widget.onChanged,
+          onTap: widget.onTap,
+          validator: widget.validator,
+
+          decoration: InputDecoration(
+            counterText: "",
+            labelText: widget.label,
+            alignLabelWithHint: false,
+
+            labelStyle: TextStyle(
+              color: AppColors.grey,
+              fontSize: widget.fontSize ?? 16.sp,
             ),
-            inputFormatters: widget.onlyLetters
-                ? <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
-            ]
-                : widget.onlyLettersAndNumbers
-                ? <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(
-                  RegExp(r'[a-zA-Z0-9\s]')),
-            ]
-                : null,
-            contextMenuBuilder: (context, editableTextState) {
-              return widget.isEditable
-                  ? AdaptiveTextSelectionToolbar.editableText(
-                editableTextState: editableTextState,
-              )
-                  : const SizedBox.shrink();
-            },
-            onChanged: widget.onChanged,
-            onTap: widget.onTap,
-            validator: widget.validator,
-            decoration: InputDecoration(
-              counterText: "",
-              labelText: widget.label,
-              labelStyle: TextStyle(
-                color: AppColors.grey,
-                fontSize: widget.fontSize ?? 14.sp,
-              ),
-              suffixIcon: widget.suffixIcon,
-              errorText: errorText,
-              helperText: ' ', // reserve space for error message
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(
-                vertical: widget.maxLines != null && widget.maxLines! > 1
-                    ? 16.h
-                    : 10.h,
-                horizontal: 10.w,
-              ),
-              filled: widget.fillColor != null,
-              fillColor: widget.fillColor,
-              enabledBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: BorderSide(
-                    color: widget.borderColor ?? AppColors.themeBlue),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: BorderSide(
-                    color: widget.borderColor ?? AppColors.themeBlue,
-                    width: 1.w),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: const BorderSide(color: AppColors.red),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: const BorderSide(color: AppColors.red, width: 1),
-              ),
+            floatingLabelStyle: TextStyle(
+              fontSize: 13.sp,
+              color: AppColors.darkGrey,
+            ),
+
+
+            prefixIcon: widget.prefixIcon,
+
+            prefixIconConstraints: BoxConstraints(
+              minWidth: 40.sp,
+              minHeight: 40.sp,
+            ),
+
+            suffixIcon: widget.suffixIcon,
+            errorText: errorText,
+
+            helperText: null,
+            isDense: true,
+
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 12.sp,
+            ),
+
+            filled: widget.fillColor != null,
+            fillColor: widget.fillColor,
+
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30),
+              borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30),
+              borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue),
             ),
           ),
         ),
       ),
     );
+
   }
 }
