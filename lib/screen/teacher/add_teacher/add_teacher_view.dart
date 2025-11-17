@@ -154,7 +154,8 @@ class _AddTeacherViewState extends State<AddTeacherView> {
     );
 
 
-    provider.addTeacher(context,
+    provider.addAndUpdateTeacher(context,
+      isUpdatingProfile: false,
       aadharCardImage: imageProvider.aadharImageUrl,
       aadharCardNumber: aadharCard,
       addressLine1: addressLine1Controller.text.trim(),
@@ -395,6 +396,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                     ),
 
                     UploadImageBox(
+                      isUpdatingProfile: false,
                       title: "Aadhar Card Image",
                       requiredField: true,
                       imageFile: imageProvider.aadharImage,
@@ -404,6 +406,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                     ),
                     SizedBox(height: 15.sp),
                     UploadImageBox(
+                      isUpdatingProfile: false,
                       title: "Teacher Image",
                       requiredField: true,
                       imageFile: imageProvider.teacherImage,
@@ -413,6 +416,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
                     ),
                     SizedBox(height: 15.sp),
                     UploadImageBox(
+                      isUpdatingProfile: false,
                       title: "Teacher Signature",
                       requiredField: true,
                       imageFile: imageProvider.signatureImage,

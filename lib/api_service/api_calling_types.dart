@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/utils/exception_handle.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class ApiCallingTypes {
   final String baseUrl;
@@ -41,13 +44,51 @@ class ApiCallingTypes {
   //   }
   // }
 
+  // Future<dynamic> getApiCall({
+  //   required String url,
+  //   Map<String, String>? params,
+  //   String? token,
+  // }) async {
+  //   try {
+  //
+  //     if (params != null && params.isNotEmpty) {
+  //       String queryString = Uri(queryParameters: params).query;
+  //       url = '$url?$queryString';
+  //     }
+  //
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //     };
+  //
+  //     if (token != null && token.isNotEmpty) {
+  //       headers['Authorization'] = 'Bearer $token';
+  //     }
+  //
+  //     final response = await http.get(
+  //       Uri.parse(url),
+  //       headers: headers,
+  //     );
+  //
+  //     _logRequest('GET', url, headers, null, response, params: params);
+  //     if (response.statusCode >= 200 && response.statusCode < 300) {
+  //       return jsonDecode(response.body);
+  //     } else {
+  //       final decodedError = jsonDecode(response.body);
+  //       throw Exception(decodedError['responseMessage'] ??
+  //           'API request failed with status ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Failed to make GET request: $e');
+  //   }
+  // }
+
+
   Future<dynamic> getApiCall({
     required String url,
     Map<String, String>? params,
     String? token,
   }) async {
     try {
-
       if (params != null && params.isNotEmpty) {
         String queryString = Uri(queryParameters: params).query;
         url = '$url?$queryString';
@@ -67,17 +108,34 @@ class ApiCallingTypes {
       );
 
       _logRequest('GET', url, headers, null, response, params: params);
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return jsonDecode(response.body);
-      } else {
-        final decodedError = jsonDecode(response.body);
-        throw Exception(decodedError['responseMessage'] ??
-            'API request failed with status ${response.statusCode}');
+
+      if (response.statusCode == 401) {
+        throw UnauthorizedException("Session expired or unauthorized.");
       }
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return _safeDecode(response.body);
+      }
+
+      final errorBody = _safeDecode(response.body);
+      throw Exception(
+        errorBody['responseMessage'] ??
+            "API request failed with status ${response.statusCode}",
+      );
     } catch (e) {
-      throw Exception('Failed to make GET request: $e');
+      rethrow;
     }
   }
+
+  dynamic _safeDecode(String body) {
+    try {
+      if (body.isEmpty) return {};
+      return jsonDecode(body);
+    } catch (_) {
+      return {};
+    }
+  }
+
 
 
   // Future<http.Response> postApiCall({
@@ -143,7 +201,6 @@ class ApiCallingTypes {
 
       _logRequest('POST', url, defaultHeaders, body, response, params: params);
 
-      // Decode JSON response
       final decoded = json.decode(response.body);
       if (decoded is Map<String, dynamic>) {
         return decoded;

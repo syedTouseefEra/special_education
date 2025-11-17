@@ -1,9 +1,14 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
+import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/user_data/user_data.dart';
+import 'package:special_education/utils/exception_handle.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class DashboardProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -117,8 +122,16 @@ class DashboardProvider with ChangeNotifier {
         debugPrint("⚠️ API Error ($cacheKey): $_error");
       }
     } catch (e) {
-      _error = "Exception fetching $cacheKey: $e";
-      debugPrint(_error);
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     }
     _isLoading = false;
     notifyListeners();

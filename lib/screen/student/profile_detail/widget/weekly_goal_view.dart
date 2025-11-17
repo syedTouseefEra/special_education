@@ -207,6 +207,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                       .trim();
                                   bool success = await provider
                                       .addLongTermCourse(
+                                        context,
                                         widget.studentId,
                                         text,
                                       );
@@ -221,7 +222,8 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                       ),
                                     );
                                     await provider.getLongTermGoal(
-                                      widget.studentId,
+                                      context,
+                                      widget.studentId
                                     );
                                     learningOutcomeController.clear();
                                   }
@@ -376,7 +378,8 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                       context.mounted) {
                                     Navigator.pop(context);
                                     await provider.getWeeklyGoals(
-                                      widget.studentId,
+                                      context,
+                                      widget.studentId
                                     );
                                   }
                                 },
@@ -439,7 +442,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
       Provider.of<StudentDashboardProvider>(
         context,
         listen: false,
-      ).getWeeklyGoals(widget.studentId);
+      ).getWeeklyGoals(context,widget.studentId);
     });
   }
 
@@ -674,9 +677,15 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                 onTap: () {
                                   showAddUpdateDialog(
                                     goalId: goal.id.toString(),
-                                    goalText: parseHtmlToMultiline(goal.goals.toString()),
-                                    interventionText: parseHtmlToMultiline(goal.intervention.toString()),
-                                    learningBarrierText: parseHtmlToMultiline(goal.learningBarriers.toString()),
+                                    goalText: parseHtmlToMultiline(
+                                      goal.goals.toString(),
+                                    ),
+                                    interventionText: parseHtmlToMultiline(
+                                      goal.intervention.toString(),
+                                    ),
+                                    learningBarrierText: parseHtmlToMultiline(
+                                      goal.learningBarriers.toString(),
+                                    ),
                                     durationDate: DateTime.tryParse(
                                       goal.durationDate ?? '',
                                     ),

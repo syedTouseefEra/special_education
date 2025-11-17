@@ -32,7 +32,7 @@ class _AllVideosViewState extends State<AllVideosView> {
       Provider.of<StudentDashboardProvider>(
         context,
         listen: false,
-      ).getAllVideos(widget.studentId);
+      ).getAllVideos(context,widget.studentId);
     });
   }
 

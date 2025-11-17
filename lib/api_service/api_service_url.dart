@@ -45,6 +45,7 @@ class ApiServiceUrl {
 
   static String getTeacherList = "teacher/GetTeacherList";
   static String teacherRegistration = "teacher/TeacherRegistration";
+  static String teacherUpdate = "teacher/TeacherUpdate";
   static String deleteTeacherById = "teacher/DeleteTeacherById";
   static String masterRole = "MasterRole";
 

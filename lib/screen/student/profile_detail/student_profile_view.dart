@@ -210,6 +210,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 );
 
                             final success = await provider.getLongTermGoal(
+                              context,
                               widget.student.studentId.toString(),
                             );
 
@@ -260,7 +261,8 @@ class _ProfileViewState extends State<ProfileView> {
                                 );
 
                             final success = await provider.getWeeklyGoals(
-                              widget.student.studentId.toString(),
+                              context,
+                              widget.student.studentId.toString()
                             );
 
                             if (success) {
@@ -309,7 +311,8 @@ class _ProfileViewState extends State<ProfileView> {
                                 );
 
                             final success = await provider.getLongTermGoal(
-                              widget.student.studentId.toString(),
+                              context,
+                              widget.student.studentId.toString()
                             );
 
                             if (success) {

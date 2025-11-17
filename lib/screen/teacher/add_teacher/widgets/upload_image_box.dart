@@ -9,6 +9,7 @@ class UploadImageBox extends StatelessWidget {
   final VoidCallback onClear;
   final bool requiredField;
   final bool isUploading;
+  final bool isUpdatingProfile;
 
   const UploadImageBox({
     super.key,
@@ -18,6 +19,7 @@ class UploadImageBox extends StatelessWidget {
     required this.onClear,
     this.requiredField = false,
     this.isUploading = false,
+    this.isUpdatingProfile = false,
   });
 
   @override
@@ -29,6 +31,7 @@ class UploadImageBox extends StatelessWidget {
       onClear: onClear,
       requiredField: requiredField,
       isUploading: isUploading,
+      isUpdatingProfile: isUpdatingProfile,
     );
   }
 }

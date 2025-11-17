@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
@@ -9,11 +8,14 @@ import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/teacher/teacher_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
+import 'package:http/http.dart';
 
 class TeacherDashboardProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _error;
+
   bool get isLoading => _isLoading;
+
   String? get error => _error;
 
   List<TeacherListDataModal>? _teacherData;
@@ -58,14 +60,19 @@ class TeacherDashboardProvider with ChangeNotifier {
 
     try {
       final response = await _api.getApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTeacherList}",
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl
+            .getTeacherList}",
         params: {"instituteId": instituteId.toString()},
         token: token,
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
         _teacherData = (response["data"] as List)
-            .map((e) => TeacherListDataModal.fromJson(Map<String, dynamic>.from(e)))
+            .map(
+              (e) =>
+              TeacherListDataModal.fromJson(Map<String, dynamic>.from(e)),
+        )
             .toList();
 
         _filteredTeacherData = List.from(_teacherData!);
@@ -87,25 +94,24 @@ class TeacherDashboardProvider with ChangeNotifier {
     return false;
   }
 
-
   Future<bool> fetchTeacherProfileDetails(int id) async {
     _setLoading(true);
     _error = null;
 
     try {
       final response = await _api.getApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTeacherList}",
-        params: {
-          "instituteId": instituteId.toString(),
-          "id": id.toString(),
-        },
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl
+            .getTeacherList}",
+        params: {"instituteId": instituteId.toString(), "id": id.toString()},
         token: token,
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
         _selectedTeacherData = (response["data"] as List)
             .map(
-              (e) => TeacherListDataModal.fromJson(Map<String, dynamic>.from(e)),
+              (e) =>
+              TeacherListDataModal.fromJson(Map<String, dynamic>.from(e)),
         )
             .toList();
 
@@ -125,7 +131,6 @@ class TeacherDashboardProvider with ChangeNotifier {
     return false;
   }
 
-
   Future<bool> fetchRole() async {
     _isLoading = true;
     _error = null;
@@ -134,7 +139,7 @@ class TeacherDashboardProvider with ChangeNotifier {
     try {
       final response = await _api.getApiCall(
         url:
-            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.masterRole}",
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.masterRole}",
         params: {"": ""},
         token: ApiServiceUrl.token,
       );
@@ -168,7 +173,8 @@ class TeacherDashboardProvider with ChangeNotifier {
     try {
       final response = await _api.deleteDataApiCall(
         url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.deleteTeacherById}",
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl
+            .deleteTeacherById}",
         params: {"id": id},
         token: token,
       );
@@ -212,8 +218,11 @@ class TeacherDashboardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> addTeacher(
-      context, {
+
+  Future<bool> addAndUpdateTeacher(
+      BuildContext context, {
+        required bool isUpdatingProfile,
+        int? id,
         String? aadharCardImage,
         String? aadharCardNumber,
         String? addressLine1,
@@ -238,49 +247,62 @@ class TeacherDashboardProvider with ChangeNotifier {
         String? image,
       }) async {
     _setLoading(true);
-    try {
-      final data = await _api.postApiCall(
-        url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.teacherRegistration}",
-        body: {
-          "aadharCardImage": aadharCardImage,
-          "aadharCardNumber": aadharCardNumber,
-          "addressLine1": addressLine1,
-          "addressLine2": addressLine2,
-          "cityId": cityId,
-          "countryId": countryId,
-          "dateOfBirth": dateOfBirth.toIso8601String().split("T")[0],
-          "emailId": emailId ?? "",
-          "employeeId": employeeId,
-          "firstName": firstName,
-          "genderId": genderId,
-          "instituteId": instituteId ?? "",
-          "joiningDate": joiningDate?.toIso8601String().split("T")[0],
-          "lastName": lastName,
-          "middleName": middleName,
-          "mobileNumber": mobileNumber,
-          "nationalityId": nationalityId,
-          "pinCode": pinCode ?? "",
-          "roleId": roleId ?? "",
-          "signature": signature ?? "",
-          "stateId": stateId,
-          "image": image,
-        },
-        token: token,
-      );
 
-      if (data["responseStatus"] == true) {
-        showSnackBar(data["responseMessage"], context);
+    try {
+
+      final body = {
+        "id": isUpdatingProfile ? id : null,
+        "aadharCardImage": aadharCardImage,
+        "aadharCardNumber": aadharCardNumber,
+        "addressLine1": addressLine1,
+        "addressLine2": addressLine2,
+        "cityId": cityId,
+        "countryId": countryId,
+        "dateOfBirth": dateOfBirth.toIso8601String().split("T")[0],
+        "emailId": emailId ?? "",
+        "employeeId": employeeId,
+        "firstName": firstName,
+        "genderId": genderId,
+        "instituteId": instituteId,
+        "joiningDate": joiningDate?.toIso8601String().split("T")[0],
+        "lastName": lastName,
+        "middleName": middleName,
+        "mobileNumber": mobileNumber,
+        "nationalityId": nationalityId,
+        "pinCode": pinCode ?? "",
+        "roleId": roleId,
+        "signature": signature ?? "",
+        "stateId": stateId,
+        "image": image,
+      };
+
+      final url =
+          "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${isUpdatingProfile ? ApiServiceUrl.teacherUpdate : ApiServiceUrl.teacherRegistration}";
+
+      final data = isUpdatingProfile
+          ? await _api.putApiCall(url: url, body: body, token: token)
+          : await _api.postApiCall(url: url, body: body, token: token);
+
+      Map<String, dynamic> res = data is Response ? jsonDecode(data.body) : data;
+
+      if (res["responseStatus"] == true) {
+        showSnackBar(res["responseMessage"] ?? "Operation successful", context);
+
+        if (isUpdatingProfile) {
+          NavigationHelper.pop(context);
+        }
         NavigationHelper.pop(context);
         return true;
       } else {
-        showSnackBar(data["responseMessage"] ?? "Failed to add teacher", context);
+        showSnackBar(res["responseMessage"] ?? "Operation failed", context);
       }
     } catch (e) {
       _setError("Exception: $e");
+      print("Error in saveTeacher: $e");
     } finally {
       _setLoading(false);
     }
+
     return false;
   }
 

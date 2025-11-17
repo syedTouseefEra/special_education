@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/constant/colors.dart';
 
-class SaveButton extends StatelessWidget {
+class UpdateButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const SaveButton({super.key, required this.onPressed});
+  const UpdateButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
