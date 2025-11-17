@@ -14,15 +14,19 @@ class UploadBox extends StatelessWidget {
   final VoidCallback? onClear;
   final bool requiredField;
   final bool isUploading;
+  final String? imageUrl;
+  final bool isUpdatingProfile;
 
   const UploadBox({
     super.key,
     required this.title,
     required this.onTap,
     this.imageFile,
+    this.imageUrl,
     this.onClear,
     this.requiredField = false,
     this.isUploading = false,
+    this.isUpdatingProfile = false,
   });
 
   @override
@@ -137,6 +141,18 @@ class UploadBox extends StatelessWidget {
             ),
           ],
         ),
+        SizedBox(height: 10.sp),
+        Visibility(
+          visible: isUpdatingProfile,
+          child: Container(
+            height: 150.sp,
+            width: 150.sp,
+            color: Colors.grey.shade300,
+            child: imageUrl != null
+                ? Image.network(imageUrl!,fit: BoxFit.fill,)
+                : const Icon(Icons.image_not_supported),
+          ),
+        )
 
       ],
     );

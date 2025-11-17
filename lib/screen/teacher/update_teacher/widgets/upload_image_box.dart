@@ -5,6 +5,7 @@ import 'package:special_education/custom_widget/custom_upload_image_view.dart';
 class UploadImageBox extends StatelessWidget {
   final String title;
   final File? imageFile;
+  final String? imageUrl;
   final VoidCallback onTap;
   final VoidCallback onClear;
   final bool requiredField;
@@ -17,6 +18,7 @@ class UploadImageBox extends StatelessWidget {
     required this.imageFile,
     required this.onTap,
     required this.onClear,
+    this.imageUrl,
     this.requiredField = false,
     this.isUploading = false,
     this.isUpdatingProfile = false,
@@ -27,6 +29,7 @@ class UploadImageBox extends StatelessWidget {
     return UploadBox(
       title: title,
       imageFile: imageFile,
+      imageUrl: imageUrl,
       onTap: onTap,
       onClear: onClear,
       requiredField: requiredField,

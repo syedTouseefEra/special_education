@@ -9,6 +9,8 @@ import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
+import 'package:special_education/screen/teacher/update_teacher/update_teacher_detail_view.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/utils/text_case_utils.dart';
 
 class ProfileViewWidget extends StatelessWidget {
@@ -182,19 +184,35 @@ class ProfileViewWidget extends StatelessWidget {
                     children: [
                       CustomText(
                         text: 'Profile Details',
-                        fontSize: 20.sp,
+                        fontSize: 18.sp,
                         color: AppColors.themeColor,
                         fontFamily: 'Dm Serif',
                         fontWeight: FontWeight.w600,
                       ),
-                      CustomContainer(
-                        text: 'Update',
-                        containerColor: AppColors.green,
-                        borderRadius: 20.r,
-                        padding: 12.sp,
-                        innerPadding: EdgeInsets.symmetric(
-                          horizontal: 30.w,
-                          vertical: 8.h,
+                      InkWell(
+                        splashColor: AppColors.transparent,
+                        highlightColor: AppColors.transparent,
+                        onTap: () {
+                          final teacherProvider = Provider.of<TeacherDashboardProvider>(context, listen: false);
+                          final teacher = teacherProvider.selectedTeacherData?.first;
+                          if (teacher != null) {
+                            NavigationHelper.push(
+                              context,
+                              UpdateTeacherDetailView(teacher: teacher),
+                            );
+                          }
+                        },
+
+                        child: CustomContainer(
+                          fontSize: 12.sp,
+                          text: 'Update',
+                          containerColor: AppColors.green,
+                          borderRadius: 20.r,
+                          padding: 12.sp,
+                          innerPadding: EdgeInsets.symmetric(
+                            horizontal: 30.w,
+                            vertical: 8.h,
+                          ),
                         ),
                       ),
                     ],
@@ -402,7 +420,7 @@ class ProfileViewWidget extends StatelessWidget {
                                 fontFamily: 'Dm Serif',
                                 fontWeight: FontWeight.w600,
                               ),
-                              CustomText(text:  teacher?.aadharCardNumber?.toString() ?? "N/A",color: AppColors.black,fontSize: 20,)
+                              CustomText(text:  teacher?.aadharCardNumber?.toString() ?? "N/A",color: AppColors.black,fontSize: 16.sp,)
                             ],
                           ),
                           Divider(

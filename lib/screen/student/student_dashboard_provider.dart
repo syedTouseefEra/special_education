@@ -7,9 +7,12 @@ import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
+import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
+import 'package:special_education/utils/exception_handle.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class StudentDashboardProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -85,7 +88,8 @@ class StudentDashboardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> fetchStudentList() async {
+  Future<bool> fetchStudentList(context) async {
+
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -111,8 +115,16 @@ class StudentDashboardProvider with ChangeNotifier {
         _setError(response["responseMessage"] ?? "Invalid data received");
       }
     } catch (e) {
-      _setError("Exception: $e");
-      print(e);
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     }
 
     notifyListeners();
@@ -139,7 +151,7 @@ class StudentDashboardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> fetchProfileDetail(String id) async {
+  Future<bool> fetchProfileDetail(context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -164,13 +176,21 @@ class StudentDashboardProvider with ChangeNotifier {
         _setError(response["responseMessage"] ?? "Invalid data received");
       }
     } catch (e) {
-      _setError("Exception: $e");
-      print("Exception: $e");
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     }
     return false;
   }
 
-  Future<bool> getLongTermGoal(String id) async {
+  Future<bool> getLongTermGoal(context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -193,8 +213,16 @@ class StudentDashboardProvider with ChangeNotifier {
         _setError(response["responseMessage"] ?? "Something went wrong");
       }
     } catch (e) {
-      _setError("Exception: $e");
-      print("Exception: $e");
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     } finally {
       _setLoading(false);
     }
@@ -228,7 +256,7 @@ class StudentDashboardProvider with ChangeNotifier {
   //   return false;
   // }
 
-  Future<bool> addLongTermCourse(String studentId, String longTermGoal) async {
+  Future<bool> addLongTermCourse(context,String studentId, String longTermGoal) async {
     _setLoading(true);
 
     try {
@@ -247,16 +275,24 @@ class StudentDashboardProvider with ChangeNotifier {
         _setError(data["responseMessage"] ?? "Something went wrong");
       }
     } catch (e) {
-      _setError("Exception: $e");
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     } finally {
       _setLoading(false);
     }
-
     return false;
   }
 
 
-  Future<bool> updateLongTermCourse(String id, String longTermGoal) async {
+  Future<bool> updateLongTermCourse(context,String id, String longTermGoal) async {
     await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -273,7 +309,16 @@ class StudentDashboardProvider with ChangeNotifier {
       }
       _setError(body["responseMessage"] ?? "Something went wrong");
     } catch (e) {
-      _setError("Exception: $e");
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     } finally {
       _setLoading(false);
     }
@@ -281,7 +326,7 @@ class StudentDashboardProvider with ChangeNotifier {
     return false;
   }
 
-  Future<bool> getWeeklyGoals(String id) async {
+  Future<bool> getWeeklyGoals(context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -292,7 +337,6 @@ class StudentDashboardProvider with ChangeNotifier {
         token: token,
       );
 
-      // response is already a Map, no need to decode or check statusCode
       if (response["responseStatus"] == true && response["data"] is List) {
         _weeklyGoalData = (response["data"] as List)
             .map((e) => WeeklyGoal.fromJson(Map<String, dynamic>.from(e)))
@@ -304,8 +348,16 @@ class StudentDashboardProvider with ChangeNotifier {
         _setError(response["responseMessage"] ?? "Something went wrong");
       }
     } catch (e) {
-      _setError("Exception: $e");
-      print("Exception: $e");
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     } finally {
       _setLoading(false);
     }
@@ -421,7 +473,7 @@ class StudentDashboardProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> getAllVideos(String id) async {
+  Future<bool> getAllVideos(context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -443,8 +495,16 @@ class StudentDashboardProvider with ChangeNotifier {
         _setError(response["responseMessage"] ?? "Something went wrong");
       }
     } catch (e) {
-      _setError("Exception: $e");
-      print("Exception: $e");
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
     } finally {
       _setLoading(false);
     }

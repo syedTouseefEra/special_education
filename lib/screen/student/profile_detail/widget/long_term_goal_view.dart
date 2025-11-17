@@ -100,7 +100,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                             bool success = false;
 
                             if (isEdit) {
-                              success = await provider.updateLongTermCourse(goalId, text);
+                              success = await provider.updateLongTermCourse(context,goalId, text);
                               if (success) {
                                 if (!mounted) return;
                                 NavigationHelper.pop(context);
@@ -109,7 +109,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                 );
                               }
                             } else {
-                              success = await provider.addLongTermCourse(widget.studentId, text);
+                              success = await provider.addLongTermCourse(context,widget.studentId, text);
                               if (success) {
                                 if (!mounted) return;
                                 NavigationHelper.pop(context);
@@ -120,7 +120,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                             }
 
                             if (success) {
-                              await provider.getLongTermGoal(widget.studentId);
+                              await provider.getLongTermGoal(context,widget.studentId);
                               learningTextController.clear();
                             }
                           },
@@ -155,7 +155,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
       Provider.of<StudentDashboardProvider>(
         context,
         listen: false,
-      ).getLongTermGoal(widget.studentId);
+      ).getLongTermGoal(context,widget.studentId);
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
@@ -12,10 +13,7 @@ import 'package:special_education/utils/navigation_utils.dart';
 class TeacherProfileDetailsView extends StatefulWidget {
   final int id;
 
-  const TeacherProfileDetailsView({
-    super.key,
-    required this.id,
-  });
+  const TeacherProfileDetailsView({super.key, required this.id});
 
   @override
   State<TeacherProfileDetailsView> createState() =>
@@ -27,13 +25,18 @@ class _TeacherProfileDetailsViewState extends State<TeacherProfileDetailsView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TeacherDashboardProvider>(context, listen: false)
-          .fetchTeacherProfileDetails(widget.id);
+      Provider.of<TeacherDashboardProvider>(
+        context,
+        listen: false,
+      ).fetchTeacherProfileDetails(widget.id);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<TeacherDashboardProvider>(context);
+    final teacher = provider.teacherData;
+
     return Container(
       color: AppColors.themeColor,
       child: SafeArea(
@@ -48,7 +51,6 @@ class _TeacherProfileDetailsViewState extends State<TeacherProfileDetailsView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -64,23 +66,47 @@ class _TeacherProfileDetailsViewState extends State<TeacherProfileDetailsView> {
                             ),
                             CustomText(
                               text: 'Profile Details',
-                              fontSize: 20.sp,
+                              fontSize: 18.sp,
                               color: AppColors.themeColor,
                               fontFamily: 'Dm Serif',
                               fontWeight: FontWeight.w600,
                             ),
                           ],
                         ),
-                        CustomContainer(
-                          text: 'Remove Teacher',
-                          containerColor: AppColors.red,
-                          borderRadius: 20.r,
-                          padding: 12.sp,
-                          innerPadding: EdgeInsets.symmetric(
-                            horizontal: 15.w,
-                            vertical: 8.h,
+                        if (teacher != null)
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () async {
+                              doubleButton(
+                                context,
+                                "",
+                                "Are you sure? You can't undo this action afterwards.",
+                                () async {
+                                  Navigator.pop(context); // close dialog
+                                  final success = await provider.deleteTeacher(
+                                    context,
+                                    widget.id.toString(),
+                                  );
+
+                                  if (success && context.mounted) {
+                                    NavigationHelper.pop(context); // go back
+                                  }
+                                },
+                              );
+                            },
+                            child: CustomContainer(
+                              fontSize: 12.sp,
+                              text: 'Remove Teacher',
+                              containerColor: AppColors.red,
+                              borderRadius: 20.r,
+                              padding: 12.sp,
+                              innerPadding: EdgeInsets.symmetric(
+                                horizontal: 15.w,
+                                vertical: 8.h,
+                              ),
+                            ),
                           ),
-                        ),
                       ],
                     ),
 

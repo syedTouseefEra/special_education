@@ -29,7 +29,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
   @override
   void initState() {
     super.initState();
-    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList();
+    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList(context);
   }
 
   @override
@@ -50,7 +50,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
 
   @override
   void didPopNext() {
-    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList();
+    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList(context);
   }
 
   @override
@@ -198,7 +198,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                                         splashColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         onTap: () async {
-                                          final success = await provider.fetchProfileDetail(student.id.toString());
+                                          final success = await provider.fetchProfileDetail(context,student.id.toString());
                                           if (!mounted) return;
                                           if (success && provider.studentProfileData != null && provider.studentProfileData!.isNotEmpty) {
                                             final profile = provider.studentProfileData![0];
