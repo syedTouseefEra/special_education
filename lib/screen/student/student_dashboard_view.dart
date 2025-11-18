@@ -144,7 +144,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                               final student = provider.studentData![index];
                               return Container(
                                 margin: EdgeInsets.only(bottom: 12.sp),
-                                padding: EdgeInsets.fromLTRB(15.sp, 15.sp, 10.sp, 0.sp),
+                                padding: EdgeInsets.fromLTRB(15.sp, 15.sp, 10.sp, 10.sp),
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: AppColors.borderColor,
@@ -223,18 +223,22 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                                             );
                                           }
                                         },
-                                        child: CustomContainer(
-                                          text: 'View',
-                                          innerPadding: EdgeInsets.symmetric(
-                                            vertical: 4.sp,
-                                            horizontal: 22.sp,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 8.0),
+                                          child: CustomContainer(
+                                            padding: 0.sp,
+                                            text: 'View',
+                                            innerPadding: EdgeInsets.symmetric(
+                                              vertical: 3.sp,
+                                              horizontal: 20.sp,
+                                            ),
+                                            containerColor: Colors.white,
+                                            textColor: AppColors.yellow,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            borderColor: AppColors.yellow,
+                                            borderWidth: 1,
                                           ),
-                                          containerColor: Colors.white,
-                                          textColor: AppColors.yellow,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          borderColor: AppColors.yellow,
-                                          borderWidth: 1,
                                         ),
                                       ),
                                     ),

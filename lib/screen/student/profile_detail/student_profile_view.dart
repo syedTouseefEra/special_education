@@ -54,7 +54,11 @@ class _ProfileViewState extends State<ProfileView> {
                   Container(
                     height: 220.sp,
                     decoration: BoxDecoration(
-                      color: Colors.yellow.shade100,
+                      gradient: LinearGradient(
+                        colors: [AppColors.gradientColorOne, AppColors.gradientColorTwo],
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                      ),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Padding(

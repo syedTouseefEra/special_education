@@ -1,16 +1,20 @@
-import 'package:flutter/Material.dart';
+import 'package:flutter/material.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/utils/text_case_utils.dart';
 
 class CustomContainer extends StatelessWidget {
-  final double? width; // ✅ Optional width added
+  final double? width;
   final double padding;
   final EdgeInsets innerPadding;
-  final Color containerColor;
+
+  final Color? containerColor;
+  final Gradient? gradient;
+
   final double borderRadius;
   final double borderWidth;
   final Color borderColor;
+
   final String text;
   final Color textColor;
   final double fontSize;
@@ -23,13 +27,17 @@ class CustomContainer extends StatelessWidget {
 
   const CustomContainer({
     super.key,
-    this.width, // ✅ Accept width in constructor
+    this.width,
     this.padding = 15.0,
     this.innerPadding = const EdgeInsets.all(10.0),
+
     this.containerColor = Colors.orange,
+    this.gradient,
+
     this.borderRadius = 5.0,
     this.borderWidth = 0.0,
     this.borderColor = Colors.transparent,
+
     this.text = "Educational",
     this.textColor = AppColors.white,
     this.fontSize = 15.0,
@@ -46,9 +54,10 @@ class CustomContainer extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(padding),
       child: Container(
-        width: width, // ✅ Apply the optional width
+        width: width,
         decoration: BoxDecoration(
-          color: containerColor,
+          color: gradient == null ? containerColor : null, // Solid color only if gradient is null
+          gradient: gradient, // 🎉 Gradient support
           borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
             width: borderWidth,

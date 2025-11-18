@@ -14,7 +14,7 @@ class CustomTextField extends StatefulWidget {
   final bool isEmail;
   final bool isMobile;
   final bool onlyLetters;
-  final bool onlyLettersAndNumbers; // ✅ New property
+  final bool onlyLettersAndNumbers;
   final Color? borderColor;
   final double? borderRadius;
   final double? fontSize;
@@ -62,8 +62,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
   String? errorText;
 
   bool isValidEmail(String email) {
-    final emailRegex =
-    RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+    final emailRegex = RegExp(
+      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    );
     return emailRegex.hasMatch(email);
   }
 
@@ -141,54 +142,44 @@ class _CustomTextFieldState extends State<CustomTextField> {
           onChanged: widget.onChanged,
           validator: widget.validator,
 
-            decoration: InputDecoration(
-              counterText: "",
-              labelText: widget.label,
+          decoration: InputDecoration(
+            counterText: "",
+            labelText: widget.label,
 
-              labelStyle: TextStyle(
-                color: AppColors.grey,
-                fontSize: 16.sp,
-              ),
+            labelStyle: TextStyle(color: AppColors.grey, fontSize: 16.sp),
 
-              floatingLabelStyle: TextStyle(
-                fontSize: 13.sp,
-                color: AppColors.darkGrey,
-              ),
+            floatingLabelStyle: TextStyle(
+              fontSize: 13.sp,
+              color: AppColors.darkGrey,
+            ),
 
-              prefixIcon: widget.prefixIcon,
-              suffixIcon: widget.suffixIcon,
+            prefixIcon: widget.prefixIcon,
+            suffixIcon: widget.suffixIcon,
 
-              prefixIconConstraints: BoxConstraints(
-                minWidth: 40.sp,
-                minHeight: 40.sp,
-              ),
-              suffixIconConstraints: BoxConstraints(
-                minWidth: 32.sp,
-                minHeight: 32.sp,
-              ),
+            prefixIconConstraints: BoxConstraints(
+              minWidth: 40.sp,
+              minHeight: 40.sp,
+            ),
+            suffixIconConstraints: BoxConstraints(
+              minWidth: 32.sp,
+              minHeight: 32.sp,
+            ),
 
-              isDense: true,
+            isDense: true,
 
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 10,
-              ),
+            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
 
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(color: AppColors.grey),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(color: AppColors.themeBlue),
-              ),
-            )
-
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide(color: AppColors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide(color: AppColors.themeBlue),
+            ),
+          ),
         ),
       ),
     );
-
-
-
   }
 }

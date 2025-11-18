@@ -10,6 +10,7 @@ import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/main.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
+import 'package:special_education/screen/report/trimester_report/trimester_report_view.dart';
 import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
@@ -151,7 +152,7 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                               final student = provider.studentData![index];
                               return Container(
                                 margin: EdgeInsets.only(bottom: 12.sp),
-                                padding: EdgeInsets.fromLTRB(15.sp, 15.sp, 10.sp, 0.sp),
+                                padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 10.sp, 10.sp),
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: AppColors.borderColor,
@@ -219,29 +220,33 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                                         splashColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         onTap: () async {
-                                          final success = await provider.fetchProfileDetail(context,student.id.toString());
+                                          final success = await provider.getTrimesterReportData(context,student.id.toString());
                                           if (!mounted) return;
-                                          if (success && provider.studentProfileData != null && provider.studentProfileData!.isNotEmpty) {
-                                            final profile = provider.studentProfileData![0];
-                                            NavigationHelper.push(scaffoldContext, ProfileView(student: profile));
+                                          if (success && provider.trimesterReportData != null && provider.trimesterReportData!.isNotEmpty) {
+                                            final profile = provider.trimesterReportData![0];
+                                            NavigationHelper.push(scaffoldContext, TrimesterReportView(student: profile));
                                           } else {
                                             ScaffoldMessenger.of(scaffoldContext).showSnackBar(
                                               SnackBar(content: Text(provider.error ?? "Failed to load profile")),
                                             );
                                           }
                                         },
-                                        child: CustomContainer(
-                                          text: 'View',
-                                          innerPadding: EdgeInsets.symmetric(
-                                            vertical: 4.sp,
-                                            horizontal: 22.sp,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 8.0),
+                                          child: CustomContainer(
+                                            padding: 0.sp,
+                                            text: 'View',
+                                            innerPadding: EdgeInsets.symmetric(
+                                              vertical: 3.sp,
+                                              horizontal: 20.sp,
+                                            ),
+                                            containerColor: Colors.white,
+                                            textColor: AppColors.yellow,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            borderColor: AppColors.yellow,
+                                            borderWidth: 1,
                                           ),
-                                          containerColor: Colors.white,
-                                          textColor: AppColors.yellow,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          borderColor: AppColors.yellow,
-                                          borderWidth: 1,
                                         ),
                                       ),
                                     ),

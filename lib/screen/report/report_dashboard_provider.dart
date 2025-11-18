@@ -7,6 +7,7 @@ import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/screen/report/trimester_report/report_data_modal.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
@@ -25,7 +26,6 @@ class ReportDashboardProvider extends ChangeNotifier{
 
   List<StudentListDataModal>? _studentData;
   List<StudentListDataModal>? _filteredStudentData;
-  List<StudentProfileDataModel>? _studentProfileData;
 
   List<StudentListDataModal>? get studentData {
     if (_searchQuery.isEmpty) {
@@ -35,8 +35,9 @@ class ReportDashboardProvider extends ChangeNotifier{
     }
   }
 
-  List<StudentProfileDataModel>? get studentProfileData {
-    return _studentProfileData;
+  List<TrimesterReportDataModal>? _trimesterReportData;
+  List<TrimesterReportDataModal>? get trimesterReportData {
+    return _trimesterReportData;
   }
 
 
@@ -83,7 +84,7 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> fetchProfileDetail(context,String id) async {
+  Future<bool> getTrimesterReportData(context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -91,14 +92,14 @@ class ReportDashboardProvider extends ChangeNotifier{
 
       final response = await _api.getApiCall(
         url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentProfile}",
-        params: {"id": id},
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTrimesterReport}",
+        params: {"studentId": id},
         token: token,
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
-        _studentProfileData = (response["data"] as List)
-            .map((e) => StudentProfileDataModel.fromJson(
+        _trimesterReportData = (response["data"] as List)
+            .map((e) => TrimesterReportDataModal.fromJson(
           Map<String, dynamic>.from(e),
         ))
             .toList();
