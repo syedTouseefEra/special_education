@@ -103,15 +103,9 @@ class _LoginPageState extends State<LoginPage> {
                           keyboardType: TextInputType.number,
                           controller: _usernameController,
                           label: 'Mobile no.',
-                          // validator: (value) {
-                          //   if (value == null || value.trim().length != 10) {
-                          //     return 'Please enter a valid 10-digit mobile number';
-                          //   }
-                          //   return null;
-                          // },
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 20.sp),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.sp),
                         child: CustomTextField(
@@ -135,12 +129,6 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
-                          // validator: (value) {
-                          //   if (value == null || value.isEmpty) {
-                          //     return 'Please enter your password';
-                          //   }
-                          //   return null;
-                          // },
                         ),
                       ),
                     ],

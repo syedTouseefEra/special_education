@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 
@@ -121,9 +120,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       height: 50.sp,
       child: Focus(
         onFocusChange: (hasFocus) {
-          if (!hasFocus) {
-            validateInput();
-          }
+          if (!hasFocus) validateInput();
         },
         child: TextFormField(
           controller: widget.controller,
@@ -132,72 +129,66 @@ class _CustomTextFieldState extends State<CustomTextField> {
           maxLines: 1,
           maxLength: widget.maxLength,
           readOnly: !widget.isEditable,
+          textAlignVertical: TextAlignVertical.center,
 
           style: TextStyle(
-            fontSize: widget.fontSize ?? 15.sp,
+            fontSize: widget.fontSize ?? 16.sp,
             color: widget.isEditable
                 ? (widget.fontColor ?? AppColors.themeBlue)
                 : AppColors.darkGrey,
           ),
 
-          inputFormatters: widget.onlyLetters
-              ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))]
-              : widget.onlyLettersAndNumbers
-              ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s]'))]
-              : null,
-
           onChanged: widget.onChanged,
-          onTap: widget.onTap,
           validator: widget.validator,
 
-          decoration: InputDecoration(
-            counterText: "",
-            labelText: widget.label,
-            alignLabelWithHint: false,
+            decoration: InputDecoration(
+              counterText: "",
+              labelText: widget.label,
 
-            labelStyle: TextStyle(
-              color: AppColors.grey,
-              fontSize: widget.fontSize ?? 16.sp,
-            ),
-            floatingLabelStyle: TextStyle(
-              fontSize: 13.sp,
-              color: AppColors.darkGrey,
-            ),
+              labelStyle: TextStyle(
+                color: AppColors.grey,
+                fontSize: 16.sp,
+              ),
 
+              floatingLabelStyle: TextStyle(
+                fontSize: 13.sp,
+                color: AppColors.darkGrey,
+              ),
 
-            prefixIcon: widget.prefixIcon,
+              prefixIcon: widget.prefixIcon,
+              suffixIcon: widget.suffixIcon,
 
-            prefixIconConstraints: BoxConstraints(
-              minWidth: 40.sp,
-              minHeight: 40.sp,
-            ),
+              prefixIconConstraints: BoxConstraints(
+                minWidth: 40.sp,
+                minHeight: 40.sp,
+              ),
+              suffixIconConstraints: BoxConstraints(
+                minWidth: 32.sp,
+                minHeight: 32.sp,
+              ),
 
-            suffixIcon: widget.suffixIcon,
-            errorText: errorText,
+              isDense: true,
 
-            helperText: null,
-            isDense: true,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 10,
+              ),
 
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 0,
-              horizontal: 12.sp,
-            ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: AppColors.grey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: AppColors.themeBlue),
+              ),
+            )
 
-            filled: widget.fillColor != null,
-            fillColor: widget.fillColor,
-
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30),
-              borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30),
-              borderSide: BorderSide(color: widget.borderColor ?? AppColors.themeBlue),
-            ),
-          ),
         ),
       ),
     );
+
+
 
   }
 }

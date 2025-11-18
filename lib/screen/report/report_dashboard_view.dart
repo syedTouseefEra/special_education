@@ -115,8 +115,8 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                             Icon(Icons.search, size: 20.sp, color: Colors.blueAccent),
                             SizedBox(width: 8.sp),
                             Container(
-                              width: 1,
-                              height: 22,
+                              width: 1.sp,
+                              height: 20.sp,
                               color: Colors.grey,
                             ),
                           ],
