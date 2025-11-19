@@ -1,20 +1,16 @@
 import 'package:flutter/Material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
-import 'package:special_education/screen/report/trimester_report/report_data_modal.dart';
-import 'package:special_education/screen/student/profile_detail/widget/all_videos_view.dart';
-import 'package:special_education/screen/student/profile_detail/widget/long_term_goal_view.dart';
-import 'package:special_education/screen/student/profile_detail/widget/profile_details_view.dart';
-import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
-import 'package:special_education/screen/student/profile_detail/widget/weekly_goal_view.dart';
-import 'package:special_education/screen/student/student_dashboard_provider.dart';
+import 'package:special_education/screen/report/trimester_report/generate_trimester_report/generate_trimester_report_view.dart';
+import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class TrimesterReportView extends StatefulWidget {
   final TrimesterReportDataModal student;
@@ -287,12 +283,34 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                             MainAxisAlignment.end,
                                         children: [
                                           GestureDetector(
-                                            onTap: () {},
+                                            onTap: () {
+                                              buttonText == 'Generate Report' &&
+                                                      status == 'Completed'
+                                                  ? NavigationHelper.push(
+                                                      context,
+                                                      GenerateTrimesterReportView(
+                                                        studentId: widget
+                                                            .student
+                                                            .studentId
+                                                            .toString(),
+                                                        studentName: widget
+                                                            .student
+                                                            .studentName
+                                                            .toString(),
+                                                      ),
+                                                    )
+                                                  : showSnackBar(
+                                                      "Report will be generated",
+                                                      context,
+                                                    );
+                                            },
                                             child: CustomContainer(
                                               text: buttonText,
                                               borderRadius: 10.r,
-                                              containerColor: status == 'Ongoing' ?buttonColor.withOpacity(
-                                                0.5):buttonColor,
+                                              containerColor:
+                                                  status == 'Ongoing'
+                                                  ? buttonColor.withOpacity(0.5)
+                                                  : buttonColor,
                                               textAlign: TextAlign.center,
                                               innerPadding:
                                                   EdgeInsets.symmetric(

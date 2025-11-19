@@ -7,8 +7,8 @@ import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/login/login_view.dart';
-import 'package:special_education/screen/report/trimester_report/report_data_modal.dart';
-import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
+import 'package:special_education/screen/report/trimester_report/generate_trimester_report/generate_trimester_report_data_modal.dart';
+import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
 import 'package:special_education/utils/navigation_utils.dart';
@@ -40,6 +40,10 @@ class ReportDashboardProvider extends ChangeNotifier{
     return _trimesterReportData;
   }
 
+  List<TrimesterGenerateReportDataModel>? _learningAreasReportData;
+  List<TrimesterGenerateReportDataModel>? get learningAreasData {
+    return _learningAreasReportData;
+  }
 
   final UserData userData = UserData();
   late var token = userData.getUserData.token;
@@ -87,7 +91,6 @@ class ReportDashboardProvider extends ChangeNotifier{
   Future<bool> getTrimesterReportData(context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
-
     try {
 
       final response = await _api.getApiCall(
@@ -100,6 +103,41 @@ class ReportDashboardProvider extends ChangeNotifier{
       if (response["responseStatus"] == true && response["data"] is List) {
         _trimesterReportData = (response["data"] as List)
             .map((e) => TrimesterReportDataModal.fromJson(
+          Map<String, dynamic>.from(e),
+        ))
+            .toList();
+        _setLoading(false);
+        return true;
+      } else {
+        _setError(response["responseMessage"] ?? "Invalid data received");
+      }
+    } catch (e) {
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> getLearningAreasData(context,String id) async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    _setLoading(true);
+    try {
+
+      final response = await _api.getApiCall(
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.learningAreas}",
+        params: {"studentId": id},
+        token: token,
+      );
+
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _learningAreasReportData = (response["data"] as List)
+            .map((e) => TrimesterGenerateReportDataModel.fromJson(
           Map<String, dynamic>.from(e),
         ))
             .toList();
@@ -150,4 +188,5 @@ class ReportDashboardProvider extends ChangeNotifier{
     _isLoading = false;
     notifyListeners();
   }
+
 }

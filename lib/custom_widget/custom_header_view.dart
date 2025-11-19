@@ -29,7 +29,7 @@ class CustomHeaderView extends StatelessWidget {
       displayText += " | $moduleName";
     }
 
-    Color primaryColor = isModuleNameEmpty ? AppColors.themeColor : AppColors.headerGrey;
+    Color primaryColor = isModuleNameEmpty ? AppColors.themeColor : AppColors.themeColor;
     Color? secondaryColor = isModuleNameEmpty ? null : AppColors.themeColor;
     int? colorSplitIndexValue = isModuleNameEmpty ? null : getTotalCharacterCount(courseName) + 2;
 

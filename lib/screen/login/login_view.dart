@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/button.dart';
@@ -35,21 +36,16 @@ class _LoginPageState extends State<LoginPage> {
       final success = await authProvider.login(
         _usernameController.text.trim(),
         _passwordController.text.trim(),
-        context
+        context,
       );
 
       if (success && mounted) {
-
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("✅ Login successfully")));
+          showSnackBar("Login successfully", context);
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(authProvider.error ?? "❌ Login failed")),
-          );
+          showSnackBar("Login failed", context);
         }
       }
     }
@@ -168,8 +164,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-
-                // Remove the extra ElevatedButton login to avoid duplicate buttons
               ],
             ),
           ),

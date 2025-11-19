@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
@@ -12,7 +13,6 @@ import 'package:special_education/main.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_view.dart';
 import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
-import 'package:special_education/screen/student/profile_detail/student_profile_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class ReportDashboard extends StatefulWidget {
@@ -76,12 +76,13 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                 padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 15.sp),
                 child: Column(
                   children: [
+                    SizedBox(height: 8.sp,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomText(
                           text: "Trimester Report",
-                          fontSize: 18.sp,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'DMSerif',
                           color: AppColors.themeColor,
@@ -93,6 +94,7 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                             NavigationHelper.push(context, AddStudentView());
                           },
                           child: CustomContainer(
+                            padding: 5.sp,
                             text: "Add Weekly Report",
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w400,
@@ -106,6 +108,7 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                         ),
                       ],
                     ),
+                    SizedBox(height: 10.sp,),
                     CustomTextField(
                       controller: searchController,
                       prefixIcon: SizedBox(
@@ -226,9 +229,7 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                                             final profile = provider.trimesterReportData![0];
                                             NavigationHelper.push(scaffoldContext, TrimesterReportView(student: profile));
                                           } else {
-                                            ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                                              SnackBar(content: Text(provider.error ?? "Failed to load profile")),
-                                            );
+                                            showSnackBar("Failed to load profile", context);
                                           }
                                         },
                                         child: Padding(
