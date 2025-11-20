@@ -49,7 +49,7 @@ class ReportDashboardProvider extends ChangeNotifier{
   late var token = userData.getUserData.token;
   late var instituteId = userData.getUserData.instituteId ?? "0";
 
-  Future<bool> fetchReportStudentList(context) async {
+  Future<bool> fetchReportStudentList(dynamic context) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -88,7 +88,7 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> getTrimesterReportData(context,String id) async {
+  Future<bool> getTrimesterReportData(dynamic context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
     try {
@@ -123,7 +123,7 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> getLearningAreasData(context,String id) async {
+  Future<bool> getLearningAreasData(dynamic context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
     try {

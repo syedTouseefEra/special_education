@@ -108,7 +108,7 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10.sp,),
+                    SizedBox(height: 15.sp,),
                     CustomTextField(
                       controller: searchController,
                       prefixIcon: SizedBox(

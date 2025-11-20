@@ -40,7 +40,6 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                     courseName: '',
                     moduleName: "Trimester Report",
                   ),
-
                   SizedBox(height: 5.sp),
                   Container(
                     decoration: BoxDecoration(
