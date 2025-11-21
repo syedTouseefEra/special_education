@@ -71,6 +71,63 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
   }
 
 
+  // String _buildAddLearningText(List<LearningAreaReportDataModal> learningAreas) {
+  //   final List<Map<String, dynamic>> entries = [];
+  //
+  //   for (int i = 0; i < learningAreas.length; i++) {
+  //     final area = learningAreas[i];
+  //
+  //     final dynamic areaQualityId =
+  //         area.qualityId ?? area.id ?? area.name ?? 'area_index_$i';
+  //     final dynamic id = area.id ;
+  //
+  //     final List<Map<String, dynamic>> qualityText = [];
+  //     final List<SkillQualityParent> parents =
+  //         area.skillQualityParent ?? <SkillQualityParent>[];
+  //     for (final parent in parents) {
+  //       final dynamic parentId =
+  //           parent.qualityParentId ?? parent.qualityParentId ?? parent.name ?? null;
+  //       final int ratingId = parent.ratingId ?? 0;
+  //       final int trimesterReportId = parent.trimesterReportId ?? 0;
+  //
+  //       qualityText.add({
+  //         "qualityId": areaQualityId,
+  //         "qualityParentId": parentId,
+  //         "ratingId": ratingId,
+  //         "trimesterReportId": trimesterReportId
+  //       });
+  //     }
+  //     final String areaKey = areaQualityId.toString();
+  //     final String remark = (_remarkControllers.containsKey(areaKey) &&
+  //         _remarkControllers[areaKey]!.text.trim().isNotEmpty)
+  //         ? _remarkControllers[areaKey]!.text.trim()
+  //         : (area.remarks != null ? area.remarks.toString() : '');
+  //
+  //     final int stars = (area.star != null) ? (area.star as int) : 0;
+  //
+  //     final List<Map<String, dynamic>> otherText = [
+  //       {
+  //         "remark": remark,
+  //         "stars": stars,
+  //         if (_provider.learningAreasData![0].studentId != null)
+  //           "id": id
+  //         else
+  //           "qualityId": areaQualityId,
+  //       }
+  //     ];
+  //     final Map<String, dynamic> entry = {
+  //       "allText": [
+  //         {
+  //           "qualityText": qualityText,
+  //           "otherText": otherText,
+  //         }
+  //       ]
+  //     };
+  //     entries.add(entry);
+  //   }
+  //   return jsonEncode(entries);
+  // }
+
   String _buildAddLearningText(List<LearningAreaReportDataModal> learningAreas) {
     final List<Map<String, dynamic>> entries = [];
 
@@ -79,14 +136,15 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
 
       final dynamic areaQualityId =
           area.qualityId ?? area.id ?? area.name ?? 'area_index_$i';
-      final dynamic id = area.id ;
+      final dynamic id = area.id;
 
       final List<Map<String, dynamic>> qualityText = [];
       final List<SkillQualityParent> parents =
           area.skillQualityParent ?? <SkillQualityParent>[];
+
       for (final parent in parents) {
         final dynamic parentId =
-            parent.qualityParentId ?? parent.qualityParentId ?? parent.name ?? null;
+            parent.qualityParentId ?? parent.name;
         final int ratingId = parent.ratingId ?? 0;
         final int trimesterReportId = parent.trimesterReportId ?? 0;
 
@@ -97,13 +155,16 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
           "trimesterReportId": trimesterReportId
         });
       }
+
       final String areaKey = areaQualityId.toString();
+
       final String remark = (_remarkControllers.containsKey(areaKey) &&
           _remarkControllers[areaKey]!.text.trim().isNotEmpty)
           ? _remarkControllers[areaKey]!.text.trim()
           : (area.remarks != null ? area.remarks.toString() : '');
 
-      final int stars = (area.star != null) ? (area.star as int) : 0;
+      /// ⭐ **Use the UPDATED star value (from interactive widget)**
+      final int stars = area.selectedStar ?? area.star ?? 0;
 
       final List<Map<String, dynamic>> otherText = [
         {
@@ -115,6 +176,7 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
             "qualityId": areaQualityId,
         }
       ];
+
       final Map<String, dynamic> entry = {
         "allText": [
           {
@@ -126,9 +188,9 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
 
       entries.add(entry);
     }
+
     return jsonEncode(entries);
   }
-
 
 
   @override
@@ -386,7 +448,12 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
                                         selectedStar: provider.learningAreasData![index].selectedStar ?? 0,
                                         onChanged: (value) {
                                           print("New rating: $value");
+                                          setState(() {
+                                            provider.learningAreasData![index].star = value;      // <-- write here
+                                            provider.learningAreasData![index].selectedStar = value; // optional
+                                          });
                                         },
+
                                       ),
 
                                       SizedBox(height: 10.sp),
