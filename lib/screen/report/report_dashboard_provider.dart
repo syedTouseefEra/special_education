@@ -1,6 +1,6 @@
+import 'dart:convert';
 
-
-
+import 'package:flutter/Material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
@@ -13,8 +13,7 @@ import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
-class ReportDashboardProvider extends ChangeNotifier{
-
+class ReportDashboardProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   String _searchQuery = "";
@@ -61,13 +60,17 @@ class ReportDashboardProvider extends ChangeNotifier{
 
     try {
       final response = await _api.getApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getStudentByInstituteId}",
         params: {"instituteId": instituteId.toString()},
         token: token,
       );
       if (response["responseStatus"] == true && response["data"] is List) {
         _studentData = (response["data"] as List)
-            .map((e) => StudentListDataModal.fromJson(Map<String, dynamic>.from(e)))
+            .map(
+              (e) =>
+                  StudentListDataModal.fromJson(Map<String, dynamic>.from(e)),
+            )
             .toList();
 
         _filteredStudentData = null;
@@ -93,23 +96,24 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> getTrimesterReportData(dynamic context,String studentId) async {
+  Future<bool> getTrimesterReportData(dynamic context, String studentId) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
     try {
-
       final response = await _api.getApiCall(
         url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTrimesterReport}",
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTrimesterReport}",
         params: {"studentId": studentId},
         token: token,
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
         _trimesterReportData = (response["data"] as List)
-            .map((e) => TrimesterReportDataModal.fromJson(
-          Map<String, dynamic>.from(e),
-        ))
+            .map(
+              (e) => TrimesterReportDataModal.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
             .toList();
         _setLoading(false);
         return true;
@@ -128,23 +132,24 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> getLearningAreasData(dynamic context,String studentId) async {
+  Future<bool> getLearningAreasData(dynamic context, String studentId) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
     try {
-
       final response = await _api.getApiCall(
         url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.learningAreas}",
-        params: {"studentId": studentId},
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.learningAreas}",
+        params: {"trimesterId": trimesterId, "studentId": studentId},
         token: token,
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
         _learningAreasReportData = (response["data"] as List)
-            .map((e) => LearningAreaReportDataModal.fromJson(
-          Map<String, dynamic>.from(e),
-        ))
+            .map(
+              (e) => LearningAreaReportDataModal.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
             .toList();
         _setLoading(false);
         return true;
@@ -163,12 +168,27 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> saveTrimesterReport(dynamic context, String learningTextData) async {
+
+  Future<bool> saveAndUpdateTrimesterReport(
+      dynamic context,
+      bool isUpdating,
+      String learningTextData,
+      ) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
+
     try {
-      final response = await _api.postApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveGenerateReport}",
+      // call API (PUT for update, POST for create)
+      final dynamic rawResponse = isUpdating
+          ? await _api.putApiCall(
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateGenerateReport}",
+        body: {"learningText": learningTextData},
+        token: token,
+      )
+          : await _api.postApiCall(
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveGenerateReport}",
         body: {
           "trimesterId": trimesterId,
           "studentId": studentId,
@@ -179,23 +199,86 @@ class ReportDashboardProvider extends ChangeNotifier{
         token: token,
       );
 
-      if (response["responseStatus"] == true && response["data"] is List) {
-        showSnackBar(response["responseMessage"] , context);
-        NavigationHelper.pop(context);
-        return true;
+      // Normalize to Map<String, dynamic>
+      Map<String, dynamic>? resp;
+      if (rawResponse is Map<String, dynamic>) {
+        resp = rawResponse;
+      } else if (rawResponse is Map) {
+        resp = Map<String, dynamic>.from(rawResponse);
       } else {
-        showSnackBar(context, response["responseMessage"] ?? "Invalid data received");
+        try {
+          final body = rawResponse?.body ?? rawResponse?.toString();
+          if (body != null) {
+            final decoded = jsonDecode(body);
+            if (decoded is Map<String, dynamic>) resp = decoded;
+          }
+        } catch (_) {
+          // ignore parse errors
+        }
       }
-    } catch (e) {
-      if (e is UnauthorizedException) {
-        unauthorizedUser(context);
+
+      // If still null, log and show generic error
+      if (resp == null) {
+        final String raw = rawResponse?.toString() ?? 'null';
+        if (context is BuildContext) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Invalid response format: $raw')));
+        } else {
+          print('Invalid response format: $raw');
+        }
         return false;
       }
+
+      // Interpret responseStatus in a flexible way
+      final dynamic status = resp['responseStatus'];
+      bool success = false;
+      if (status is bool) {
+        success = status;
+      } else if (status is String) {
+        success = status.toLowerCase() == 'true' || status == '1';
+      } else if (status is num) {
+        success = status == 1;
+      }
+
+      final String message =
+          resp['responseMessage']?.toString() ?? 'Saved successfully';
+
+      if (success) {
+        if (context is BuildContext) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+          NavigationHelper.pop(context);
+        } else {
+          print('Success: $message');
+        }
+        return true;
+      } else {
+        if (context is BuildContext) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(resp['responseMessage']?.toString() ?? 'Invalid response from server')));
+        } else {
+          print('Failure: ${resp['responseMessage']?.toString() ?? 'Invalid response from server'}');
+        }
+      }
+    } on UnauthorizedException {
+      if (context is BuildContext) unauthorizedUser(context);
+      return false;
+    } catch (e, st) {
+      final String err = 'An error occurred: ${e.toString()}';
+      if (context is BuildContext) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
+      } else {
+        print(err);
+      }
+      print(st);
     } finally {
       _setLoading(false);
     }
+
     return false;
   }
+
+
+
 
 
   void updateSearchQuery(String query) {
@@ -228,5 +311,4 @@ class ReportDashboardProvider extends ChangeNotifier{
     _isLoading = false;
     notifyListeners();
   }
-
 }

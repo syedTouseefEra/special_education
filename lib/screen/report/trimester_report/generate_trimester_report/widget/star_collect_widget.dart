@@ -3,19 +3,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/assets.dart';
 
 class InteractiveStarRating extends StatefulWidget {
-  final int apiStarCount;
-  final int maxDisplay;
+  /// total number of stars (JSON: star)
+  final int star;
+
+  /// initially filled yellow stars (JSON: selectedStar)
+  final int selectedStar;
+
   final double size;
   final ValueChanged<int>? onChanged;
-  final bool showInitialFilled;
 
   const InteractiveStarRating({
     super.key,
-    required this.apiStarCount,
-    this.maxDisplay = 10,
+    required this.star,
+    required this.selectedStar,
     this.size = 20,
     this.onChanged,
-    this.showInitialFilled = false,
   });
 
   @override
@@ -23,29 +25,26 @@ class InteractiveStarRating extends StatefulWidget {
 }
 
 class _InteractiveStarRatingState extends State<InteractiveStarRating> {
-  late final int totalStars;
-  late int selectedCount;
+  late int filledStars;
 
   @override
   void initState() {
     super.initState();
-
-    final int raw = widget.apiStarCount;
-    final int capped = raw.clamp(0, widget.maxDisplay);
-    totalStars = (capped >= 5 || raw > 0) ? capped : 5;
-    selectedCount = widget.showInitialFilled ? raw.clamp(0, totalStars) : 0;
+    // Ensure filledStars never exceeds total stars
+    filledStars = widget.selectedStar.clamp(0, widget.star);
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: List.generate(totalStars, (index) {
-        final bool isFilled = index < selectedCount;
+      children: List.generate(widget.star, (index) {
+        final bool isFilled = index < filledStars;
+
         return GestureDetector(
           onTap: () {
-            final int newCount = index + 1;
-            setState(() => selectedCount = newCount);
-            if (widget.onChanged != null) widget.onChanged!(newCount);
+            final int newValue = index + 1;
+            setState(() => filledStars = newValue);
+            widget.onChanged?.call(newValue);
           },
           child: Padding(
             padding: EdgeInsets.only(right: 4.w),

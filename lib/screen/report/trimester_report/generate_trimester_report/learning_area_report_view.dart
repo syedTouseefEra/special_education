@@ -1,20 +1,16 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
-import 'package:special_education/custom_widget/custom_header_view.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
-import 'package:special_education/screen/report/trimester_report/generate_trimester_report/learning_area_report_data_modal.dart';
 import 'package:special_education/screen/report/trimester_report/generate_trimester_report/widget/option_item_widget.dart';
-import 'package:special_education/screen/report/trimester_report/generate_trimester_report/widget/save_continue_button_widget.dart';
 import 'package:special_education/screen/report/trimester_report/generate_trimester_report/widget/star_collect_widget.dart';
-import 'package:special_education/screen/report/trimester_report/performance_report/performance_report_view.dart';
-import 'package:special_education/utils/navigation_utils.dart';
+import 'package:special_education/screen/report/trimester_report/generate_trimester_report/learning_area_report_data_modal.dart';
+import 'package:special_education/screen/report/trimester_report/generate_trimester_report/widget/save_continue_button_widget.dart';
 
 class LearningAreaReportView extends StatefulWidget {
   final String studentName;
@@ -34,7 +30,6 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
   late ReportDashboardProvider _provider;
   bool _initialized = false;
 
-  /// Per-area remark controllers keyed by `qualityId`/`id`/`name` (string).
   final Map<String, TextEditingController> _remarkControllers = {};
 
   @override
@@ -48,26 +43,17 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
   }
 
   Future<void> _fetchData() async {
-    final bool trimesterOk = await _provider.getTrimesterReportData(
-      context,
-      widget.studentId,
-    );
     final bool learningOk = await _provider.getLearningAreasData(
       context,
       widget.studentId,
     );
-    if (!trimesterOk && !learningOk) {
+    if (!learningOk) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Failed to load report data.")),
       );
     }
-    // Note: controllers are created lazily in the builder, but if you prefer
-    // to pre-initialize controllers here you may iterate _provider.learningAreasData
-    // and call _controllerForArea for each area.
   }
 
-  /// Returns a controller for the given key, creating it if missing.
-  /// Optionally sets initialText if provided and controller is empty.
   TextEditingController _controllerForArea(String key, {String? initialText}) {
     if (!_remarkControllers.containsKey(key)) {
       _remarkControllers[key] = TextEditingController();
@@ -75,7 +61,6 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
         _remarkControllers[key]!.text = initialText;
       }
     } else {
-      // if controller exists but empty and initialText provided, set it
       if (initialText != null &&
           initialText.trim().isNotEmpty &&
           _remarkControllers[key]!.text.isEmpty) {
@@ -85,63 +70,7 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
     return _remarkControllers[key]!;
   }
 
-  /// Build the JSON payload from current model + per-area controllers
-  // String _buildLearningText(List<LearningAreaReportDataModal> learningAreas) {
-  //   final List<Map<String, dynamic>> qualityText = [];
-  //   final List<Map<String, dynamic>> otherText = [];
-  //
-  //   for (int i = 0; i < learningAreas.length; i++) {
-  //     final area = learningAreas[i];
-  //
-  //     final dynamic areaQualityId =
-  //         area.qualityId ?? area.id ?? area.name ?? 'area_index_$i';
-  //     final String areaKey = areaQualityId.toString();
-  //
-  //     final List<SkillQualityParent> parents =
-  //         area.skillQualityParent ?? <SkillQualityParent>[];
-  //     for (final parent in parents) {
-  //       final dynamic parentId =
-  //           parent.qualityParentId ?? parent.qualityParentId ?? parent.name ?? null;
-  //       final int ratingId = parent.ratingId ?? 0;
-  //
-  //       qualityText.add({
-  //         "qualityId": areaQualityId,
-  //         "qualityParentId": parentId,
-  //         "trimesterReportId": 0,
-  //         "ratingId": ratingId,
-  //       });
-  //     }
-  //
-  //     // Read remark from per-area controller if available, otherwise fallback to model's remark or empty string
-  //     final String remark = (_remarkControllers.containsKey(areaKey) &&
-  //         _remarkControllers[areaKey]!.text.trim().isNotEmpty)
-  //         ? _remarkControllers[areaKey]!.text.trim()
-  //         : (area.remarks != null ? area.remarks.toString() : '');
-  //
-  //     final int stars = (area.star != null) ? area.star as int : 0;
-  //
-  //     otherText.add({
-  //       "remark": remark,
-  //       "stars": stars,
-  //       "qualityId": areaQualityId,
-  //     });
-  //   }
-  //
-  //   final Map<String, dynamic> allEntry = {
-  //     "qualityText": qualityText,
-  //     "otherText": otherText,
-  //   };
-  //
-  //   final Map<String, dynamic> payload = {
-  //     "allText": [allEntry],
-  //   };
-  //
-  //   return jsonEncode(payload);
-  // }
 
-  /// Build the JSON payload from current model + per-area controllers
-  /// Returns a JSON *string* representing a LIST of {"allText":[{...}]} objects,
-  /// one for each learning area (matching the structure you requested).
   String _buildLearningText(List<LearningAreaReportDataModal> learningAreas) {
     final List<Map<String, dynamic>> entries = [];
 
@@ -208,7 +137,6 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
 
   @override
   void dispose() {
-    // dispose per-area controllers
     for (final controller in _remarkControllers.values) {
       controller.dispose();
     }
@@ -458,15 +386,13 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
                                       CustomText(text: "Star Collected"),
                                       SizedBox(height: 10.sp),
                                       InteractiveStarRating(
-                                        apiStarCount: area.star ?? 0,
-                                        maxDisplay: 10,
-                                        size: 20.sp,
+                                        star: provider.learningAreasData![index].star ?? 0,
+                                        selectedStar: provider.learningAreasData![index].selectedStar ?? 0,
                                         onChanged: (value) {
-                                          setState(() {
-                                            area.star = value;
-                                          });
+                                          print("New rating: $value");
                                         },
                                       ),
+
                                       SizedBox(height: 10.sp),
                                     ],
                                   ),
@@ -478,19 +404,21 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
                           SaveContinueButton(
                             onPressed: () {
 
-                              NavigationHelper.push(context, PerformanceReportView(studentName: widget.studentName, studentId: widget.studentId,));
-                              // final List<LearningAreaReportDataModal>
-                              // learningAreasList =
-                              //     provider.learningAreasData ??
-                              //         <LearningAreaReportDataModal>[];
-                              //
-                              // final String learningTextJson =
-                              // _buildLearningText(learningAreasList);
-                              //
-                              // provider.saveTrimesterReport(
-                              //   context,
-                              //   learningTextJson,
-                              // );
+                              // NavigationHelper.push(context, PerformanceReportView(studentName: widget.studentName, studentId: widget.studentId,));
+                              final List<LearningAreaReportDataModal>
+                              learningAreasList =
+                                  provider.learningAreasData ??
+                                      <LearningAreaReportDataModal>[];
+
+                              final String learningTextJson =
+                              _buildLearningText(learningAreasList);
+
+                              print("provider.trimesterReportData![0].studentId "+provider.learningAreasData![0].studentId.toString());
+                              provider.saveAndUpdateTrimesterReport(
+                                context,
+                                provider.learningAreasData![0].studentId != null ?true:false,
+                                learningTextJson,
+                              );
                             },
                           ),
                           SizedBox(height: 30.sp),
