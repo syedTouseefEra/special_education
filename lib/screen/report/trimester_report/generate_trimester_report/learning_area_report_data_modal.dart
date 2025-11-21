@@ -1,6 +1,6 @@
 
 
-class TrimesterGenerateReportDataModel {
+class LearningAreaReportDataModal {
   int? id;
   int? trimesterId;
   int? studentId;
@@ -11,7 +11,7 @@ class TrimesterGenerateReportDataModel {
   int? selectedStar;
   List<SkillQualityParent>? skillQualityParent;
 
-  TrimesterGenerateReportDataModel(
+  LearningAreaReportDataModal(
       {this.id,
         this.trimesterId,
         this.studentId,
@@ -22,7 +22,7 @@ class TrimesterGenerateReportDataModel {
         this.selectedStar,
         this.skillQualityParent});
 
-  TrimesterGenerateReportDataModel.fromJson(Map<String, dynamic> json) {
+  LearningAreaReportDataModal.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     trimesterId = json['trimesterId'];
     studentId = json['studentId'];

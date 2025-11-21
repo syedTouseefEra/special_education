@@ -7,7 +7,7 @@ import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/login/login_view.dart';
-import 'package:special_education/screen/report/trimester_report/generate_trimester_report/generate_trimester_report_data_modal.dart';
+import 'package:special_education/screen/report/trimester_report/generate_trimester_report/learning_area_report_data_modal.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
@@ -21,6 +21,11 @@ class ReportDashboardProvider extends ChangeNotifier{
 
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  String trimesterId = '';
+  String studentId = '';
+  String startDate = '';
+  String endDate = '';
 
   final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
 
@@ -40,8 +45,8 @@ class ReportDashboardProvider extends ChangeNotifier{
     return _trimesterReportData;
   }
 
-  List<TrimesterGenerateReportDataModel>? _learningAreasReportData;
-  List<TrimesterGenerateReportDataModel>? get learningAreasData {
+  List<LearningAreaReportDataModal>? _learningAreasReportData;
+  List<LearningAreaReportDataModal>? get learningAreasData {
     return _learningAreasReportData;
   }
 
@@ -88,7 +93,7 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> getTrimesterReportData(dynamic context,String id) async {
+  Future<bool> getTrimesterReportData(dynamic context,String studentId) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
     try {
@@ -96,7 +101,7 @@ class ReportDashboardProvider extends ChangeNotifier{
       final response = await _api.getApiCall(
         url:
         "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTrimesterReport}",
-        params: {"studentId": id},
+        params: {"studentId": studentId},
         token: token,
       );
 
@@ -123,7 +128,7 @@ class ReportDashboardProvider extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> getLearningAreasData(dynamic context,String id) async {
+  Future<bool> getLearningAreasData(dynamic context,String studentId) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
     try {
@@ -131,13 +136,13 @@ class ReportDashboardProvider extends ChangeNotifier{
       final response = await _api.getApiCall(
         url:
         "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.learningAreas}",
-        params: {"studentId": id},
+        params: {"studentId": studentId},
         token: token,
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
         _learningAreasReportData = (response["data"] as List)
-            .map((e) => TrimesterGenerateReportDataModel.fromJson(
+            .map((e) => LearningAreaReportDataModal.fromJson(
           Map<String, dynamic>.from(e),
         ))
             .toList();
@@ -157,6 +162,41 @@ class ReportDashboardProvider extends ChangeNotifier{
     }
     return false;
   }
+
+  Future<bool> saveTrimesterReport(dynamic context, String learningTextData) async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    _setLoading(true);
+    try {
+      final response = await _api.postApiCall(
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveGenerateReport}",
+        body: {
+          "trimesterId": trimesterId,
+          "studentId": studentId,
+          "startDate": startDate,
+          "endDate": endDate,
+          "learningText": learningTextData,
+        },
+        token: token,
+      );
+
+      if (response["responseStatus"] == true && response["data"] is List) {
+        showSnackBar(response["responseMessage"] , context);
+        NavigationHelper.pop(context);
+        return true;
+      } else {
+        showSnackBar(context, response["responseMessage"] ?? "Invalid data received");
+      }
+    } catch (e) {
+      if (e is UnauthorizedException) {
+        unauthorizedUser(context);
+        return false;
+      }
+    } finally {
+      _setLoading(false);
+    }
+    return false;
+  }
+
 
   void updateSearchQuery(String query) {
     _searchQuery = query.toLowerCase();

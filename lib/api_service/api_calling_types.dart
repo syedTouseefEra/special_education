@@ -187,7 +187,6 @@ class ApiCallingTypes {
     };
 
     try {
-      // Add query parameters to URL if provided
       if (params != null && params.isNotEmpty) {
         final queryString = Uri(queryParameters: params).query;
         url = '$url?$queryString';
@@ -335,10 +334,12 @@ class ApiCallingTypes {
       debugPrint('🟦 [$method] REQUEST');
       debugPrint('➡️ URL: $url');
       debugPrint('📬 Headers: ${jsonEncode(headers)}');
-      if (params != null) debugPrint('🔍 Params: ${jsonEncode(params)}');
-      if (body != null) debugPrint('📦 Body: ${jsonEncode(body)}');
+      if (params != null) printLongString('🔍 Params: ${jsonEncode(params)}');
+      if (body != null) printLongString('📦 Body: ${jsonEncode(body)}');
       debugPrint('✅ Response Code: ${response.statusCode}');
       printLongString('📝 Response Body: ${response.body}');
+      printPrettyJson("📝 Response Body:", response.body);
+
     }
   }
 
@@ -351,4 +352,16 @@ class ApiCallingTypes {
       );
     }
   }
+
+  void printPrettyJson(String prefix, String jsonString) {
+    try {
+      final decoded = json.decode(jsonString);
+      final pretty = const JsonEncoder.withIndent('  ').convert(decoded);
+      printLongString("$prefix\n$pretty");
+    } catch (_) {
+      printLongString("$prefix\n$jsonString");
+    }
+  }
+
 }
+

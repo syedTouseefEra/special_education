@@ -16,6 +16,7 @@ class ImgAssets{
 
   static const String greyStar = "${assets}greyStar.webp";
   static const String yellowStar = "${assets}yellowStar.webp";
+  static const String progress1 = "${assets}Progress 1.webp";
 
 
 

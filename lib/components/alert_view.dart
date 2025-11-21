@@ -4,6 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 void alertToast(String message) {
   Fluttertoast.showToast(msg: message);
@@ -130,4 +132,12 @@ void doubleButton(
       );
     },
   );
+}
+
+
+void unauthorizedUser(dynamic context){
+  showSnackBar("Session expired. Please login again.", context);
+  Future.delayed(const Duration(milliseconds: 500), () {
+    NavigationHelper.pushAndClearStack(context, LoginPage());
+  });
 }
