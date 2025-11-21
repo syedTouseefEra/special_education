@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/Material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/api_service/response_checker.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/login/login_view.dart';
@@ -178,7 +178,6 @@ class ReportDashboardProvider extends ChangeNotifier {
     _setLoading(true);
 
     try {
-      // call API (PUT for update, POST for create)
       final dynamic rawResponse = isUpdating
           ? await _api.putApiCall(
         url:
@@ -199,65 +198,24 @@ class ReportDashboardProvider extends ChangeNotifier {
         token: token,
       );
 
-      // Normalize to Map<String, dynamic>
-      Map<String, dynamic>? resp;
-      if (rawResponse is Map<String, dynamic>) {
-        resp = rawResponse;
-      } else if (rawResponse is Map) {
-        resp = Map<String, dynamic>.from(rawResponse);
-      } else {
-        try {
-          final body = rawResponse?.body ?? rawResponse?.toString();
-          if (body != null) {
-            final decoded = jsonDecode(body);
-            if (decoded is Map<String, dynamic>) resp = decoded;
-          }
-        } catch (_) {
-          // ignore parse errors
-        }
-      }
+      final ApiResponse apiResp = ResponseChecker.fromRaw(rawResponse);
 
-      // If still null, log and show generic error
-      if (resp == null) {
-        final String raw = rawResponse?.toString() ?? 'null';
+      if (apiResp.success) {
         if (context is BuildContext) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Invalid response format: $raw')));
-        } else {
-          print('Invalid response format: $raw');
-        }
-        return false;
-      }
-
-      // Interpret responseStatus in a flexible way
-      final dynamic status = resp['responseStatus'];
-      bool success = false;
-      if (status is bool) {
-        success = status;
-      } else if (status is String) {
-        success = status.toLowerCase() == 'true' || status == '1';
-      } else if (status is num) {
-        success = status == 1;
-      }
-
-      final String message =
-          resp['responseMessage']?.toString() ?? 'Saved successfully';
-
-      if (success) {
-        if (context is BuildContext) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+          learningAreasData!.clear();
+          ResponseChecker.showSnackBarFromResponse(context, apiResp);
           NavigationHelper.pop(context);
         } else {
-          print('Success: $message');
+          print('Success: ${apiResp.message}');
         }
         return true;
       } else {
         if (context is BuildContext) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(resp['responseMessage']?.toString() ?? 'Invalid response from server')));
+          ResponseChecker.showSnackBarFromResponse(context, apiResp);
         } else {
-          print('Failure: ${resp['responseMessage']?.toString() ?? 'Invalid response from server'}');
+          print('Failure: ${apiResp.message}');
         }
+        return false;
       }
     } on UnauthorizedException {
       if (context is BuildContext) unauthorizedUser(context);

@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:special_education/api_service/api_service_url.dart';
-import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/utils/exception_handle.dart';
-import 'package:special_education/utils/navigation_utils.dart';
 
 class ApiCallingTypes {
   final String baseUrl;
@@ -343,7 +341,6 @@ class ApiCallingTypes {
     }
   }
 
-  // Helper method to safely print long strings
   void printLongString(String text) {
     const int chunkSize = 800;
     for (var i = 0; i < text.length; i += chunkSize) {

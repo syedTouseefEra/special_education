@@ -71,7 +71,7 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
   }
 
 
-  String _buildLearningText(List<LearningAreaReportDataModal> learningAreas) {
+  String _buildAddLearningText(List<LearningAreaReportDataModal> learningAreas) {
     final List<Map<String, dynamic>> entries = [];
 
     for (int i = 0; i < learningAreas.length; i++) {
@@ -79,8 +79,8 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
 
       final dynamic areaQualityId =
           area.qualityId ?? area.id ?? area.name ?? 'area_index_$i';
+      final dynamic id = area.id ;
 
-      // Build qualityText for this area (one entry per parent)
       final List<Map<String, dynamic>> qualityText = [];
       final List<SkillQualityParent> parents =
           area.skillQualityParent ?? <SkillQualityParent>[];
@@ -88,17 +88,15 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
         final dynamic parentId =
             parent.qualityParentId ?? parent.qualityParentId ?? parent.name ?? null;
         final int ratingId = parent.ratingId ?? 0;
+        final int trimesterReportId = parent.trimesterReportId ?? 0;
 
         qualityText.add({
           "qualityId": areaQualityId,
           "qualityParentId": parentId,
           "ratingId": ratingId,
-          "trimesterReportId": 0,
+          "trimesterReportId": trimesterReportId
         });
       }
-
-      // Build otherText for this area (single object per area)
-      // Prefer controller value if present; fall back to model remark
       final String areaKey = areaQualityId.toString();
       final String remark = (_remarkControllers.containsKey(areaKey) &&
           _remarkControllers[areaKey]!.text.trim().isNotEmpty)
@@ -111,11 +109,12 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
         {
           "remark": remark,
           "stars": stars,
-          "qualityId": areaQualityId,
+          if (_provider.learningAreasData![0].studentId != null)
+            "id": id
+          else
+            "qualityId": areaQualityId,
         }
       ];
-
-      // Each entry matches: {"allText":[ { "qualityText":[...], "otherText":[...] } ]}
       final Map<String, dynamic> entry = {
         "allText": [
           {
@@ -127,12 +126,9 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
 
       entries.add(entry);
     }
-
-    // Return a JSON-encoded string of the array of entries.
-    // This will produce a string like:
-    // "[{\"allText\":[{...}]},{\"allText\":[{...}]}]"
     return jsonEncode(entries);
   }
+
 
 
   @override
@@ -411,7 +407,7 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
                                       <LearningAreaReportDataModal>[];
 
                               final String learningTextJson =
-                              _buildLearningText(learningAreasList);
+                              _buildAddLearningText(learningAreasList);
 
                               print("provider.trimesterReportData![0].studentId "+provider.learningAreasData![0].studentId.toString());
                               provider.saveAndUpdateTrimesterReport(
