@@ -53,5 +53,6 @@ class ApiServiceUrl {
   static String learningAreas = "Report/LearningAreas";
   static String saveGenerateReport = "Report/SaveGenerateReport";
   static String updateGenerateReport = "Report/UpdateGenerateReport";
+  static String savePerformanceReport = "Report/SavePerformanceReport";
 
 }

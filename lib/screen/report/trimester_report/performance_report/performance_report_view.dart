@@ -1,15 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:special_education/constant/assets.dart';
-import 'package:special_education/constant/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:special_education/constant/colors.dart';
 import 'package:special_education/components/custom_appbar.dart';
-import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
-import 'package:special_education/screen/report/trimester_report/generate_trimester_report/widget/cumulative_rating_row.dart';
+import 'package:special_education/screen/report/trimester_report/generate_trimester_report/widget/assessment_section_widget.dart';
 import 'package:special_education/screen/report/trimester_report/generate_trimester_report/widget/save_continue_button_widget.dart';
-import 'package:special_education/screen/report/trimester_report/performance_report/widget/progress_bar_widget.dart';
+import 'package:special_education/screen/report/trimester_report/performance_report/widget/performance_item.dart';
+
 
 class PerformanceReportView extends StatefulWidget {
   final String studentName;
@@ -26,16 +27,40 @@ class PerformanceReportView extends StatefulWidget {
 }
 
 class _PerformanceReportViewState extends State<PerformanceReportView> {
-  final remarkController = TextEditingController();
-  int selected = 0;
+  late List<PerformanceItem> performanceItems;
 
-  final List<Color> ratingColors = [
-    Color(0xFFFF0000), // 1
-    Color(0xFFFF7A00), // 2
-    Color(0xFFFFD100), // 3
-    Color(0xFF2ECC40), // 4
-    Color(0xFF007F00), // 5
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    performanceItems = [
+      PerformanceItem(
+        name: "Attention (Concentration/Focus)",
+        remarkController: TextEditingController(),
+      ),
+      PerformanceItem(
+        name: "Memory (Retention And Recall)",
+        remarkController: TextEditingController(),
+      ),
+      PerformanceItem(
+        name: "Learning (Interest/Engagement)",
+        remarkController: TextEditingController(),
+      ),
+      PerformanceItem(
+        name: "Command (Following/Responsive)",
+        remarkController: TextEditingController(),
+      ),
+    ];
+  }
+
+
+
+  String buildPerformanceTextJson() {
+    final List<Map<String, dynamic>> jsonList =
+    performanceItems.map((item) => item.toJson()).toList();
+    return jsonEncode(jsonList);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +79,7 @@ class _PerformanceReportViewState extends State<PerformanceReportView> {
                 ),
 
                 Padding(
-                  padding: EdgeInsets.fromLTRB(12.sp, 0.sp, 12.sp, 0.sp),
+                  padding: EdgeInsets.fromLTRB(12.sp, 0, 12.sp, 0),
                   child: Consumer<ReportDashboardProvider>(
                     builder: (context, provider, child) {
                       if (provider.isLoading) {
@@ -62,116 +87,52 @@ class _PerformanceReportViewState extends State<PerformanceReportView> {
                       }
 
                       return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Divider(thickness: 1.sp),
                           SizedBox(height: 10.sp),
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 12.sp),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColors.themeColor,
-                                  width: 1.sp,
-                                ),
-                                borderRadius: BorderRadius.circular(10.sp),
-                              ),
-                              padding: EdgeInsets.all(10.sp),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    text: "1. Attention (concentration/focus)",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  SizedBox(height: 10.sp),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: Column(
-                                      children: [
-                                        Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            Container(
-                                              height: 9.sp,
-                                              width: double.infinity,
-                                              color: AppColors.grey.withOpacity(
-                                                0.3,
-                                              ),
-                                            ),
-                                            // inside any widget build method
-                                            CumulativeRatingRow(
-                                              initial: 0,
-                                              onChanged: (val) {
-                                                print("Selected rating: $val");
-                                                // update your model e.g. area.star = val;
-                                              },
-                                            ),
 
-                                          ],
-                                        ),
+                          Column(
+                            children: List.generate(performanceItems.length, (index) {
+                              final item = performanceItems[index];
 
-                                        SizedBox(height: 8.sp),
-                                      ],
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 12.sp),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: AppColors.themeColor,
+                                      width: 1.sp,
                                     ),
+                                    borderRadius: BorderRadius.circular(10.sp),
                                   ),
+                                  padding: EdgeInsets.all(10.sp),
 
-                                  SizedBox(height: 10.sp),
-                                  CustomText(
-                                    text:
-                                        "Score on the scale of 1-5 (where 1 is lowest and 5 is higher)",
-                                    fontSize: 11.sp,
-                                    color: AppColors.grey,
+                                  child: AssessmentSection(
+                                    title: item.name,
+                                    remarkController: item.remarkController,
+                                    onRatingChanged: (rating) {
+                                      item.ratingId = rating;
+                                    },
                                   ),
-                                  SizedBox(height: 10.sp),
-
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CustomText(
-                                        text: "Remark",
-                                        fontSize: 15.sp,
-                                      ),
-                                      SizedBox(height: 10.sp),
-                                      TextField(
-                                        controller: remarkController,
-                                        maxLines: 3,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                            vertical: 10.sp,
-                                            horizontal: 10.sp,
-                                          ),
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Enter Learning Outcome!',
-                                          hintStyle: TextStyle(
-                                            color: AppColors.grey,
-                                            fontSize: 14.sp,
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              5,
-                                            ),
-                                            borderSide: BorderSide(
-                                              color: AppColors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10.sp),
-                                ],
-                              ),
-                            ),
+                                ),
+                              );
+                            }),
                           ),
+
                           SizedBox(height: 20.sp),
+
                           SaveContinueButton(
                             onPressed: () {
-                              // provider.saveTrimesterReport(context);
+                              String performanceText = buildPerformanceTextJson();
+                              print("performanceText "+performanceText.toString());
+
+                              provider.savePerformanceReport(
+                                context,
+                                performanceText,
+                              );
                             },
                           ),
+
                           SizedBox(height: 30.sp),
                         ],
                       );

@@ -8,6 +8,7 @@ import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/dashboard/dashboard_data_modal.dart';
 import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/report/trimester_report/generate_trimester_report/learning_area_report_data_modal.dart';
+import 'package:special_education/screen/report/trimester_report/performance_report/performance_report_view.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
@@ -168,35 +169,35 @@ class ReportDashboardProvider extends ChangeNotifier {
     return false;
   }
 
-
   Future<bool> saveAndUpdateTrimesterReport(
-      dynamic context,
-      bool isUpdating,
-      String learningTextData,
-      ) async {
+    String studentName,
+    dynamic context,
+    bool isUpdating,
+    String learningTextData,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final dynamic rawResponse = isUpdating
           ? await _api.putApiCall(
-        url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateGenerateReport}",
-        body: {"learningText": learningTextData},
-        token: token,
-      )
+              url:
+                  "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateGenerateReport}",
+              body: {"learningText": learningTextData},
+              token: token,
+            )
           : await _api.postApiCall(
-        url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveGenerateReport}",
-        body: {
-          "trimesterId": trimesterId,
-          "studentId": studentId,
-          "startDate": startDate,
-          "endDate": endDate,
-          "learningText": learningTextData,
-        },
-        token: token,
-      );
+              url:
+                  "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveGenerateReport}",
+              body: {
+                "trimesterId": trimesterId,
+                "studentId": studentId,
+                "startDate": startDate,
+                "endDate": endDate,
+                "learningText": learningTextData,
+              },
+              token: token,
+            );
 
       final ApiResponse apiResp = ResponseChecker.fromRaw(rawResponse);
 
@@ -204,7 +205,7 @@ class ReportDashboardProvider extends ChangeNotifier {
         if (context is BuildContext) {
           learningAreasData!.clear();
           ResponseChecker.showSnackBarFromResponse(context, apiResp);
-          NavigationHelper.pop(context);
+          NavigationHelper.push(context, PerformanceReportView(studentName: studentName, studentId: studentId,));
         } else {
           print('Success: ${apiResp.message}');
         }
@@ -223,7 +224,9 @@ class ReportDashboardProvider extends ChangeNotifier {
     } catch (e, st) {
       final String err = 'An error occurred: ${e.toString()}';
       if (context is BuildContext) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(err)));
       } else {
         print(err);
       }
@@ -231,13 +234,63 @@ class ReportDashboardProvider extends ChangeNotifier {
     } finally {
       _setLoading(false);
     }
-
     return false;
   }
 
+  Future<bool> savePerformanceReport(
+      dynamic context,
+      String performanceText,
+      ) async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    _setLoading(true);
 
+    try {
+      final dynamic rawResponse = await _api.postApiCall(
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.savePerformanceReport}",
+        body: {
+          "trimesterId": trimesterId,
+          "studentId": studentId,
+          "performanceText": performanceText,
+        },
+        token: token,
+      );
 
+      final ApiResponse apiResp = ResponseChecker.fromRaw(rawResponse);
 
+      if (apiResp.success) {
+        if (context is BuildContext) {
+          ResponseChecker.showSnackBarFromResponse(context, apiResp);
+        } else {
+          print('Success: ${apiResp.message}');
+        }
+        return true;
+      } else {
+        if (context is BuildContext) {
+          ResponseChecker.showSnackBarFromResponse(context, apiResp);
+        } else {
+          print('Failure: ${apiResp.message}');
+        }
+        return false;
+      }
+    } on UnauthorizedException {
+      if (context is BuildContext) unauthorizedUser(context);
+      return false;
+    } catch (e, st) {
+      final String err = 'An error occurred: ${e.toString()}';
+      if (context is BuildContext) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(err)));
+      } else {
+        print(err);
+      }
+      print(st);
+    } finally {
+      _setLoading(false);
+    }
+    return false;
+  }
 
   void updateSearchQuery(String query) {
     _searchQuery = query.toLowerCase();

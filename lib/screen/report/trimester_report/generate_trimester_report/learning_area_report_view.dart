@@ -446,15 +446,16 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
                                       InteractiveStarRating(
                                         star: provider.learningAreasData![index].star ?? 0,
                                         selectedStar: provider.learningAreasData![index].selectedStar ?? 0,
+
                                         onChanged: (value) {
                                           print("New rating: $value");
+
                                           setState(() {
-                                            provider.learningAreasData![index].star = value;      // <-- write here
-                                            provider.learningAreasData![index].selectedStar = value; // optional
+                                            provider.learningAreasData![index].selectedStar = value;  // ✅ only this
                                           });
                                         },
-
                                       ),
+
 
                                       SizedBox(height: 10.sp),
                                     ],
@@ -466,18 +467,14 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
                           SizedBox(height: 20.sp),
                           SaveContinueButton(
                             onPressed: () {
-
-                              // NavigationHelper.push(context, PerformanceReportView(studentName: widget.studentName, studentId: widget.studentId,));
                               final List<LearningAreaReportDataModal>
                               learningAreasList =
                                   provider.learningAreasData ??
                                       <LearningAreaReportDataModal>[];
-
                               final String learningTextJson =
                               _buildAddLearningText(learningAreasList);
-
-                              print("provider.trimesterReportData![0].studentId "+provider.learningAreasData![0].studentId.toString());
                               provider.saveAndUpdateTrimesterReport(
+                                widget.studentName,
                                 context,
                                 provider.learningAreasData![0].studentId != null ?true:false,
                                 learningTextJson,
