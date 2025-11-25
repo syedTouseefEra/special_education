@@ -2,8 +2,11 @@ import 'dart:convert';
 
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/user_data/user_data.dart';
 
 class LocationService {
+  final UserData userData = UserData();
+  late var token = userData.getUserData.token;
   final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
   Future<List<T>> fetchLocationData<T>({
     required String url,
@@ -14,7 +17,7 @@ class LocationService {
       final response = await _api.getApiCall(
         url: url,
         params: params ?? {},
-        token: ApiServiceUrl.token,
+        token: token,
       );
       final body = response is Map<String, dynamic>
           ? response

@@ -150,7 +150,7 @@ class StudentDashboardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> fetchProfileDetail(context,String id) async {
+  Future<bool> fetchProfileDetail(dynamic context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -189,7 +189,7 @@ class StudentDashboardProvider with ChangeNotifier {
     return false;
   }
 
-  Future<bool> getLongTermGoal(context,String id) async {
+  Future<bool> getLongTermGoal(dynamic context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -255,7 +255,7 @@ class StudentDashboardProvider with ChangeNotifier {
   //   return false;
   // }
 
-  Future<bool> addLongTermCourse(context,String studentId, String longTermGoal) async {
+  Future<bool> addLongTermCourse(dynamic context,String studentId, String longTermGoal) async {
     _setLoading(true);
 
     try {
@@ -265,7 +265,7 @@ class StudentDashboardProvider with ChangeNotifier {
           "studentId": studentId,
           "longTermGoal": longTermGoal,
         },
-        token: ApiServiceUrl.token,
+        token: token,
       );
 
       if (data["responseStatus"] == true) {
@@ -291,7 +291,7 @@ class StudentDashboardProvider with ChangeNotifier {
   }
 
 
-  Future<bool> updateLongTermCourse(context,String id, String longTermGoal) async {
+  Future<bool> updateLongTermCourse(dynamic context,String id, String longTermGoal) async {
     await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
 
@@ -300,7 +300,7 @@ class StudentDashboardProvider with ChangeNotifier {
         url:
             "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
         body: {"id": id, "longTermGoal": longTermGoal},
-        token: ApiServiceUrl.token,
+        token: token,
       );
       final body = json.decode(response.body);
       if (response.statusCode == 200 && body["responseStatus"] == true) {
@@ -325,7 +325,7 @@ class StudentDashboardProvider with ChangeNotifier {
     return false;
   }
 
-  Future<bool> getWeeklyGoals(context,String id) async {
+  Future<bool> getWeeklyGoals(dynamic context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 

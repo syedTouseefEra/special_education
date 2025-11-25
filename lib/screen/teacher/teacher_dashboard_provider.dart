@@ -141,7 +141,7 @@ class TeacherDashboardProvider with ChangeNotifier {
         url:
         "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.masterRole}",
         params: {"": ""},
-        token: ApiServiceUrl.token,
+        token: token,
       );
 
       if (response.statusCode == 200) {

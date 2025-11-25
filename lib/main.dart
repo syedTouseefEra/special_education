@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pdf/widgets.dart' as pw show Font;
 import 'package:provider/provider.dart';
 import 'package:special_education/screen/choose_account/choose_account_provider.dart';
 import 'package:special_education/screen/dashboard/dashboard_provider.dart';
@@ -16,9 +18,11 @@ import 'package:special_education/utils/image_upload_provider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await FlutterDownloader.initialize(
     debug: true,
     ignoreSsl: true,

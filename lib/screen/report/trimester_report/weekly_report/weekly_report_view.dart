@@ -15,15 +15,15 @@ import 'package:special_education/screen/report/trimester_report/generate_trimes
 import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
-class TrimesterReportView extends StatefulWidget {
+class WeeklyReportView extends StatefulWidget {
   final TrimesterReportDataModal student;
-  const TrimesterReportView({super.key, required this.student});
+  const WeeklyReportView({super.key, required this.student});
 
   @override
-  State<TrimesterReportView> createState() => _TrimesterReportState();
+  State<WeeklyReportView> createState() => _WeeklyReportViewState();
 }
 
-class _TrimesterReportState extends State<TrimesterReportView> {
+class _WeeklyReportViewState extends State<WeeklyReportView> {
   late final List<dynamic> trimesters;
   late final ReportDashboardProvider provider;
 

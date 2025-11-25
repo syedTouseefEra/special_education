@@ -12,7 +12,6 @@ import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/main.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_view.dart';
-import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class ReportDashboard extends StatefulWidget {
@@ -25,6 +24,8 @@ class ReportDashboard extends StatefulWidget {
 class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
   final searchController = TextEditingController();
   late BuildContext scaffoldContext;
+  late var isSelected = true;
+
 
   @override
   void initState() {
@@ -72,195 +73,232 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
             return Scaffold(
               backgroundColor: AppColors.white,
               appBar: CustomAppBar(enableTheming: false),
-              body: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 15.sp),
-                child: Column(
-                  children: [
-                    SizedBox(height: 8.sp,),
-                    Row(
+              body: Column(
+                children: [
+                  Padding(
+                    padding:  EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 0),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(
-                          text: "Trimester Report",
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'DMSerif',
-                          color: AppColors.themeColor,
-                        ),
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         InkWell(
                           splashColor: AppColors.transparent,
                           highlightColor: AppColors.transparent,
-                          onTap: (){
-                            NavigationHelper.push(context, AddStudentView());
+                          onTap: () {
+                            setState(() => isSelected = true);
                           },
                           child: CustomContainer(
                             padding: 5.sp,
-                            text: "Add Weekly Report",
+                            text: "Weekly Report",
                             fontSize: 15.sp,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                             fontFamily: 'Inter',
-                            borderRadius: 15,
+                            borderRadius: 5.r,
+                            textColor: isSelected ? AppColors.white : AppColors.themeColor,
+                            containerColor: isSelected ? AppColors.themeColor : AppColors.white,
+                            borderColor: isSelected ? Colors.transparent : AppColors.themeColor,
+                            borderWidth: isSelected ? 0 : 0.7.sp,
                             innerPadding: EdgeInsets.symmetric(
-                              vertical: 4.sp,
-                              horizontal: 10.sp,
+                              vertical: 8.sp,
+                              horizontal: 25.sp,
+                            ),
+                          ),
+                        ),
+
+                        InkWell(
+                          splashColor: AppColors.transparent,
+                          highlightColor: AppColors.transparent,
+                          onTap: () {
+                            setState(() => isSelected = false);
+                          },
+                          child: CustomContainer(
+                            padding: 5.sp,
+                            text: "Trimester Report",
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Inter',
+                            borderRadius: 5.r,
+                            textAlign: TextAlign.center,
+                            textColor: !isSelected ? AppColors.white : AppColors.themeColor,
+                            containerColor: !isSelected ? AppColors.themeColor : AppColors.white,
+                            borderColor: !isSelected ? Colors.transparent : AppColors.themeColor,
+                            borderWidth: !isSelected ? 0 : 0.7.sp,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 8.sp,
+                              horizontal: 18.sp,
                             ),
                           ),
                         ),
                       ],
-                    ),
-                    SizedBox(height: 15.sp,),
-                    CustomTextField(
-                      controller: searchController,
-                      prefixIcon: SizedBox(
-                        width: 60.w,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.search, size: 20.sp, color: Colors.blueAccent),
-                            SizedBox(width: 8.sp),
-                            Container(
-                              width: 1.sp,
-                              height: 20.sp,
-                              color: Colors.grey,
-                            ),
-                          ],
-                        ),
-                      ),
-                      fontSize: 15.sp,
-                      fontColor: AppColors.darkGrey,
-                      borderColor: AppColors.grey,
-                      label: 'Search',
-                      onChanged: (value) {
-                        Provider.of<ReportDashboardProvider>(
-                          context,
-                          listen: false,
-                        ).updateSearchQuery(value);
-                      },
-                    ),
-                    SizedBox(height: 5.sp),
-                    Expanded(
-                      child: Consumer<ReportDashboardProvider>(
-                        builder: (context, provider, _) {
-                          if (provider.isLoading) {
-                            return const Center(child: CircularProgressIndicator());
-                          } else if (provider.error != null) {
-                            return Center(child: Text(provider.error!));
-                          } else if (provider.studentData == null || provider.studentData!.isEmpty) {
-                            return const Center(child: Text("No report found"));
-                          }
+                    )
 
-                          return ListView.builder(
-                            itemCount: provider.studentData!.length,
-                            itemBuilder: (context, index) {
-                              final student = provider.studentData![index];
-                              return Container(
-                                margin: EdgeInsets.only(bottom: 12.sp),
-                                padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 10.sp, 10.sp),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: AppColors.borderColor,
+              ],
+                    ),
+                  ),
+                  Divider(thickness: 1.sp, color: AppColors.grey,),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5.sp, horizontal: 15.sp),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 1.sp,),
+                          CustomTextField(
+                            controller: searchController,
+                            prefixIcon: SizedBox(
+                              width: 60.w,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.search, size: 20.sp, color: AppColors.themeColor),
+                                  SizedBox(width: 8.sp),
+                                  Container(
                                     width: 1.sp,
+                                    height: 20.sp,
+                                    color: Colors.grey,
                                   ),
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          height: 70.sp,
-                                          width: 70.sp,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.themeColor.withOpacity(0.1),
-                                            shape: BoxShape.circle,
-                                            image: student.studentImage != null && student.studentImage!.isNotEmpty
-                                                ? DecorationImage(
-                                              image: NetworkImage('${ApiServiceUrl.urlLauncher}uploads/${student.studentImage}'),
-                                              fit: BoxFit.cover,
-                                            )
-                                                : const DecorationImage(
-                                              image: AssetImage(ImgAssets.user),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
+                                ],
+                              ),
+                            ),
+                            fontSize: 15.sp,
+                            fontColor: AppColors.darkGrey,
+                            borderColor: AppColors.grey,
+                            label: 'Search',
+                            onChanged: (value) {
+                              Provider.of<ReportDashboardProvider>(
+                                context,
+                                listen: false,
+                              ).updateSearchQuery(value);
+                            },
+                          ),
+                          SizedBox(height: 5.sp),
+                          Expanded(
+                            child: Consumer<ReportDashboardProvider>(
+                              builder: (context, provider, _) {
+                                if (provider.isLoading) {
+                                  return const Center(child: CircularProgressIndicator());
+                                } else if (provider.error != null) {
+                                  return Center(child: Text(provider.error!));
+                                } else if (provider.studentData == null || provider.studentData!.isEmpty) {
+                                  return const Center(child: Text("No report found"));
+                                }
+
+                                return ListView.builder(
+                                  itemCount: provider.studentData!.length,
+                                  itemBuilder: (context, index) {
+                                    final student = provider.studentData![index];
+                                    return Container(
+                                      margin: EdgeInsets.only(bottom: 12.sp),
+                                      padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 10.sp, 10.sp),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: AppColors.borderColor,
+                                          width: 1.sp,
                                         ),
-                                        SizedBox(width: 10.sp),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                        borderRadius: BorderRadius.circular(10.r),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
                                             children: [
-                                              CustomText(
-                                                text: student.studentName ?? "Unknown Student",
-                                                fontSize: 14.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.themeColor,
+                                              Container(
+                                                height: 70.sp,
+                                                width: 70.sp,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.themeColor.withOpacity(0.1),
+                                                  shape: BoxShape.circle,
+                                                  image: student.studentImage != null && student.studentImage!.isNotEmpty
+                                                      ? DecorationImage(
+                                                    image: NetworkImage('${ApiServiceUrl.urlLauncher}uploads/${student.studentImage}'),
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                      : const DecorationImage(
+                                                    image: AssetImage(ImgAssets.user),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
                                               ),
-                                              SizedBox(height: 2.sp),
-                                              CustomText(
-                                                text: "PID - ${student.pidNumber ?? "N/A"}",
-                                                fontSize: 13.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.textGrey,
-                                              ),
-                                              SizedBox(height: 2.sp),
-                                              CustomText(
-                                                text: "Diagnosis - ${student.diagnosis ?? "N/A"}",
-                                                fontSize: 13.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.textGrey,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
+                                              SizedBox(width: 10.sp),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    CustomText(
+                                                      text: student.studentName ?? "Unknown Student",
+                                                      fontSize: 14.sp,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: AppColors.themeColor,
+                                                    ),
+                                                    SizedBox(height: 2.sp),
+                                                    CustomText(
+                                                      text: "PID - ${student.pidNumber ?? "N/A"}",
+                                                      fontSize: 13.sp,
+                                                      fontWeight: FontWeight.w400,
+                                                      color: AppColors.textGrey,
+                                                    ),
+                                                    SizedBox(height: 2.sp),
+                                                    CustomText(
+                                                      text: "Diagnosis - ${student.diagnosis ?? "N/A"}",
+                                                      fontSize: 13.sp,
+                                                      fontWeight: FontWeight.w400,
+                                                      color: AppColors.textGrey,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: InkWell(
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        onTap: () async {
-                                          final success = await provider.getTrimesterReportData(context,student.id.toString());
-                                          if (!mounted) return;
-                                          if (success && provider.trimesterReportData != null && provider.trimesterReportData!.isNotEmpty) {
-                                            final profile = provider.trimesterReportData![0];
-                                            NavigationHelper.push(scaffoldContext, TrimesterReportView(student: profile));
-                                          } else {
-                                            showSnackBar("Failed to load profile", context);
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 8.0),
-                                          child: CustomContainer(
-                                            padding: 0.sp,
-                                            text: 'View',
-                                            innerPadding: EdgeInsets.symmetric(
-                                              vertical: 3.sp,
-                                              horizontal: 20.sp,
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: InkWell(
+                                              splashColor: Colors.transparent,
+                                              highlightColor: Colors.transparent,
+                                              onTap: () async {
+                                                final success = await provider.getTrimesterReportData(context,student.id.toString());
+                                                if (!mounted) return;
+                                                if (success && provider.trimesterReportData != null && provider.trimesterReportData!.isNotEmpty) {
+                                                  final profile = provider.trimesterReportData![0];
+                                                  NavigationHelper.push(scaffoldContext, TrimesterReportView(student: profile));
+                                                } else {
+                                                  showSnackBar("Failed to load profile", context);
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(right: 8.0),
+                                                child: CustomContainer(
+                                                  padding: 0.sp,
+                                                  text: 'View',
+                                                  innerPadding: EdgeInsets.symmetric(
+                                                    vertical: 3.sp,
+                                                    horizontal: 20.sp,
+                                                  ),
+                                                  containerColor: Colors.white,
+                                                  textColor: AppColors.yellow,
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  borderColor: AppColors.yellow,
+                                                  borderWidth: 1,
+                                                ),
+                                              ),
                                             ),
-                                            containerColor: Colors.white,
-                                            textColor: AppColors.yellow,
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w500,
-                                            borderColor: AppColors.yellow,
-                                            borderWidth: 1,
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
