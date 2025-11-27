@@ -12,6 +12,7 @@ import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/main.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_view.dart';
+import 'package:special_education/screen/report/trimester_report/weekly_report/weekly_report_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class ReportDashboard extends StatefulWidget {
@@ -258,13 +259,24 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                                               splashColor: Colors.transparent,
                                               highlightColor: Colors.transparent,
                                               onTap: () async {
-                                                final success = await provider.getTrimesterReportData(context,student.id.toString());
-                                                if (!mounted) return;
-                                                if (success && provider.trimesterReportData != null && provider.trimesterReportData!.isNotEmpty) {
-                                                  final profile = provider.trimesterReportData![0];
-                                                  NavigationHelper.push(scaffoldContext, TrimesterReportView(student: profile));
-                                                } else {
-                                                  showSnackBar("Failed to load profile", context);
+                                                if(isSelected){
+                                                  final success = await provider.getWeeklyReportData(context,student.id.toString());
+                                                  if (!mounted) return;
+                                                  if (success && provider.weeklyReportData != null && provider.weeklyReportData!.isNotEmpty) {
+                                                    final weeklyReport = provider.weeklyReportData![0];
+                                                    NavigationHelper.push(scaffoldContext, WeeklyReportView(student: weeklyReport));
+                                                  } else {
+                                                    showSnackBar("Failed to load profile", context);
+                                                  }
+                                                }else{
+                                                  final success = await provider.getTrimesterReportData(context,student.id.toString());
+                                                  if (!mounted) return;
+                                                  if (success && provider.trimesterReportData != null && provider.trimesterReportData!.isNotEmpty) {
+                                                    final profile = provider.trimesterReportData![0];
+                                                    NavigationHelper.push(scaffoldContext, TrimesterReportView(student: profile));
+                                                  } else {
+                                                    showSnackBar("Failed to load profile", context);
+                                                  }
                                                 }
                                               },
                                               child: Padding(

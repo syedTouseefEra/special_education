@@ -26,7 +26,8 @@ class CustomHeaderView extends StatelessWidget {
     bool isModuleNameEmpty = moduleName.isEmpty;
     String displayText = courseName;
     if (!isModuleNameEmpty) {
-      displayText += " | $moduleName";
+      // displayText += " | $moduleName";
+      displayText += "$moduleName";
     }
 
     Color primaryColor = isModuleNameEmpty ? AppColors.themeColor : AppColors.themeColor;
@@ -37,7 +38,6 @@ class CustomHeaderView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 15.sp),
         SizedBox(
           width: MediaQuery.sizeOf(context).width / 1.05,
           child: Row(

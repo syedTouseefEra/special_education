@@ -9,6 +9,7 @@ import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/report/trimester_report/generate_trimester_report/learning_area_report_data_modal.dart';
 import 'package:special_education/screen/report/trimester_report/performance_report/performance_report_view.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
+import 'package:special_education/screen/report/trimester_report/weekly_report/weekly_report_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
 import 'package:special_education/utils/navigation_utils.dart';
@@ -37,6 +38,11 @@ class ReportDashboardProvider extends ChangeNotifier {
     } else {
       return _filteredStudentData;
     }
+  }
+
+  List<WeeklyReportDataModel>? _weeklyReportData;
+  List<WeeklyReportDataModel>? get weeklyReportData {
+    return _weeklyReportData;
   }
 
   List<TrimesterReportDataModal>? _trimesterReportData;
@@ -93,6 +99,42 @@ class ReportDashboardProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+    return false;
+  }
+
+  Future<bool> getWeeklyReportData(dynamic context, String studentId) async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    _setLoading(true);
+    try {
+      final response = await _api.getApiCall(
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getWeeklyGoal}",
+        params: {"studentId": studentId},
+        token: token,
+      );
+
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _weeklyReportData = (response["data"] as List)
+            .map(
+              (e) => WeeklyReportDataModel.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
+            .toList();
+        _setLoading(false);
+        return true;
+      } else {
+        _setError(response["responseMessage"] ?? "Invalid data received");
+      }
+    } catch (e) {
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
+    }
     return false;
   }
 
