@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/constant/assets.dart';
@@ -8,6 +9,9 @@ import 'package:special_education/custom_widget/button.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/screen/login/login_provider.dart';
+import 'package:special_education/screen/pdf_preview_page.dart';
+import 'package:special_education/utils/navigation_utils.dart';
+import 'package:special_education/utils/pdf_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -148,6 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.symmetric(horizontal: 20.sp),
                   child: CustomButton(
                     text: authProvider.isLoading ? "Logging in..." : "Login",
+
                     onPressed: authProvider.isLoading
                         ? null
                         : () => _login(context),
@@ -164,6 +169,30 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
+
+                // SizedBox(height: 40),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 20.sp),
+                //   child: CustomButton(
+                //     text:  "PDF generate",
+                //     onPressed: () async {
+                //       // Use this when you want the preview to cover the bottom bar:
+                //       NavigationHelper.pushFullScreen(context, const PdfPreviewFullScreen());
+                //
+                //     },
+                //     isLoading: authProvider.isLoading,
+                //     width: double.infinity,
+                //     height: 45.h,
+                //     backgroundColor: AppColors.themeBlue,
+                //     textColor: AppColors.white,
+                //     fontSize: 16.h,
+                //     borderRadius: 30.sp,
+                //     padding: EdgeInsets.symmetric(
+                //       horizontal: 20.sp,
+                //       vertical: 12.sp,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
