@@ -6,17 +6,21 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:special_education/screen/report/trimester_report/view_report/pdf_service.dart';
+import 'package:special_education/screen/report/trimester_report/view_report/view_pdf_report_data_model.dart';
 
 
 class PdfPreviewFullScreen extends StatefulWidget {
   final String title;
   final Uint8List? templatePdfBytes;
+  final List<ViewPDFReportDataModel> reportData;   // <-- ADD THIS
 
   const PdfPreviewFullScreen({
     super.key,
     this.title = 'Report Card',
     this.templatePdfBytes,
+    required this.reportData,   // <-- MAKE REQUIRED
   });
+
 
   @override
   State<PdfPreviewFullScreen> createState() => _PdfPreviewFullScreenState();
@@ -53,7 +57,9 @@ class _PdfPreviewFullScreenState extends State<PdfPreviewFullScreen> {
       final bytes = await PdfService.stampPdfWithStar(
         originalPdfBytes: widget.templatePdfBytes,
         title: widget.title,
+        reportData: widget.reportData,   // <-- FIX
       );
+
 
       if (!mounted) return;
       setState(() {

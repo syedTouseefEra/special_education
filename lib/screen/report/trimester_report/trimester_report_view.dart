@@ -337,15 +337,19 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                                 if (!context.mounted) return;
 
                                                 if (success &&
-                                                    provider.trimesterReportData !=
+                                                    provider.viewPDFReportData !=
                                                         null &&
                                                     provider
-                                                        .trimesterReportData!
+                                                        .viewPDFReportData!
                                                         .isNotEmpty) {
                                                   NavigationHelper.pushFullScreen(
                                                     context,
-                                                    const PdfPreviewFullScreen(),
+                                                    PdfPreviewFullScreen(
+                                                      templatePdfBytes: null,                     // or original bytes
+                                                      reportData: provider.viewPDFReportData!, // <- PASS API DATA
+                                                    ),
                                                   );
+
                                                 } else {
                                                   showSnackBar(
                                                     "Failed to load profile",

@@ -9,6 +9,7 @@ import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/report/trimester_report/generate_trimester_report/learning_area_report_data_modal.dart';
 import 'package:special_education/screen/report/trimester_report/performance_report/performance_report_view.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
+import 'package:special_education/screen/report/trimester_report/view_report/view_pdf_report_data_model.dart';
 import 'package:special_education/screen/report/trimester_report/weekly_report/weekly_report_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
@@ -53,6 +54,11 @@ class ReportDashboardProvider extends ChangeNotifier {
   List<LearningAreaReportDataModal>? _learningAreasReportData;
   List<LearningAreaReportDataModal>? get learningAreasData {
     return _learningAreasReportData;
+  }
+
+  List<ViewPDFReportDataModel>? _viewPDFReportData;
+  List<ViewPDFReportDataModel>? get viewPDFReportData {
+    return _viewPDFReportData;
   }
 
   final UserData userData = UserData();
@@ -222,9 +228,9 @@ class ReportDashboardProvider extends ChangeNotifier {
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
-        _learningAreasReportData = (response["data"] as List)
+        _viewPDFReportData = (response["data"] as List)
             .map(
-              (e) => LearningAreaReportDataModal.fromJson(
+              (e) => ViewPDFReportDataModel.fromJson(
                 Map<String, dynamic>.from(e),
               ),
             )
