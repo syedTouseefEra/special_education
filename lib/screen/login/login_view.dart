@@ -9,9 +9,9 @@ import 'package:special_education/custom_widget/button.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/screen/login/login_provider.dart';
-import 'package:special_education/screen/pdf_preview_page.dart';
+import 'package:special_education/screen/report/trimester_report/view_report/pdf_preview_page.dart';
 import 'package:special_education/utils/navigation_utils.dart';
-import 'package:special_education/utils/pdf_service.dart';
+import 'package:special_education/screen/report/trimester_report/view_report/pdf_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

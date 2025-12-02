@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
-import 'package:special_education/utils/pdf_service.dart';
+import 'package:special_education/screen/report/trimester_report/view_report/pdf_service.dart';
 
 
 class PdfPreviewFullScreen extends StatefulWidget {
@@ -37,7 +37,6 @@ class _PdfPreviewFullScreenState extends State<PdfPreviewFullScreen> {
 
   @override
   void dispose() {
-    // Restore system UI when leaving
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }

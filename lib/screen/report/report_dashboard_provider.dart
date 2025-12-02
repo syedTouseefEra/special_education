@@ -210,6 +210,42 @@ class ReportDashboardProvider extends ChangeNotifier {
     return false;
   }
 
+  Future<bool> getTrimesterReportPDFData(dynamic context, String studentId, String trimesterId) async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    _setLoading(true);
+    try {
+      final response = await _api.getApiCall(
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getTrimesterReportPDF}",
+        params: {"trimesterId": trimesterId, "studentId": studentId},
+        token: token,
+      );
+
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _learningAreasReportData = (response["data"] as List)
+            .map(
+              (e) => LearningAreaReportDataModal.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
+            .toList();
+        _setLoading(false);
+        return true;
+      } else {
+        _setError(response["responseMessage"] ?? "Invalid data received");
+      }
+    } catch (e) {
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
+    }
+    return false;
+  }
+
   Future<bool> saveAndUpdateTrimesterReport(
     String studentName,
     dynamic context,
@@ -363,4 +399,6 @@ class ReportDashboardProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+
 }

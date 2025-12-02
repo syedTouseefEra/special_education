@@ -10,6 +10,7 @@ import 'package:special_education/custom_widget/create_pdf.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/report/trimester_report/view_report/pdf_preview_page.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
 import 'package:special_education/screen/report/trimester_report/generate_trimester_report/learning_area_report_view.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
@@ -79,18 +80,18 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                   color: AppColors.themeColor.withOpacity(0.1),
                                   shape: BoxShape.circle,
                                   image:
-                                  widget.student.image != null &&
-                                      widget.student.image!.isNotEmpty
+                                      widget.student.image != null &&
+                                          widget.student.image!.isNotEmpty
                                       ? DecorationImage(
-                                    image: NetworkImage(
-                                      '${ApiServiceUrl.urlLauncher}uploads/${widget.student.image}',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  )
+                                          image: NetworkImage(
+                                            '${ApiServiceUrl.urlLauncher}uploads/${widget.student.image}',
+                                          ),
+                                          fit: BoxFit.cover,
+                                        )
                                       : const DecorationImage(
-                                    image: AssetImage(ImgAssets.user),
-                                    fit: BoxFit.cover,
-                                  ),
+                                          image: AssetImage(ImgAssets.user),
+                                          fit: BoxFit.cover,
+                                        ),
                                 ),
                               ),
                               SizedBox(width: 20.sp),
@@ -118,11 +119,11 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                     ),
                                     CustomText(
                                       text:
-                                      'Gender- ${widget.student.gender ?? 'NA'}',
+                                          'Gender- ${widget.student.gender ?? 'NA'}',
                                     ),
                                     CustomText(
                                       text:
-                                      'D.O.B- ${widget.student.age == ' Years' ? "NA" : widget.student.age}',
+                                          'D.O.B- ${widget.student.age == ' Years' ? "NA" : widget.student.age}',
                                     ),
                                   ],
                                 ),
@@ -166,36 +167,37 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                           itemBuilder: (context, index) {
                             final t = trimesters[index];
                             final int id =
-                            (t.trimesterId ?? t['trimesterId']) is int
+                                (t.trimesterId ?? t['trimesterId']) is int
                                 ? (t.trimesterId ?? t['trimesterId']) as int
                                 : int.tryParse(
-                              (t.trimesterId ?? t['trimesterId'])
-                                  .toString(),
-                            ) ??
-                                (index + 1);
+                                        (t.trimesterId ?? t['trimesterId'])
+                                            .toString(),
+                                      ) ??
+                                      (index + 1);
                             final String reportStatus =
                                 (t.reportStatus ?? t['reportStatus'])
                                     ?.toString() ??
-                                    'Report';
+                                'Report';
                             final String durationDate =
                                 (t.durationDate ?? t['durationDate'])
                                     ?.toString() ??
-                                    '--';
-                            final String? endDate =
-                            (t.endDate ?? t['endDate'])?.toString();
+                                '--';
+                            final String? endDate = (t.endDate ?? t['endDate'])
+                                ?.toString();
                             final String status =
                                 (t.status ?? t['status'])?.toString() ?? '';
 
-                            final bool isView = reportStatus
-                                .toLowerCase()
-                                .contains('view') ||
+                            final bool isView =
+                                reportStatus.toLowerCase().contains('view') ||
                                 reportStatus.toLowerCase().contains(
                                   'view report',
                                 );
-                            final String buttonText =
-                            isView ? 'View Report' : reportStatus;
-                            final Color buttonColor =
-                            isView ? AppColors.green : AppColors.yellow;
+                            final String buttonText = isView
+                                ? 'View Report'
+                                : reportStatus;
+                            final Color buttonColor = isView
+                                ? AppColors.green
+                                : AppColors.yellow;
 
                             String formatDuration(String start, String? end) {
                               final s = start.isNotEmpty ? start : '--';
@@ -221,7 +223,7 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                   padding: EdgeInsets.all(10.sp),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -251,7 +253,7 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                         visible: status == 'Ongoing',
                                         child: CustomText(
                                           text:
-                                          "Reports will be generated after 90 days from starting date.",
+                                              "Reports will be generated after 90 days from starting date.",
                                           fontSize: 11.sp,
                                           fontWeight: FontWeight.w400,
                                         ),
@@ -267,7 +269,7 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                       SizedBox(height: 3.sp),
                                       Row(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           CustomText(
                                             text: 'Duration:',
@@ -291,10 +293,10 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                       SizedBox(height: 15.sp),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.end,
+                                            MainAxisAlignment.end,
                                         children: [
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               provider.studentId = widget
                                                   .student
                                                   .studentId
@@ -305,44 +307,72 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                               provider.startDate = durationDate;
                                               provider.endDate = endDate!;
 
-                                              buttonText == 'Generate Report' &&
-                                                  status == 'Completed'
-                                                  ? NavigationHelper.push(
-                                                context,
-                                                LearningAreaReportView(
-                                                  studentId: widget
-                                                      .student
-                                                      .studentId
-                                                      .toString(),
-                                                  studentName: widget
-                                                      .student
-                                                      .studentName
-                                                      .toString(),
-                                                ),
-                                              )
-                                                  :
-                                              // print("print PDF");
-                                              // showHelloWorldPdf();
+                                              if (buttonText ==
+                                                      'Generate Report' &&
+                                                  status == 'Completed') {
+                                                // 👉 Open Learning Area Report
+                                                NavigationHelper.push(
+                                                  context,
+                                                  LearningAreaReportView(
+                                                    studentId: widget
+                                                        .student
+                                                        .studentId
+                                                        .toString(),
+                                                    studentName: widget
+                                                        .student
+                                                        .studentName
+                                                        .toString(),
+                                                  ),
+                                                );
+                                              } else if (buttonText ==
+                                                      'View Report' &&
+                                                  status == 'Completed') {
+                                                final success = await provider
+                                                    .getTrimesterReportPDFData(
+                                                      context,
+                                                      widget.student.studentId
+                                                          .toString(),widget.student.trimester![index].trimesterId.toString()
+                                                    );
 
+                                                if (!context.mounted) return;
 
-                                              showSnackBar(
-                                                "Report will be show after some time",
-                                                context,
-                                              );
+                                                if (success &&
+                                                    provider.trimesterReportData !=
+                                                        null &&
+                                                    provider
+                                                        .trimesterReportData!
+                                                        .isNotEmpty) {
+                                                  NavigationHelper.pushFullScreen(
+                                                    context,
+                                                    const PdfPreviewFullScreen(),
+                                                  );
+                                                } else {
+                                                  showSnackBar(
+                                                    "Failed to load profile",
+                                                    context,
+                                                  );
+                                                }
+                                              } else {
+                                                // 👉 For other statuses
+                                                showSnackBar(
+                                                  "Report will be shown after some time",
+                                                  context,
+                                                );
+                                              }
                                             },
                                             child: CustomContainer(
-                                              text:  buttonText,
+                                              text: buttonText,
                                               borderRadius: 10.r,
                                               containerColor:
-                                              status == 'Ongoing'
+                                                  status == 'Ongoing'
                                                   ? buttonColor.withOpacity(0.5)
                                                   : buttonColor,
                                               textAlign: TextAlign.center,
                                               innerPadding:
-                                              EdgeInsets.symmetric(
-                                                vertical: 7.sp,
-                                                horizontal: 15.sp,
-                                              ),
+                                                  EdgeInsets.symmetric(
+                                                    vertical: 7.sp,
+                                                    horizontal: 15.sp,
+                                                  ),
                                               padding: 1,
                                             ),
                                           ),
