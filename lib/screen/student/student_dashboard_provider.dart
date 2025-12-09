@@ -661,7 +661,7 @@ class StudentDashboardProvider with ChangeNotifier {
       return uploadImageName;
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error uploading or updating profile image: $e');
+        print('❌ Error uploading or updating top_right_button image: $e');
       }
       showSnackBar('Failed to upload image', context);
       return null;

@@ -9,6 +9,7 @@ import 'package:special_education/screen/choose_account/choose_account_provider.
 import 'package:special_education/screen/choose_account/choose_account_data_model.dart';
 import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/tabbar_view.dart';
+import 'package:special_education/screen/top_right_button/top_option_sheet_view.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/utils/text_case_utils.dart';
@@ -38,7 +39,17 @@ class _ChooseAccountViewState extends State<ChooseAccountView> {
         color: AppColors.themeColor,
         child: SafeArea(
           child: Scaffold(
-            appBar: const CustomAppBar(enableTheming: false),
+            appBar:  CustomAppBar(enableTheming: false,onNotificationTap: () {
+              showTopSheet(
+                context,
+                TopOptionSheet(
+                  name: 'Waseem',
+                  subtitle: '@waseem',
+                  profileImage: 'https://i.pravatar.cc/150?img=3',
+                ),
+              );
+            },
+            ),
             backgroundColor: AppColors.white,
             body: SingleChildScrollView(
               child: filteredData.isEmpty

@@ -45,7 +45,7 @@ class _TrimesterReportState extends State<TrimesterReportView> {
           appBar: CustomAppBar(enableTheming: false),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(12.0.sp),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -345,14 +345,14 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                                   NavigationHelper.pushFullScreen(
                                                     context,
                                                     PdfPreviewFullScreen(
-                                                      templatePdfBytes: null,                     // or original bytes
-                                                      reportData: provider.viewPDFReportData!, // <- PASS API DATA
+                                                      templatePdfBytes: null,
+                                                      reportData: provider.viewPDFReportData!,
                                                     ),
                                                   );
 
                                                 } else {
                                                   showSnackBar(
-                                                    "Failed to load profile",
+                                                    "Failed to load top_right_button",
                                                     context,
                                                   );
                                                 }

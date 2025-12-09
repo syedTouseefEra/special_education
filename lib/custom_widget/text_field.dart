@@ -5,6 +5,7 @@ import 'package:special_education/constant/colors.dart';
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String? label;
+  final double? labelFontSize;
   final bool obscureText;
   final TextInputType? keyboardType;
   final Widget? suffixIcon;
@@ -31,6 +32,7 @@ class CustomTextField extends StatefulWidget {
     super.key,
     required this.controller,
     this.label,
+    this.labelFontSize,
     this.obscureText = false,
     this.keyboardType,
     this.prefixIcon,
@@ -146,7 +148,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             counterText: "",
             labelText: widget.label,
 
-            labelStyle: TextStyle(color: AppColors.grey, fontSize: 16.sp),
+            labelStyle: TextStyle(color: AppColors.grey, fontSize: widget.labelFontSize ?? 14.sp),
 
             floatingLabelStyle: TextStyle(
               fontSize: 13.sp,
@@ -170,12 +172,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
 
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
               borderSide: BorderSide(color: AppColors.grey),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(color: AppColors.themeBlue),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+              borderSide: BorderSide(color: AppColors.grey),
             ),
           ),
         ),

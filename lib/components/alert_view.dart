@@ -11,13 +11,22 @@ void alertToast(String message) {
   Fluttertoast.showToast(msg: message);
 }
 
-void showSnackBar(String message, context) {
+void showSnackBar(String message, context,{bool success = false}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message, style: const TextStyle(color: Colors.white)),
     ),
   );
 }
+
+// void _showError(String msg, {bool success = false}) {
+//   ScaffoldMessenger.of(context).showSnackBar(
+//     SnackBar(
+//       backgroundColor: success ? Colors.green : Colors.red,
+//       content: Text(msg),
+//     ),
+//   );
+// }
 
 void doubleButton(
     BuildContext context,

@@ -1,8 +1,8 @@
 // import 'dart:convert';
 // import 'package:e_learning/auth/get_providers.dart';
-// import 'package:e_learning/feature/profile_dashboard/profile/student_profile_details/student_profile_param.dart';
-// import 'package:e_learning/feature/profile_dashboard/profile/update_profile_details/update_profile_params.dart';
-// import 'package:e_learning/feature/profile_dashboard/profile/update_profile_details/update_profile_provider.dart';
+// import 'package:e_learning/feature/profile_dashboard/top_right_button/student_profile_details/student_profile_param.dart';
+// import 'package:e_learning/feature/profile_dashboard/top_right_button/update_profile_details/update_profile_params.dart';
+// import 'package:e_learning/feature/profile_dashboard/top_right_button/update_profile_details/update_profile_provider.dart';
 // import 'package:e_learning/feature/profile_dashboard/profile_dashboard_provider.dart';
 // import 'package:flutter/foundation.dart';
 // import 'package:flutter/material.dart';
@@ -181,7 +181,7 @@
 //       ref.invalidate(profileDashboardProvider(params));
 //     } catch (e) {
 //       if (kDebugMode) {
-//         print('❌ Error uploading or updating profile image: $e');
+//         print('❌ Error uploading or updating top_right_button image: $e');
 //       }
 //       ScaffoldMessenger.of(context).showSnackBar(
 //         const SnackBar(content: Text('Failed to upload image')),

@@ -13,6 +13,8 @@ import 'package:special_education/main.dart';
 import 'package:special_education/screen/teacher/add_teacher/add_teacher_view.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
 import 'package:special_education/screen/teacher/teacher_profile_details/teacher_profile_details_view.dart';
+import 'package:special_education/screen/top_right_button/top_option_sheet_view.dart';
+import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class TeacherDashboard extends StatefulWidget {
@@ -71,7 +73,19 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
             scaffoldContext = newContext;
             return Scaffold(
               backgroundColor: AppColors.white,
-              appBar: CustomAppBar(enableTheming: false),
+              appBar: CustomAppBar(
+                enableTheming: false,
+                onNotificationTap: () {
+                  showTopSheet(
+                    context,
+                    TopOptionSheet(
+                      name: UserData().getUserData.name!.isEmpty?'NA': UserData().getUserData.name.toString(),
+                      subtitle: UserData().getUserData.instituteName!.isEmpty?'NA': UserData().getUserData.instituteName.toString(),
+                      profileImage: '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
+                    ),
+                  );
+                },
+              ),
               body: Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 8.sp,
@@ -95,14 +109,18 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(top: 10.sp),
-                            child:  CustomTextField(
+                            child: CustomTextField(
                               controller: searchController,
                               prefixIcon: SizedBox(
                                 width: 60.w,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.search, size: 20.sp, color: Colors.blueAccent),
+                                    Icon(
+                                      Icons.search,
+                                      size: 20.sp,
+                                      color: Colors.blueAccent,
+                                    ),
                                     SizedBox(width: 8.sp),
                                     Container(
                                       width: 1,

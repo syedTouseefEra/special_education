@@ -1,8 +1,8 @@
-// lib/widgets/pdf_preview_fullscreen.dart
-import 'dart:typed_data';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:special_education/screen/report/trimester_report/view_report/pdf_service.dart';
@@ -35,7 +35,7 @@ class _PdfPreviewFullScreenState extends State<PdfPreviewFullScreen> {
   void initState() {
     super.initState();
     // Enter immersive fullscreen
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _ensurePdfReady();
   }
 
@@ -94,24 +94,24 @@ class _PdfPreviewFullScreenState extends State<PdfPreviewFullScreen> {
 
       // No bottomNavigationBar here — this route should replace the app chrome visually
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.pink,
         foregroundColor: Colors.black,
         elevation: 1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back,color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(widget.title, style: const TextStyle(color: Colors.black)),
+        title: Text(widget.title, style:  TextStyle(fontSize:20.sp,color: Colors.white)),
         actions: [
           if (_pdfBytes != null)
             IconButton(
               tooltip: 'Share PDF',
-              icon: const Icon(Icons.share),
+              icon: const Icon(Icons.share,color: Colors.white),
               onPressed: _sharePdf,
             ),
           IconButton(
             tooltip: 'Regenerate',
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh,color: Colors.white),
             onPressed: () => _ensurePdfReady(force: true),
           ),
         ],

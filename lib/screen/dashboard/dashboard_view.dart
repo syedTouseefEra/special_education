@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_view.dart';
-import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/screen/top_right_button/top_option_sheet_view.dart';
 import 'package:special_education/user_data/user_data.dart';
-import 'package:special_education/utils/navigation_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dashboard_provider.dart';
 
@@ -65,8 +65,14 @@ class DashboardView extends StatelessWidget {
                 appBar: CustomAppBar(
                   enableTheming: false,
                   onNotificationTap: () {
-                    UserData().removeUserData();
-                    NavigationHelper.pushAndClearStack(context, LoginPage());
+                    showTopSheet(
+                      context,
+                      TopOptionSheet(
+                        name: UserData().getUserData.name!.isEmpty?'NA': UserData().getUserData.name.toString(),
+                        subtitle: UserData().getUserData.instituteName!.isEmpty?'NA': UserData().getUserData.instituteName.toString(),
+                        profileImage: '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
+                      ),
+                    );
                   },
                 ),
                 body: provider.isLoading
