@@ -3,9 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/login/login_view.dart';
-import 'package:special_education/screen/top_right_button/change_password/change_password_view.dart';
+import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_view.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
+import 'package:special_education/screen/top_right_button/change_password/change_password_view.dart';
+
 
 void showTopSheet(BuildContext context, Widget child) {
   showGeneralDialog(
@@ -60,7 +62,9 @@ class TopOptionSheet extends StatelessWidget {
   });
 
   List<Map<String, dynamic>> _tempData(BuildContext context) => [
-    {"icon": Icons.person_rounded, "title": 'My Profile', "onTap": () {}},
+    {"icon": Icons.person_rounded, "title": 'My Profile', "onTap": () {
+      NavigationHelper.push(context, MyProfileView());
+    }},
     {"icon": Icons.group_add_sharp, "title": 'Classroom Panel', "onTap": () {}},
     {"icon": Icons.lock_person_rounded, "title": 'Change Password', "onTap": () {
       NavigationHelper.push(context, ChangePasswordView());
@@ -74,9 +78,23 @@ class TopOptionSheet extends StatelessWidget {
       spacing: 0,
       mainAxisSize: MainAxisSize.min,
       children: [
-        CircleAvatar(radius: 36, backgroundImage: NetworkImage(profileImage)),
-        SizedBox(height: 5.sp),
+        CircleAvatar(
+          radius: 36,
+          backgroundColor: Colors.grey.shade300,
+
+          backgroundImage: (profileImage.isNotEmpty && profileImage != "null")
+              ? NetworkImage(profileImage)
+              : null,
+
+          onBackgroundImageError: (_, __) {},
+
+          child: (profileImage.isEmpty || profileImage == "null")
+              ? const Icon(Icons.person, size: 36, color: Colors.white)
+              : null,
+        ),
+        SizedBox(height: 10.sp),
         CustomText(text: name,fontSize: 18.sp, fontWeight: FontWeight.bold),
+        SizedBox(height: 5.sp),
         CustomText(text: subtitle,fontSize: 14.sp, color: Colors.grey.shade600),
 
         ListView.builder(

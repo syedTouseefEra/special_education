@@ -26,44 +26,57 @@ class CustomDropdownFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      value: selectedValue,
-      decoration: InputDecoration(
-        hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.sp),
-          borderSide: const BorderSide(color: Colors.grey),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.sp),
-          borderSide: const BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.sp),
-          borderSide: const BorderSide(color: Colors.grey, width: 1),
-        ),
-        contentPadding: contentPadding ??
-            EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      ),
-      icon: Icon(Icons.arrow_drop_down, size: 30.sp, color: Colors.black),
-      items: items.map((item) {
-        final value = item['status'] as String;
-        return DropdownMenuItem<String>(
-          value: value,
-          child: CustomText(
-            fontWeight: FontWeight.w400,
-            text: value,
-            fontSize: 15.sp,
-            color: AppColors.themeColor,
+    return SizedBox(
+      height: 35.sp,
+      child: DropdownButtonFormField<String>(
+        // if empty string, treat as null so hint shows
+        value: (selectedValue == null || selectedValue!.isEmpty)
+            ? null
+            : selectedValue,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.sp),
+            borderSide: const BorderSide(color: Colors.grey),
           ),
-        );
-      }).toList(),
-      onChanged: (value) {
-        if (value != null) {
-          if (controller != null) controller!.text = value;
-          onChanged(value);
-        }
-      },
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.sp),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.sp),
+            borderSide: const BorderSide(color: Colors.grey, width: 1),
+          ),
+          contentPadding: contentPadding ??
+              EdgeInsets.symmetric(horizontal: 10.w, vertical: 0.h),
+        ),
+        // <-- use this for the placeholder
+        hint: CustomText(
+          fontWeight: FontWeight.w400,
+          text: hintText,
+          fontSize: 13.sp,
+          color: AppColors.grey,
+        ),
+        icon: Icon(Icons.keyboard_arrow_down, size: 22.sp, color: Colors.black),
+        items: items.map((item) {
+          final value = item['status'] as String;
+          return DropdownMenuItem<String>(
+            value: value,
+            child: CustomText(
+              fontWeight: FontWeight.w400,
+              text: value,
+              fontSize: 13.sp,
+              color: AppColors.themeColor,
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {
+          if (value != null) {
+            if (controller != null) controller!.text = value;
+            onChanged(value);
+          }
+        },
+      ),
     );
   }
 }
+

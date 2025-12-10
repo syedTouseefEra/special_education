@@ -169,7 +169,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
             isDense: true,
 
-            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            contentPadding: EdgeInsets.symmetric(vertical: 7.sp, horizontal: 10.sp),
 
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
