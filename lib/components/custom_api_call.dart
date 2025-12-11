@@ -7,7 +7,7 @@ import 'package:special_education/user_data/user_data.dart';
 class LocationService {
   final UserData userData = UserData();
   late var token = userData.getUserData.token;
-  final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
+  final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.elearningApiBaseUrl);
   Future<List<T>> fetchLocationData<T>({
     required String url,
     Map<String, String>? params,

@@ -3,9 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
+import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_data_model.dart';
 
 class GeneralInformationView extends StatelessWidget {
-  const GeneralInformationView({super.key});
+  final MyProfileDataModel profile;
+  const GeneralInformationView({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,10 @@ class GeneralInformationView extends StatelessWidget {
           Divider(thickness: 0.7.sp),
           SizedBox(height: 12.sp),
 
-          _info("Mobile", "9884994948"),
-          _info("Email Id", "clairejane@327gmail.com"),
-          _info("Gender", "Female"),
-          _info("DOB", "09-12-2025"),
+          _info("Mobile", profile.mobileNumber ?? 'NA'),
+          _info("Email Id", profile.emailId ?? 'NA'),
+          _info("Gender", profile.gender ?? 'NA'),
+          _info("DOB", profile.dateOfBirth ?? 'NA'),
         ],
       ),
     );

@@ -25,7 +25,7 @@ class DashboardProvider with ChangeNotifier {
   List<StudentListDataModal>? get studentData => _studentData;
 
   final ApiCallingTypes _api =
-  ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
+  ApiCallingTypes(baseUrl: ApiServiceUrl.elearningApiBaseUrl);
   final UserData _userData = UserData();
 
   Future<void> fetchDashboardData(BuildContext context) async {

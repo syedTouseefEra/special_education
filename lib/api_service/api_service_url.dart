@@ -1,13 +1,20 @@
 class ApiServiceUrl {
 
-  static String apiBaseUrl = "https://elearningapi.edumation.in/api/";
+  static String elearningApiBaseUrl = "https://elearningapi.edumation.in/api/";
+
   static String hamaareSitaareApiBaseUrl =
       "https://hamaaresitaareapi.edumation.in/api/";
+
   static String countryBaseUrl = "https://apiapp.edumation.in/api/";
+
   static String urlLauncher =
       "https://hamaaresitaareapi.edumation.in/FileUploads/";
+
   static String uploadFile =
       "https://hamaaresitaareapi.edumation.in/api/Institute/UploadFile";
+
+  static String elearningFileUpload = "https://elearningapi.edumation.in/api/CommonDropdown/FileUpload";
+
 
   // static String apiBaseUrl= "http://172.16.82.6:50/api/";
   // static String urlLauncher = "http://172.16.82.6:50/FileUploads/";
@@ -54,5 +61,7 @@ class ApiServiceUrl {
   static String savePerformanceReport = "Report/SavePerformanceReport";
 
   static String getTrimesterReportPDF = "Report/GetTrimesterReportPDF";
+
+  static String getProfile = "teacher/GetProfile";
 
 }

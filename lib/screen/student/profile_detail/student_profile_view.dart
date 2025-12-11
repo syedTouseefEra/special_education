@@ -32,21 +32,27 @@ class _ProfileViewState extends State<ProfileView> {
       color: AppColors.themeColor,
       child: SafeArea(
         child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.sp),
+            child: Column(
+                children: [
+                  SizedBox(height: 5.sp),
+                  CustomHeaderView(courseName: "", moduleName: "Profile Detail"),
+                  Divider(thickness: 0.7.sp),
+                ]
+            ),
+          ),
           backgroundColor: AppColors.white,
-          appBar: CustomAppBar(enableTheming: false),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding:  EdgeInsets.symmetric(horizontal: 15.sp),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomHeaderView(
-                    courseName: '',
-                    moduleName: "Profile Detail",
-                  ),
+
                   CustomText(
                     text: 'Add Weekly Goal And Possible Outcome!',
-                    fontSize: 18.sp,
+                    fontSize: 16.sp,
                     color: AppColors.textGrey,
                     fontWeight: FontWeight.w400,
                   ),

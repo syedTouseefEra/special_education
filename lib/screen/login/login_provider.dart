@@ -10,7 +10,7 @@ import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class LoginProvider with ChangeNotifier {
-  final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
+  final ApiCallingTypes _api = ApiCallingTypes(baseUrl: ApiServiceUrl.elearningApiBaseUrl);
   final UserData _userData = UserData();
 
   bool _isLoading = false;
@@ -24,7 +24,7 @@ class LoginProvider with ChangeNotifier {
     _setLoading(true);
 
     try {
-      final url = "${ApiServiceUrl.apiBaseUrl}${ApiServiceUrl.login}";
+      final url = "${ApiServiceUrl.elearningApiBaseUrl}${ApiServiceUrl.login}";
       final response = await _api.postApiCall(
         url: url,
         body: {"mobileNo": username, "password": password},
@@ -55,7 +55,7 @@ class LoginProvider with ChangeNotifier {
     try {
       final savedUser = _userData.getUserData;
       final token = savedUser.token ?? '';
-      final url = "${ApiServiceUrl.apiBaseUrl}${ApiServiceUrl.getUserRole}";
+      final url = "${ApiServiceUrl.elearningApiBaseUrl}${ApiServiceUrl.getUserRole}";
 
       final response = await _api.getApiCall(url: url, params: {}, token: token);
 

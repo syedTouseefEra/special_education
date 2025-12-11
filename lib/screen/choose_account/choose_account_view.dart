@@ -39,17 +39,6 @@ class _ChooseAccountViewState extends State<ChooseAccountView> {
         color: AppColors.themeColor,
         child: SafeArea(
           child: Scaffold(
-            appBar:  CustomAppBar(enableTheming: false,onNotificationTap: () {
-              showTopSheet(
-                context,
-                TopOptionSheet(
-                  name: 'Waseem',
-                  subtitle: '@waseem',
-                  profileImage: 'https://i.pravatar.cc/150?img=3',
-                ),
-              );
-            },
-            ),
             backgroundColor: AppColors.white,
             body: SingleChildScrollView(
               child: filteredData.isEmpty
@@ -57,10 +46,11 @@ class _ChooseAccountViewState extends State<ChooseAccountView> {
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(height: 10.sp,),
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 15.sp,
-                            vertical: 3.sp,
+                            vertical: 5.sp,
                           ),
                           child: CustomText(
                             text:

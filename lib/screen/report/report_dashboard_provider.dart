@@ -28,7 +28,7 @@ class ReportDashboardProvider extends ChangeNotifier {
   String startDate = '';
   String endDate = '';
 
-  final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
+  final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.elearningApiBaseUrl);
 
   List<StudentListDataModal>? _studentData;
   List<StudentListDataModal>? _filteredStudentData;

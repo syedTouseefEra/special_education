@@ -42,18 +42,23 @@ class _TrimesterReportState extends State<TrimesterReportView> {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: AppColors.white,
-          appBar: CustomAppBar(enableTheming: false),
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.sp),
+            child: Column(
+                children: [
+                  SizedBox(height: 5.sp),
+                  CustomHeaderView(courseName: "", moduleName: "Trimester Report"),
+                  Divider(thickness: 0.7.sp),
+                ]
+            ),
+          ),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(12.0.sp),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomHeaderView(
-                    courseName: '',
-                    moduleName: "Trimester Report",
-                  ),
-                  SizedBox(height: 5.sp),
+
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(

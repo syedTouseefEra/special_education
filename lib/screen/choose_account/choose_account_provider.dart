@@ -12,7 +12,7 @@ class ChooseAccountProvider with ChangeNotifier {
   String? get error => _error;
 
   final ApiCallingTypes _api = ApiCallingTypes(
-    baseUrl: ApiServiceUrl.apiBaseUrl,
+    baseUrl: ApiServiceUrl.elearningApiBaseUrl,
   );
 
   final UserData _userData = UserData();
@@ -27,7 +27,7 @@ class ChooseAccountProvider with ChangeNotifier {
     try {
       final savedUser = _userData.getUserData;
       final token = savedUser.token ?? '';
-      final url = "${ApiServiceUrl.apiBaseUrl}${ApiServiceUrl.loginWithInstitute}";
+      final url = "${ApiServiceUrl.elearningApiBaseUrl}${ApiServiceUrl.loginWithInstitute}";
 
       final response = await _api.postApiCall(
         url: url,

@@ -27,6 +27,7 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final VoidCallback? onTap;
   final FormFieldValidator<String>? validator;
+  final double? bottomSpacing;
 
   const CustomTextField({
     super.key,
@@ -54,6 +55,7 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.onTap,
     this.validator,
+    this.bottomSpacing,
   });
 
   @override
@@ -119,68 +121,70 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50.sp,
-      child: Focus(
-        onFocusChange: (hasFocus) {
-          if (!hasFocus) validateInput();
-        },
-        child: TextFormField(
-          controller: widget.controller,
-          keyboardType: widget.keyboardType,
-          obscureText: widget.obscureText,
-          maxLines: 1,
-          maxLength: widget.maxLength,
-          readOnly: !widget.isEditable,
-          textAlignVertical: TextAlignVertical.center,
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) validateInput();
+      },
+      child: Column(
+        children: [
+          TextFormField(
+            controller: widget.controller,
+            keyboardType: widget.keyboardType,
+            obscureText: widget.obscureText,
+            maxLines: 1,
+            maxLength: widget.maxLength,
+            readOnly: !widget.isEditable,
+            textAlignVertical: TextAlignVertical.center,
 
-          style: TextStyle(
-            fontSize: widget.fontSize ?? 16.sp,
-            color: widget.isEditable
-                ? (widget.fontColor ?? AppColors.themeBlue)
-                : AppColors.darkGrey,
+            style: TextStyle(
+              fontSize: widget.fontSize ?? 16.sp,
+              color: widget.isEditable
+                  ? (widget.fontColor ?? AppColors.themeBlue)
+                  : AppColors.darkGrey,
+            ),
+
+            onChanged: widget.onChanged,
+            validator: widget.validator,
+
+            decoration: InputDecoration(
+              counterText: "",
+              labelText: widget.label,
+
+              labelStyle: TextStyle(color: AppColors.grey, fontSize: widget.labelFontSize ?? 14.sp),
+
+              floatingLabelStyle: TextStyle(
+                fontSize: 13.sp,
+                color: AppColors.darkGrey,
+              ),
+
+              prefixIcon: widget.prefixIcon,
+              suffixIcon: widget.suffixIcon,
+
+              prefixIconConstraints: BoxConstraints(
+                minWidth: 40.sp,
+                minHeight: 40.sp,
+              ),
+              suffixIconConstraints: BoxConstraints(
+                minWidth: 32.sp,
+                minHeight: 32.sp,
+              ),
+
+              isDense: true,
+
+              contentPadding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 10.sp),
+
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(color: AppColors.grey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(color: AppColors.grey),
+              ),
+            ),
           ),
-
-          onChanged: widget.onChanged,
-          validator: widget.validator,
-
-          decoration: InputDecoration(
-            counterText: "",
-            labelText: widget.label,
-
-            labelStyle: TextStyle(color: AppColors.grey, fontSize: widget.labelFontSize ?? 14.sp),
-
-            floatingLabelStyle: TextStyle(
-              fontSize: 13.sp,
-              color: AppColors.darkGrey,
-            ),
-
-            prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.suffixIcon,
-
-            prefixIconConstraints: BoxConstraints(
-              minWidth: 40.sp,
-              minHeight: 40.sp,
-            ),
-            suffixIconConstraints: BoxConstraints(
-              minWidth: 32.sp,
-              minHeight: 32.sp,
-            ),
-
-            isDense: true,
-
-            contentPadding: EdgeInsets.symmetric(vertical: 7.sp, horizontal: 10.sp),
-
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
-              borderSide: BorderSide(color: AppColors.grey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
-              borderSide: BorderSide(color: AppColors.grey),
-            ),
-          ),
-        ),
+          SizedBox(height: widget.bottomSpacing ?? 12.sp),
+        ],
       ),
     );
   }

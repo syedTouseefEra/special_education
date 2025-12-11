@@ -3,9 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
+import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_data_model.dart';
 
 class PlacementDetailsView extends StatelessWidget {
-  const PlacementDetailsView({super.key});
+  final MyProfileDataModel profile;
+  const PlacementDetailsView({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,6 @@ class PlacementDetailsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// TITLE
           CustomText(
             text: "Placement Details",
             fontSize: 14.sp,
@@ -26,8 +27,8 @@ class PlacementDetailsView extends StatelessWidget {
           Divider(thickness: 0.7.sp),
           SizedBox(height: 12.sp),
 
-          _info("Designation", "Teacher"),
-          _info("Joining Date", "12-02-2022"),
+          _info("Designation", profile.designation ?? 'NA'),
+          _info("Joining Date", profile.joiningDate ?? 'NA'),
         ],
       ),
     );

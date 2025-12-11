@@ -42,9 +42,8 @@ class _TeacherProfileDetailsViewState extends State<TeacherProfileDetailsView> {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: AppColors.white,
-          appBar: const CustomAppBar(enableTheming: false),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0.h),
             child: GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
               child: SingleChildScrollView(
@@ -109,8 +108,8 @@ class _TeacherProfileDetailsViewState extends State<TeacherProfileDetailsView> {
                           ),
                       ],
                     ),
-
-                    SizedBox(height: 15.h),
+                    Divider(thickness: 0.7.sp),
+                    SizedBox(height: 10.h),
 
                     const ProfileViewWidget(),
                   ],

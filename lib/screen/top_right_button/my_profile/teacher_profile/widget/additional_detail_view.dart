@@ -3,18 +3,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
+import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_data_model.dart';
 
 class AdditionalDetailView extends StatelessWidget {
-  const AdditionalDetailView({super.key});
+  final MyProfileDataModel profile;
+  const AdditionalDetailView({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
+    String address = [
+      profile.addressLine1,
+      profile.addressLine2
+    ].where((line) => line != null && line.isNotEmpty).join(' ');
+    if (address.isEmpty) address = 'NA';
+
+    String city = profile.cityName?.isNotEmpty == true ? profile.cityName! : 'NA';
+    String country = profile.countryName?.isNotEmpty == true ? profile.countryName! : 'NA';
+    String pinCode = profile.pinCode != null ? profile.pinCode.toString() : 'NA';
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2.sp, horizontal: 20.sp),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// TITLE
           CustomText(
             text: "Additional Details",
             fontSize: 14.sp,
@@ -26,16 +37,15 @@ class AdditionalDetailView extends StatelessWidget {
           Divider(thickness: 0.7.sp),
           SizedBox(height: 12.sp),
 
-          _info("Address", "Safarazganj Colony"),
-          _info("City/Town", "Lucknow"),
-          _info("Pincode", "226003"),
-          _info("Country", "India"),
+          _info("Address", address),
+          _info("City/Town", city),
+          _info("Pincode", pinCode),
+          _info("Country", country),
         ],
       ),
     );
   }
 
-  /// Reusable helper widget for consistent spacing
   Widget _info(String label, String value) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10.sp),

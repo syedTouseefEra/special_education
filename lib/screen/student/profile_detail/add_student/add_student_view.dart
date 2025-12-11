@@ -8,6 +8,7 @@ import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
+import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
@@ -345,41 +346,26 @@ class _AddStudentViewState extends State<AddStudentView> {
       color: AppColors.themeColor,
       child: SafeArea(
         child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.sp),
+            child: Column(
+              children: [
+                SizedBox(height: 5.sp),
+                CustomHeaderView(courseName: "", moduleName: "Add Student"),
+                Divider(thickness: 0.7.sp),
+              ],
+            ),
+          ),
           backgroundColor: AppColors.white,
-          appBar: const CustomAppBar(enableTheming: false),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18.sp, vertical: 15.sp),
+            padding: EdgeInsets.symmetric(horizontal: 18.sp, vertical: 0.sp),
             child: GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            NavigationHelper.pop(context);
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: 20.sp,
-                            color: AppColors.themeColor,
-                          ),
-                        ),
-                        CustomText(
-                          text: 'Add Student',
-                          fontSize: 22.sp,
-                          color: AppColors.themeColor,
-                          fontFamily: 'Dm Serif',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.sp),
-
                     const SectionHeader(title: 'General Information'),
-
                     FormTextField(
                       label: "First Name",
                       controller: firstNameController,

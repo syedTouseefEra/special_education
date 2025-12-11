@@ -9,6 +9,7 @@ import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/screen/login/forget_password/forget_password_view.dart';
 import 'package:special_education/screen/login/login_provider.dart';
+import 'package:special_education/screen/registration/registration_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -187,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                   splashColor: AppColors.transparent,
                   highlightColor: AppColors.transparent,
                   onTap: () {
-                    NavigationHelper.push(context, ForgetPasswordView());
+                    NavigationHelper.push(context, RegistrationView());
                   },
                   child: CustomText(text: "Sign Up"),
                 ),

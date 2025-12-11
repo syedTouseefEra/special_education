@@ -13,6 +13,8 @@ import 'package:special_education/screen/student/student_dashboard_provider.dart
 import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
+import 'package:special_education/screen/top_right_button/change_password/change_password_provider.dart';
+import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_provider.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/image_upload_provider.dart';
 
@@ -42,6 +44,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => TeacherDashboardProvider()),
         ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
         ChangeNotifierProvider(create: (_) => ReportDashboardProvider()),
+        ChangeNotifierProvider(create: (_) => MyProfileProvider()),
+        ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
       ],
       child: const MyApp(),
     ),

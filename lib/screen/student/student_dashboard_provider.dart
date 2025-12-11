@@ -75,7 +75,7 @@ class StudentDashboardProvider with ChangeNotifier {
     return _cityData;
   }
 
-  final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.apiBaseUrl);
+  final _api = ApiCallingTypes(baseUrl: ApiServiceUrl.elearningApiBaseUrl);
 
   void _setLoading(bool value) {
     _isLoading = value;

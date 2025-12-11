@@ -97,8 +97,6 @@ class CustomHeaderView extends StatelessWidget {
             ],
           ),
         ),
-
-        SizedBox(height: 5.h),
       ],
     );
   }
