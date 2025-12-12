@@ -7,12 +7,14 @@ import 'package:special_education/custom_widget/text_field.dart';
 class CreatePasswordView extends StatelessWidget {
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
+  final VoidCallback setStep;
   final VoidCallback onChangeTap;
 
   const CreatePasswordView({
     super.key,
     required this.passwordController,
     required this.confirmPasswordController,
+    required this.setStep,
     required this.onChangeTap,
   });
 
@@ -91,25 +93,27 @@ class CreatePasswordView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Cancel
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.transparent,
-                      border: Border.all(
-                        color: AppColors.themeColor,
-                        width: 0.7.sp,
-                      ),
-                      borderRadius: BorderRadius.circular(5.sp),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 5.sp,
-                        horizontal: 42.sp,
-                      ),
-                      child: Center(
-                        child: CustomText(
-                          text: "Cancel",
+                  GestureDetector(
+                    onTap: setStep,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.transparent,
+                        border: Border.all(
                           color: AppColors.themeColor,
+                          width: 0.7.sp,
+                        ),
+                        borderRadius: BorderRadius.circular(5.sp),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5.sp,
+                          horizontal: 42.sp,
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            text: "Cancel",
+                            color: AppColors.themeColor,
+                          ),
                         ),
                       ),
                     ),

@@ -11,6 +11,7 @@ class VerifyOtpView extends StatelessWidget {
   final String selectedOption;
   final TextEditingController controller;
   final Function(String) onOptionChanged;
+  final VoidCallback setStep;
   final VoidCallback onSendTap;
 
   const VerifyOtpView({
@@ -18,6 +19,7 @@ class VerifyOtpView extends StatelessWidget {
     required this.selectedOption,
     required this.controller,
     required this.onOptionChanged,
+    required this.setStep,
     required this.onSendTap,
   });
 
@@ -73,27 +75,30 @@ class VerifyOtpView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  /// CANCEL
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.transparent,
-                      border: Border.all(
-                        color: AppColors.themeColor,
-                        width: 0.7.sp,
-                      ),
-                      borderRadius: BorderRadius.circular(5.sp),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 5.sp, horizontal: 30.sp),
-                      child: Center(
-                        child: CustomText(
-                          text: "Cancel",
-                          color: AppColors.themeColor,
+                  GestureDetector(
+                    onTap: setStep,
+                     child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.transparent,
+                          border: Border.all(
+                            color: AppColors.themeColor,
+                            width: 0.7.sp,
+                          ),
+                          borderRadius: BorderRadius.circular(5.sp),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 5.sp, horizontal: 30.sp),
+                          child: Center(
+                            child: CustomText(
+                              text: "Cancel",
+                              color: AppColors.themeColor,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                   ),
+
 
                   /// VERIFY OTP
                   GestureDetector(

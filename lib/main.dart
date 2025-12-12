@@ -7,6 +7,7 @@ import 'package:pdf/widgets.dart' as pw show Font;
 import 'package:provider/provider.dart';
 import 'package:special_education/screen/choose_account/choose_account_provider.dart';
 import 'package:special_education/screen/dashboard/dashboard_provider.dart';
+import 'package:special_education/screen/login/forget_password/forget_password_provider.dart';
 import 'package:special_education/screen/login/login_provider.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
@@ -46,6 +47,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ReportDashboardProvider()),
         ChangeNotifierProvider(create: (_) => MyProfileProvider()),
         ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
+        ChangeNotifierProvider(create: (_) => ForgetPasswordProvider()),
       ],
       child: const MyApp(),
     ),

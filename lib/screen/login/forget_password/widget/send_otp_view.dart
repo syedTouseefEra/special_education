@@ -3,10 +3,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class SendOtpView extends StatelessWidget {
   final String selectedOption;
@@ -153,30 +155,43 @@ class SendOtpView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   /// CANCEL
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.transparent,
-                      border: Border.all(
-                        color: AppColors.themeColor,
-                        width: 0.7.sp,
+                  InkWell(
+                    splashColor: AppColors.transparent,
+                    highlightColor: AppColors.transparent,
+                    onTap: (){
+                      NavigationHelper.pop(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.transparent,
+                        border: Border.all(
+                          color: AppColors.themeColor,
+                          width: 0.7.sp,
+                        ),
+                        borderRadius: BorderRadius.circular(5.sp),
                       ),
-                      borderRadius: BorderRadius.circular(5.sp),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 5.sp, horizontal: 30.sp),
-                      child: Center(
-                          child: CustomText(
-                            text: "Cancel",
-                            color: AppColors.themeColor,
-                          )),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 5.sp, horizontal: 30.sp),
+                        child: Center(
+                            child: CustomText(
+                              text: "Cancel",
+                              color: AppColors.themeColor,
+                            )),
+                      ),
                     ),
                   ),
 
                   /// SEND OTP
                   GestureDetector(
                     onTap: () {
-                      onSendTap();
+                      if (controller.text.isNotEmpty){
+
+                        onSendTap();
+                      }else{
+                        showSnackBar("Please enter mobile number", context);
+                      }
+
                     },
                     child: Container(
                       decoration: BoxDecoration(

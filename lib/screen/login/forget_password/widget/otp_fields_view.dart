@@ -8,7 +8,7 @@ class OtpFields extends StatefulWidget {
 
   const OtpFields({
     super.key,
-    this.length = 6, // default 6 boxes
+    this.length = 6,
     required this.onChanged,
   });
 
