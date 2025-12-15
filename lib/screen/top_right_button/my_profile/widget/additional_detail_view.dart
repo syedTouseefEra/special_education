@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_data_model.dart';
+import 'package:special_education/screen/top_right_button/my_profile/my_profile_data_model.dart';
 
 class AdditionalDetailView extends StatelessWidget {
   final MyProfileDataModel profile;

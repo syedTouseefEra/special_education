@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_data_model.dart';
+import 'package:special_education/screen/top_right_button/my_profile/my_profile_data_model.dart';
 
-class GeneralInformationView extends StatelessWidget {
+class PlacementDetailsView extends StatelessWidget {
   final MyProfileDataModel profile;
-  const GeneralInformationView({super.key, required this.profile});
+  const PlacementDetailsView({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class GeneralInformationView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: "General Information",
+            text: "Placement Details",
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.themeColor,
@@ -27,10 +27,8 @@ class GeneralInformationView extends StatelessWidget {
           Divider(thickness: 0.7.sp),
           SizedBox(height: 12.sp),
 
-          _info("Mobile", profile.mobileNumber ?? 'NA'),
-          _info("Email Id", profile.emailId ?? 'NA'),
-          _info("Gender", profile.gender ?? 'NA'),
-          _info("DOB", profile.dateOfBirth ?? 'NA'),
+          _info("Designation", profile.designation ?? 'NA'),
+          _info("Joining Date", profile.joiningDate ?? 'NA'),
         ],
       ),
     );

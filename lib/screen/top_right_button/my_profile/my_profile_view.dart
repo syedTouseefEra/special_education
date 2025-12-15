@@ -7,11 +7,11 @@ import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_provider.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/widget/additional_detail_view.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/widget/general_information_view.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/widget/placement_details_view.dart';
-import 'package:special_education/screen/top_right_button/my_profile/update_profile/update_profile_view.dart';
+import 'package:special_education/screen/top_right_button/my_profile/my_profile_provider.dart';
+import 'package:special_education/screen/top_right_button/my_profile/update_my_profile/update_my_profile_view.dart';
+import 'package:special_education/screen/top_right_button/my_profile/widget/additional_detail_view.dart';
+import 'package:special_education/screen/top_right_button/my_profile/widget/general_information_view.dart';
+import 'package:special_education/screen/top_right_button/my_profile/widget/placement_details_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
 class MyProfileView extends StatefulWidget {
@@ -109,7 +109,7 @@ class _MyProfileViewState extends State<MyProfileView> {
                           splashColor: AppColors.transparent,
                           highlightColor: AppColors.transparent,
                           onTap: (){
-                            NavigationHelper.push(context, UpdateProfileView());
+                            NavigationHelper.push(context, UpdateMyProfileView(profile: profile,));
                           },
                           child: CustomContainer(
                             text: "Update Profile",

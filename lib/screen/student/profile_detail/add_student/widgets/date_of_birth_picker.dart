@@ -8,11 +8,15 @@ import 'package:special_education/constant/colors.dart';
 class DateOfBirthPicker extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onChanged;
+  final String label;
+  final bool isRequired;
 
   const DateOfBirthPicker({
     super.key,
     required this.selectedDate,
     required this.onChanged,
+    this.label = "Date of Birth",
+    this.isRequired = true,
   });
 
   @override
@@ -20,13 +24,8 @@ class DateOfBirthPicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FieldLabel(
-          text: "Date of Birth",
-          isRequired: true,
-          fontSize: 14.sp,
-          color: AppColors.black,
-        ),
-        SizedBox(height: 5.sp),
+        FieldLabel(text: label, isRequired: isRequired),
+        SizedBox(height: 3.sp),
         DatePickerHelper.datePicker(
           dateColor: AppColors.black.withAlpha(450),
           borderColor: AppColors.grey,

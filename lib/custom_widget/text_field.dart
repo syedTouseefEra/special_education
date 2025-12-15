@@ -134,32 +134,31 @@ class _CustomTextFieldState extends State<CustomTextField> {
             maxLines: 1,
             maxLength: widget.maxLength,
             readOnly: !widget.isEditable,
+            enableInteractiveSelection: widget.isEditable,
+            showCursor: widget.isEditable,
             textAlignVertical: TextAlignVertical.center,
-
             style: TextStyle(
               fontSize: widget.fontSize ?? 16.sp,
               color: widget.isEditable
                   ? (widget.fontColor ?? AppColors.themeBlue)
                   : AppColors.darkGrey,
             ),
-
             onChanged: widget.onChanged,
             validator: widget.validator,
-
+            onTap: widget.onTap,
             decoration: InputDecoration(
               counterText: "",
               labelText: widget.label,
-
-              labelStyle: TextStyle(color: AppColors.grey, fontSize: widget.labelFontSize ?? 14.sp),
-
+              labelStyle: TextStyle(
+                color: AppColors.grey,
+                fontSize: widget.labelFontSize ?? 14.sp,
+              ),
               floatingLabelStyle: TextStyle(
                 fontSize: 13.sp,
                 color: AppColors.darkGrey,
               ),
-
               prefixIcon: widget.prefixIcon,
               suffixIcon: widget.suffixIcon,
-
               prefixIconConstraints: BoxConstraints(
                 minWidth: 40.sp,
                 minHeight: 40.sp,
@@ -168,17 +167,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 minWidth: 32.sp,
                 minHeight: 32.sp,
               ),
-
               isDense: true,
-
-              contentPadding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 10.sp),
-
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 8.sp,
+                horizontal: 10.sp,
+              ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderRadius: BorderRadius.circular(
+                  widget.borderRadius ?? 30.sp,
+                ),
                 borderSide: BorderSide(color: AppColors.grey),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderRadius: BorderRadius.circular(
+                  widget.borderRadius ?? 30.sp,
+                ),
                 borderSide: BorderSide(color: AppColors.grey),
               ),
             ),

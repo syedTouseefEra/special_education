@@ -94,3 +94,10 @@ bool isUnsupportedVideoFormat(String url) {
   }
   return false;
 }
+
+String setNA(String? value) {
+  if (value == null) return "NA";
+  if (value.trim().isEmpty) return "NA";
+  return value;
+}
+

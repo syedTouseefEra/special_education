@@ -152,6 +152,7 @@ class ImagePickerWithPreview extends StatelessWidget {
     if (uploadedFileName != null) {
       imageFileNotifier.value = pickedFile;
       uploadedFileNameNotifier.value = uploadedFileName;
+      print("uploadedFileNameNotifier "+uploadedFileNameNotifier.value.toString());
     }
   }
 

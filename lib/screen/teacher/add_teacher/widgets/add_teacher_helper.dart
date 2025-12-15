@@ -157,7 +157,6 @@ class AddTeacherHelper {
           .showSnackBar(const SnackBar(content: Text("No roles available")));
       return;
     }
-
     showModalBottomSheet(
       context: context,
       builder: (_) => RolePickerModal(

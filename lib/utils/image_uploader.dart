@@ -16,6 +16,7 @@ class ImageUploaderHelper {
           .uploadFile(filePath: filePath, folderId: folderId);
       final decoded = jsonDecode(result);
       final fileName = decoded['data'][0]['fileName'];
+      print("fileName "+fileName.toString());
       return fileName;
     } catch (e) {
       print('Error: $e');
