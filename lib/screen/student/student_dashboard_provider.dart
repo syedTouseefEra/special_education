@@ -202,8 +202,8 @@ class StudentDashboardProvider with ChangeNotifier {
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
-        _weeklyGoalData = (response["data"] as List)
-            .map((e) => WeeklyGoal.fromJson(Map<String, dynamic>.from(e)))
+        _longTermGoalData = (response["data"] as List)
+            .map((e) => LongTermGoal.fromJson(Map<String, dynamic>.from(e)))
             .toList();
 
         _setLoading(false);
@@ -211,6 +211,75 @@ class StudentDashboardProvider with ChangeNotifier {
       } else {
         _setError(response["responseMessage"] ?? "Something went wrong");
       }
+    } catch (e) {
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
+    } finally {
+      _setLoading(false);
+    }
+
+    return false;
+  }
+
+  Future<bool> addLongTermCourse(dynamic context,String studentId, String longTermGoal) async {
+    _setLoading(true);
+
+    try {
+      final data = await _api.postApiCall(
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.addLongTermCourse}",
+        body: {
+          "studentId": studentId,
+          "longTermGoal": longTermGoal,
+        },
+        token: token,
+      );
+
+      if (data["responseStatus"] == true) {
+        return true;
+      } else {
+        _setError(data["responseMessage"] ?? "Something went wrong");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("UnauthorizedException");
+      }
+      if (e is UnauthorizedException) {
+        showSnackBar("Session expired. Please login again.", context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          NavigationHelper.pushAndClearStack(context, LoginPage());
+        });
+        return false;
+      }
+    } finally {
+      _setLoading(false);
+    }
+    return false;
+  }
+
+  Future<bool> updateLongTermCourse(dynamic context,String id, String longTermGoal) async {
+    await Future.delayed(Duration(milliseconds: 10));
+    _setLoading(true);
+
+    try {
+      final response = await _api.putApiCall(
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
+        body: {"id": id, "longTermGoal": longTermGoal},
+        token: token,
+      );
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body["responseStatus"] == true) {
+        return true;
+      }
+      _setError(body["responseMessage"] ?? "Something went wrong");
     } catch (e) {
       if (kDebugMode) {
         print("UnauthorizedException");
@@ -255,75 +324,8 @@ class StudentDashboardProvider with ChangeNotifier {
   //   return false;
   // }
 
-  Future<bool> addLongTermCourse(dynamic context,String studentId, String longTermGoal) async {
-    _setLoading(true);
-
-    try {
-      final data = await _api.postApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.addLongTermCourse}",
-        body: {
-          "studentId": studentId,
-          "longTermGoal": longTermGoal,
-        },
-        token: token,
-      );
-
-      if (data["responseStatus"] == true) {
-        return true;
-      } else {
-        _setError(data["responseMessage"] ?? "Something went wrong");
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print("UnauthorizedException");
-      }
-      if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
-        return false;
-      }
-    } finally {
-      _setLoading(false);
-    }
-    return false;
-  }
 
 
-  Future<bool> updateLongTermCourse(dynamic context,String id, String longTermGoal) async {
-    await Future.delayed(Duration(milliseconds: 10));
-    _setLoading(true);
-
-    try {
-      final response = await _api.putApiCall(
-        url:
-            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
-        body: {"id": id, "longTermGoal": longTermGoal},
-        token: token,
-      );
-      final body = json.decode(response.body);
-      if (response.statusCode == 200 && body["responseStatus"] == true) {
-        return true;
-      }
-      _setError(body["responseMessage"] ?? "Something went wrong");
-    } catch (e) {
-      if (kDebugMode) {
-        print("UnauthorizedException");
-      }
-      if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
-        return false;
-      }
-    } finally {
-      _setLoading(false);
-    }
-
-    return false;
-  }
 
   Future<bool> getWeeklyGoals(dynamic context,String id) async {
     await Future.delayed(const Duration(milliseconds: 10));

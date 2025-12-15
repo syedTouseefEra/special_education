@@ -5,6 +5,8 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
+import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
+import 'package:special_education/screen/student/profile_detail/widget/long_term_goal/add_long_term_goal_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/utils/text_case_utils.dart';
@@ -176,7 +178,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
             children: [
               CustomText(
                 text: 'Add Long Term Goal Which Kid Achieve',
-                fontSize: 17.sp,
+                fontSize: 16.sp,
                 color: AppColors.textGrey,
                 fontWeight: FontWeight.w400,
               ),
@@ -184,7 +186,8 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () {
-                  showLongTermGoalDialog();
+                  // showLongTermGoalDialog();
+                  NavigationHelper.push(context, AddLongTermGoalView(studentId: widget.studentId,));
                 },
                 child: CustomContainer(
                   width: MediaQuery.sizeOf(context).width,
@@ -260,10 +263,10 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        showLongTermGoalDialog(
-                                          initialText: goal.longTermGoal,
-                                          goalId: goal.id.toString(),
-                                        );
+                                        NavigationHelper.push(context, AddLongTermGoalView(
+                                            studentId: widget.studentId,
+                                            initialText: goal.longTermGoal,
+                                          goalId: goal.id.toString()));
                                       },
                                       child: CustomContainer(
                                         borderRadius: 7.r,

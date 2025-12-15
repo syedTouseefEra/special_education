@@ -195,14 +195,16 @@ class LongTermGoal {
   String? longTermGoal;
   int? goalCount;
   int? goalStatus;
+  int? dateEnd;
 
-  LongTermGoal({this.id, this.longTermGoal, this.goalCount, this.goalStatus});
+  LongTermGoal({this.id, this.longTermGoal, this.goalCount, this.goalStatus,this.dateEnd});
 
   LongTermGoal.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     longTermGoal = json['longTermGoal'];
     goalCount = json['goalCount'];
     goalStatus = json['goalStatus'];
+    dateEnd = json['dateEnd'];
   }
 
   Map<String, dynamic> toJson() {
@@ -211,6 +213,7 @@ class LongTermGoal {
     data['longTermGoal'] = longTermGoal;
     data['goalCount'] = goalCount;
     data['goalStatus'] = goalStatus;
+    data['dateEnd'] = dateEnd;
     return data;
   }
 }
