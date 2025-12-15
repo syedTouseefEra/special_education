@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/button.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
+import 'package:special_education/screen/login/forget_password/forget_password_view.dart';
 import 'package:special_education/screen/login/login_provider.dart';
+import 'package:special_education/screen/registration/registration_view.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -35,21 +39,16 @@ class _LoginPageState extends State<LoginPage> {
       final success = await authProvider.login(
         _usernameController.text.trim(),
         _passwordController.text.trim(),
-        context
+        context,
       );
 
       if (success && mounted) {
-
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("✅ Login successfully")));
+          showSnackBar("Login successfully", context);
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(authProvider.error ?? "❌ Login failed")),
-          );
+          showSnackBar("Login failed", context);
         }
       }
     }
@@ -103,15 +102,9 @@ class _LoginPageState extends State<LoginPage> {
                           keyboardType: TextInputType.number,
                           controller: _usernameController,
                           label: 'Mobile no.',
-                          // validator: (value) {
-                          //   if (value == null || value.trim().length != 10) {
-                          //     return 'Please enter a valid 10-digit mobile number';
-                          //   }
-                          //   return null;
-                          // },
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 20.sp),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.sp),
                         child: CustomTextField(
@@ -135,12 +128,6 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
-                          // validator: (value) {
-                          //   if (value == null || value.isEmpty) {
-                          //     return 'Please enter your password';
-                          //   }
-                          //   return null;
-                          // },
                         ),
                       ),
                     ],
@@ -164,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.symmetric(horizontal: 20.sp),
                   child: CustomButton(
                     text: authProvider.isLoading ? "Logging in..." : "Login",
+
                     onPressed: authProvider.isLoading
                         ? null
                         : () => _login(context),
@@ -180,8 +168,30 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-
-                // Remove the extra ElevatedButton login to avoid duplicate buttons
+                SizedBox(height: 25.sp),
+                InkWell(
+                  splashColor: AppColors.transparent,
+                  highlightColor: AppColors.transparent,
+                  onTap: () {
+                    NavigationHelper.push(context, ForgetPasswordView());
+                  },
+                  child: CustomText(text: "Forget Password?"),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 25.sp,
+                    horizontal: 30.sp,
+                  ),
+                  child: Divider(thickness: 1.sp),
+                ),
+                InkWell(
+                  splashColor: AppColors.transparent,
+                  highlightColor: AppColors.transparent,
+                  onTap: () {
+                    NavigationHelper.push(context, RegistrationView());
+                  },
+                  child: CustomText(text: "Sign Up"),
+                ),
               ],
             ),
           ),

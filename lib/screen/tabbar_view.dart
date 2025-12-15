@@ -2,6 +2,7 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:special_education/screen/dashboard/dashboard_view.dart';
+import 'package:special_education/screen/report/report_dashboard_view.dart';
 import 'package:special_education/screen/student/student_dashboard_view.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_view.dart';
 
@@ -19,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     DashboardView(),
     StudentDashboard(),
     TeacherDashboard(),
-    Center(child: Text('Profile Page', style: TextStyle(fontSize: 24))),
+    ReportDashboard()
   ];
 
   @override
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           TabItem(icon: Icons.dashboard_outlined, title: 'Dashboard'),
           TabItem(icon: Icons.person_3_rounded, title: 'Student'),
           TabItem(icon: Icons.group, title: 'Teacher'),
-          TabItem(icon: Icons.person, title: 'Profile'),
+          TabItem(icon: Icons.event_note_rounded, title: 'Report'),
         ],
         initialActiveIndex: _selectedIndex,
         onTap: (int index) {

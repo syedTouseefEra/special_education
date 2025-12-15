@@ -4,18 +4,29 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 void alertToast(String message) {
   Fluttertoast.showToast(msg: message);
 }
 
-void showSnackBar(String message, context) {
+void showSnackBar(String message, context,{bool success = false}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message, style: const TextStyle(color: Colors.white)),
     ),
   );
 }
+
+// void _showError(String msg, {bool success = false}) {
+//   ScaffoldMessenger.of(context).showSnackBar(
+//     SnackBar(
+//       backgroundColor: success ? Colors.green : Colors.red,
+//       content: Text(msg),
+//     ),
+//   );
+// }
 
 void doubleButton(
     BuildContext context,
@@ -130,4 +141,12 @@ void doubleButton(
       );
     },
   );
+}
+
+
+void unauthorizedUser(dynamic context){
+  showSnackBar("Session expired. Please login again.", context);
+  Future.delayed(const Duration(milliseconds: 500), () {
+    NavigationHelper.pushAndClearStack(context, LoginPage());
+  });
 }

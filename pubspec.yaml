@@ -54,13 +54,10 @@ dependencies:
   shimmer: ^3.0.0
   share_plus: ^12.0.1
   dotted_border: ^3.1.0
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  pdf: ^3.11.3
+  printing: ^5.14.2
+  pdfx: ^2.9.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -76,10 +73,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/images/classSection/
-    - assets/images/notice_board/
-    - assets/images/query/
-    - assets/images/reports/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -100,6 +93,11 @@ flutter:
       fonts:
         - asset: assets/font/Inter-Regular.ttf
         - asset: assets/font/Inter-Medium.ttf
+
+    - family: Roboto
+      fonts:
+        - asset: assets/font/Roboto-Regular.ttf
+
   # fonts:
   #   - family: Schyler
   #     fonts:

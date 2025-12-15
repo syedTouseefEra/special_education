@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String? label;
+  final double? labelFontSize;
   final bool obscureText;
   final TextInputType? keyboardType;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final int? maxLength;
   final bool? must;
   final bool isEmail;
   final bool isMobile;
   final bool onlyLetters;
-  final bool onlyLettersAndNumbers; // ✅ New property
+  final bool onlyLettersAndNumbers;
   final Color? borderColor;
   final double? borderRadius;
   final double? fontSize;
@@ -26,20 +27,23 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final VoidCallback? onTap;
   final FormFieldValidator<String>? validator;
+  final double? bottomSpacing;
 
   const CustomTextField({
     super.key,
     required this.controller,
     this.label,
+    this.labelFontSize,
     this.obscureText = false,
     this.keyboardType,
+    this.prefixIcon,
     this.suffixIcon,
     this.maxLength,
     this.must,
     this.isEmail = false,
     this.isMobile = false,
     this.onlyLetters = false,
-    this.onlyLettersAndNumbers = false, // ✅ Default false
+    this.onlyLettersAndNumbers = false,
     this.borderColor,
     this.borderRadius,
     this.fontSize,
@@ -51,6 +55,7 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.onTap,
     this.validator,
+    this.bottomSpacing,
   });
 
   @override
@@ -61,8 +66,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
   String? errorText;
 
   bool isValidEmail(String email) {
-    final emailRegex =
-    RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+    final emailRegex = RegExp(
+      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    );
     return emailRegex.hasMatch(email);
   }
 
@@ -115,100 +121,70 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
-      child: Focus(
-        onFocusChange: (hasFocus) {
-          if (!hasFocus) {
-            validateInput();
-          }
-        },
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight:
-            widget.height ?? 50.h + 10.h, // extra height for error space
-          ),
-          child: TextFormField(
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) validateInput();
+      },
+      child: Column(
+        children: [
+          TextFormField(
             controller: widget.controller,
             keyboardType: widget.keyboardType,
             obscureText: widget.obscureText,
-            maxLines: widget.maxLines ?? 1,
+            maxLines: 1,
             maxLength: widget.maxLength,
             readOnly: !widget.isEditable,
-            textAlignVertical: widget.maxLines != null && widget.maxLines! > 1
-                ? TextAlignVertical.top
-                : TextAlignVertical.center,
+            textAlignVertical: TextAlignVertical.center,
+
             style: TextStyle(
-              fontSize: widget.fontSize ?? 14.sp,
+              fontSize: widget.fontSize ?? 16.sp,
               color: widget.isEditable
                   ? (widget.fontColor ?? AppColors.themeBlue)
                   : AppColors.darkGrey,
             ),
-            inputFormatters: widget.onlyLetters
-                ? <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
-            ]
-                : widget.onlyLettersAndNumbers
-                ? <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(
-                  RegExp(r'[a-zA-Z0-9\s]')),
-            ]
-                : null,
-            contextMenuBuilder: (context, editableTextState) {
-              return widget.isEditable
-                  ? AdaptiveTextSelectionToolbar.editableText(
-                editableTextState: editableTextState,
-              )
-                  : const SizedBox.shrink();
-            },
+
             onChanged: widget.onChanged,
-            onTap: widget.onTap,
             validator: widget.validator,
+
             decoration: InputDecoration(
               counterText: "",
               labelText: widget.label,
-              labelStyle: TextStyle(
-                color: AppColors.grey,
-                fontSize: widget.fontSize ?? 14.sp,
+
+              labelStyle: TextStyle(color: AppColors.grey, fontSize: widget.labelFontSize ?? 14.sp),
+
+              floatingLabelStyle: TextStyle(
+                fontSize: 13.sp,
+                color: AppColors.darkGrey,
               ),
+
+              prefixIcon: widget.prefixIcon,
               suffixIcon: widget.suffixIcon,
-              errorText: errorText,
-              helperText: ' ', // reserve space for error message
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(
-                vertical: widget.maxLines != null && widget.maxLines! > 1
-                    ? 16.h
-                    : 10.h,
-                horizontal: 10.w,
+
+              prefixIconConstraints: BoxConstraints(
+                minWidth: 40.sp,
+                minHeight: 40.sp,
               ),
-              filled: widget.fillColor != null,
-              fillColor: widget.fillColor,
+              suffixIconConstraints: BoxConstraints(
+                minWidth: 32.sp,
+                minHeight: 32.sp,
+              ),
+
+              isDense: true,
+
+              contentPadding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 10.sp),
+
               enabledBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: BorderSide(
-                    color: widget.borderColor ?? AppColors.themeBlue),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(color: AppColors.grey),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: BorderSide(
-                    color: widget.borderColor ?? AppColors.themeBlue,
-                    width: 1.w),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: const BorderSide(color: AppColors.red),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.circular(widget.borderRadius ?? 30.sp),
-                borderSide: const BorderSide(color: AppColors.red, width: 1),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.sp),
+                borderSide: BorderSide(color: AppColors.grey),
               ),
             ),
           ),
-        ),
+          SizedBox(height: widget.bottomSpacing ?? 12.sp),
+        ],
       ),
     );
   }

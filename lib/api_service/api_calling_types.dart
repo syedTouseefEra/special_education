@@ -3,85 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:special_education/api_service/api_service_url.dart';
-import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/utils/exception_handle.dart';
-import 'package:special_education/utils/navigation_utils.dart';
 
 class ApiCallingTypes {
   final String baseUrl;
 
   ApiCallingTypes({required this.baseUrl});
-
-  // Future<http.Response> getApiCall({
-  //   required String url,
-  //   Map<String, String>? params,
-  //   String? token,
-  // }) async {
-  //   try {
-  //     if (params != null && params.isNotEmpty) {
-  //       String queryString = Uri(queryParameters: params).query;
-  //       url = '$url?$queryString';
-  //     }
-  //
-  //     Map<String, String> headers = {
-  //       'Content-Type': 'application/json',
-  //     };
-  //
-  //     if (token != null && token.isNotEmpty) {
-  //       headers['Authorization'] = 'Bearer $token';
-  //     }
-  //
-  //     final response = await http.get(
-  //       Uri.parse(url),
-  //       headers: headers,
-  //     );
-  //
-  //     _logRequest('GET', url, headers, null, response, params: params);
-  //
-  //     return response;
-  //   } catch (e) {
-  //     throw Exception('Failed to make GET request: $e');
-  //   }
-  // }
-
-  // Future<dynamic> getApiCall({
-  //   required String url,
-  //   Map<String, String>? params,
-  //   String? token,
-  // }) async {
-  //   try {
-  //
-  //     if (params != null && params.isNotEmpty) {
-  //       String queryString = Uri(queryParameters: params).query;
-  //       url = '$url?$queryString';
-  //     }
-  //
-  //     Map<String, String> headers = {
-  //       'Content-Type': 'application/json',
-  //     };
-  //
-  //     if (token != null && token.isNotEmpty) {
-  //       headers['Authorization'] = 'Bearer $token';
-  //     }
-  //
-  //     final response = await http.get(
-  //       Uri.parse(url),
-  //       headers: headers,
-  //     );
-  //
-  //     _logRequest('GET', url, headers, null, response, params: params);
-  //     if (response.statusCode >= 200 && response.statusCode < 300) {
-  //       return jsonDecode(response.body);
-  //     } else {
-  //       final decodedError = jsonDecode(response.body);
-  //       throw Exception(decodedError['responseMessage'] ??
-  //           'API request failed with status ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Failed to make GET request: $e');
-  //   }
-  // }
-
 
   Future<dynamic> getApiCall({
     required String url,
@@ -137,42 +64,6 @@ class ApiCallingTypes {
   }
 
 
-
-  // Future<http.Response> postApiCall({
-  //   required String url,
-  //   required Map<String, dynamic> body,
-  //   Map<String, String>? headers,
-  //   String? token,
-  //   Map<String, String>? params,
-  // }) async {
-  //   final defaultHeaders = {
-  //     'Content-Type': 'application/json',
-  //     if (token != null) 'Authorization': 'Bearer $token',
-  //     ...?headers,
-  //   };
-  //
-  //   try {
-  //     if (params != null && params.isNotEmpty) {
-  //       String queryString = Uri(queryParameters: params).query;
-  //       url = '$url?$queryString';
-  //     }
-  //
-  //     final response = await http.post(
-  //       Uri.parse(url),
-  //       headers: defaultHeaders,
-  //       body: json.encode(body),
-  //     );
-  //
-  //     _logRequest('POST', url, defaultHeaders, body, response, params: params);
-  //
-  //     return response;
-  //   } catch (e) {
-  //     print('❌ Exception during POST: $e');
-  //     throw Exception('POST request failed: $e');
-  //   }
-  // }
-
-
   Future<Map<String, dynamic>> postApiCall({
     required String url,
     required Map<String, dynamic> body,
@@ -187,7 +78,6 @@ class ApiCallingTypes {
     };
 
     try {
-      // Add query parameters to URL if provided
       if (params != null && params.isNotEmpty) {
         final queryString = Uri(queryParameters: params).query;
         url = '$url?$queryString';
@@ -289,7 +179,7 @@ class ApiCallingTypes {
   }) async {
     try {
       final uploadUrl = ApiServiceUrl.uploadFile;
-      print('Uploading to URL: $uploadUrl');  // <--- Add this
+      print('Uploading to URL: $uploadUrl');
 
       var request = http.MultipartRequest('POST', Uri.parse(uploadUrl));
 
@@ -321,6 +211,34 @@ class ApiCallingTypes {
   }
 
 
+  Future<String> uploadFile({
+    required String filePath,
+    required String folderId,
+    String? url,
+  }) async {
+    try {
+      final uploadUrl = url ?? ApiServiceUrl.elearningFileUpload;
+
+      var request = http.MultipartRequest('POST', Uri.parse(uploadUrl));
+
+      request.fields.addAll({
+        'folderId': folderId,
+      });
+
+      request.files.add(await http.MultipartFile.fromPath('file', filePath));
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        return await response.stream.bytesToString();
+      } else {
+        return 'Failed to upload: ${response.reasonPhrase}';
+      }
+    } catch (e) {
+      return 'Error: $e';
+    }
+  }
+
 
 
   void _logRequest(
@@ -335,14 +253,15 @@ class ApiCallingTypes {
       debugPrint('🟦 [$method] REQUEST');
       debugPrint('➡️ URL: $url');
       debugPrint('📬 Headers: ${jsonEncode(headers)}');
-      if (params != null) debugPrint('🔍 Params: ${jsonEncode(params)}');
-      if (body != null) debugPrint('📦 Body: ${jsonEncode(body)}');
+      if (params != null) printLongString('🔍 Params: ${jsonEncode(params)}');
+      if (body != null) printLongString('📦 Body: ${jsonEncode(body)}');
       debugPrint('✅ Response Code: ${response.statusCode}');
       printLongString('📝 Response Body: ${response.body}');
+      // printPrettyJson("📝 Response Body:", response.body);
+
     }
   }
 
-  // Helper method to safely print long strings
   void printLongString(String text) {
     const int chunkSize = 800;
     for (var i = 0; i < text.length; i += chunkSize) {
@@ -351,4 +270,16 @@ class ApiCallingTypes {
       );
     }
   }
+
+  void printPrettyJson(String prefix, String jsonString) {
+    try {
+      final decoded = json.decode(jsonString);
+      final pretty = const JsonEncoder.withIndent('  ').convert(decoded);
+      printLongString("$prefix\n$pretty");
+    } catch (_) {
+      printLongString("$prefix\n$jsonString");
+    }
+  }
+
 }
+

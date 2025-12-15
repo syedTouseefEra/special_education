@@ -4,7 +4,7 @@ import 'package:special_education/utils/text_case_utils.dart';
 
 class LabelValueText extends StatelessWidget {
   final String label;
-  final String value;
+  final dynamic value;
   final TextStyle? labelStyle;
   final TextStyle? valueStyle;
   final bool isRow;
@@ -30,18 +30,35 @@ class LabelValueText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Widget valueWidget;
+
+    if (value is String) {
+      valueWidget = Text(
+        applyTextCase(value as String, valueCase),
+        style: valueStyle,
+        textAlign: TextAlign.end,
+      );
+    }
+    else if (value is Widget) {
+      valueWidget = value as Widget;
+    }
+    else {
+      valueWidget = Text(
+        value.toString(),
+        style: valueStyle,
+        textAlign: TextAlign.end,
+      );
+    }
+
     final children = <Widget>[
       Text(applyTextCase(label, labelCase), style: labelStyle),
+
       SizedBox(width: isRow ? spacing : 0, height: isRow ? 0 : spacing),
+
       Flexible(
-        fit: FlexFit.loose,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 1),
-          child: Text(
-            textAlign: TextAlign.end,
-            applyTextCase(value, valueCase),
-            style: valueStyle,
-          ),
+          child: valueWidget,
         ),
       ),
     ];
@@ -54,10 +71,10 @@ class LabelValueText extends StatelessWidget {
     )
         : Column(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
       children: children,
     );
   }
 }
+
 

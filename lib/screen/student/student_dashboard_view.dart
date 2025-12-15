@@ -12,8 +12,9 @@ import 'package:special_education/main.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_view.dart';
 import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
+import 'package:special_education/screen/top_right_button/top_option_sheet_view.dart';
+import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
-
 
 class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key});
@@ -29,7 +30,10 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
   @override
   void initState() {
     super.initState();
-    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList(context);
+    Provider.of<StudentDashboardProvider>(
+      context,
+      listen: false,
+    ).fetchStudentList(context);
   }
 
   @override
@@ -50,7 +54,10 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
 
   @override
   void didPopNext() {
-    Provider.of<StudentDashboardProvider>(context, listen: false).fetchStudentList(context);
+    Provider.of<StudentDashboardProvider>(
+      context,
+      listen: false,
+    ).fetchStudentList(context);
   }
 
   @override
@@ -63,9 +70,24 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
             scaffoldContext = newContext;
             return Scaffold(
               backgroundColor: AppColors.white,
-              appBar: CustomAppBar(enableTheming: false),
+              appBar: CustomAppBar(
+                enableTheming: false,
+                onNotificationTap: () {
+                  showTopSheet(
+                    context,
+                      TopOptionSheet(
+                        name: UserData().getUserData.name!.isEmpty?'NA': UserData().getUserData.name.toString(),
+                        subtitle: UserData().getUserData.instituteName!.isEmpty?'NA': UserData().getUserData.instituteName.toString(),
+                        profileImage: '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
+                      ),
+                  );
+                },
+              ),
               body: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 15.sp),
+                padding: EdgeInsets.symmetric(
+                  vertical: 8.sp,
+                  horizontal: 15.sp,
+                ),
                 child: Column(
                   children: [
                     Row(
@@ -81,7 +103,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                         InkWell(
                           splashColor: AppColors.transparent,
                           highlightColor: AppColors.transparent,
-                          onTap: (){
+                          onTap: () {
                             NavigationHelper.push(context, AddStudentView());
                           },
                           child: CustomContainer(
@@ -100,28 +122,47 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                     ),
                     CustomTextField(
                       controller: searchController,
-                      suffixIcon: Icon(
-                        Icons.search,
-                        size: 18.sp,
-                        color: AppColors.themeColor,
+                      prefixIcon: SizedBox(
+                        width: 60.w,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search,
+                              size: 20.sp,
+                              color: Colors.blueAccent,
+                            ),
+                            SizedBox(width: 8.sp),
+                            Container(width: 1, height: 22, color: Colors.grey),
+                          ],
+                        ),
                       ),
+                      fontSize: 15.sp,
+                      fontColor: AppColors.darkGrey,
                       borderColor: AppColors.grey,
                       label: 'Search',
                       onChanged: (value) {
-                        Provider.of<StudentDashboardProvider>(context, listen: false)
-                            .updateSearchQuery(value);
+                        Provider.of<StudentDashboardProvider>(
+                          context,
+                          listen: false,
+                        ).updateSearchQuery(value);
                       },
                     ),
-                    SizedBox(height: 10.sp),
+                    SizedBox(height: 5.sp),
                     Expanded(
                       child: Consumer<StudentDashboardProvider>(
                         builder: (context, provider, _) {
                           if (provider.isLoading) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           } else if (provider.error != null) {
                             return Center(child: Text(provider.error!));
-                          } else if (provider.studentData == null || provider.studentData!.isEmpty) {
-                            return const Center(child: Text("No students found"));
+                          } else if (provider.studentData == null ||
+                              provider.studentData!.isEmpty) {
+                            return const Center(
+                              child: Text("No students found"),
+                            );
                           }
 
                           return ListView.builder(
@@ -130,7 +171,12 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                               final student = provider.studentData![index];
                               return Container(
                                 margin: EdgeInsets.only(bottom: 12.sp),
-                                padding: EdgeInsets.fromLTRB(15.sp, 15.sp, 10.sp, 0.sp),
+                                padding: EdgeInsets.fromLTRB(
+                                  15.sp,
+                                  15.sp,
+                                  10.sp,
+                                  10.sp,
+                                ),
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: AppColors.borderColor,
@@ -147,40 +193,54 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                                           height: 70.sp,
                                           width: 70.sp,
                                           decoration: BoxDecoration(
-                                            color: AppColors.themeColor.withOpacity(0.1),
+                                            color: AppColors.themeColor
+                                                .withOpacity(0.1),
                                             shape: BoxShape.circle,
-                                            image: student.studentImage != null && student.studentImage!.isNotEmpty
+                                            image:
+                                                student.studentImage != null &&
+                                                    student
+                                                        .studentImage!
+                                                        .isNotEmpty
                                                 ? DecorationImage(
-                                              image: NetworkImage('${ApiServiceUrl.urlLauncher}uploads/${student.studentImage}'),
-                                              fit: BoxFit.cover,
-                                            )
+                                                    image: NetworkImage(
+                                                      '${ApiServiceUrl.urlLauncher}uploads/${student.studentImage}',
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                  )
                                                 : const DecorationImage(
-                                              image: AssetImage(ImgAssets.user),
-                                              fit: BoxFit.cover,
-                                            ),
+                                                    image: AssetImage(
+                                                      ImgAssets.user,
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                         ),
                                         SizedBox(width: 10.sp),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               CustomText(
-                                                text: student.studentName ?? "Unknown Student",
+                                                text:
+                                                    student.studentName ??
+                                                    "Unknown Student",
                                                 fontSize: 14.sp,
                                                 fontWeight: FontWeight.w600,
                                                 color: AppColors.themeColor,
                                               ),
                                               SizedBox(height: 2.sp),
                                               CustomText(
-                                                text: "PID - ${student.pidNumber ?? "N/A"}",
+                                                text:
+                                                    "PID - ${student.pidNumber ?? "N/A"}",
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: AppColors.textGrey,
                                               ),
                                               SizedBox(height: 2.sp),
                                               CustomText(
-                                                text: "Diagnosis - ${student.diagnosis ?? "N/A"}",
+                                                text:
+                                                    "Diagnosis - ${student.diagnosis ?? "N/A"}",
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: AppColors.textGrey,
@@ -198,29 +258,55 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                                         splashColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         onTap: () async {
-                                          final success = await provider.fetchProfileDetail(context,student.id.toString());
+                                          final success = await provider
+                                              .fetchProfileDetail(
+                                                context,
+                                                student.id.toString(),
+                                              );
                                           if (!mounted) return;
-                                          if (success && provider.studentProfileData != null && provider.studentProfileData!.isNotEmpty) {
-                                            final profile = provider.studentProfileData![0];
-                                            NavigationHelper.push(scaffoldContext, ProfileView(student: profile));
+                                          if (success &&
+                                              provider.studentProfileData !=
+                                                  null &&
+                                              provider
+                                                  .studentProfileData!
+                                                  .isNotEmpty) {
+                                            final profile =
+                                                provider.studentProfileData![0];
+                                            NavigationHelper.push(
+                                              scaffoldContext,
+                                              ProfileView(student: profile),
+                                            );
                                           } else {
-                                            ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                                              SnackBar(content: Text(provider.error ?? "Failed to load profile")),
+                                            ScaffoldMessenger.of(
+                                              scaffoldContext,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  provider.error ??
+                                                      "Failed to load top_right_button",
+                                                ),
+                                              ),
                                             );
                                           }
                                         },
-                                        child: CustomContainer(
-                                          text: 'View',
-                                          innerPadding: EdgeInsets.symmetric(
-                                            vertical: 4.sp,
-                                            horizontal: 22.sp,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 8.0,
                                           ),
-                                          containerColor: Colors.white,
-                                          textColor: AppColors.yellow,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          borderColor: AppColors.yellow,
-                                          borderWidth: 1,
+                                          child: CustomContainer(
+                                            padding: 0.sp,
+                                            text: 'View',
+                                            innerPadding: EdgeInsets.symmetric(
+                                              vertical: 3.sp,
+                                              horizontal: 20.sp,
+                                            ),
+                                            containerColor: Colors.white,
+                                            textColor: AppColors.yellow,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            borderColor: AppColors.yellow,
+                                            borderWidth: 1,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -242,4 +328,3 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
     );
   }
 }
-

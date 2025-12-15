@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_view.dart';
-import 'package:special_education/screen/login/login_view.dart';
+import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
+import 'package:special_education/screen/top_right_button/top_option_sheet_view.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -65,88 +67,106 @@ class DashboardView extends StatelessWidget {
                 appBar: CustomAppBar(
                   enableTheming: false,
                   onNotificationTap: () {
-                    UserData().removeUserData();
-                    NavigationHelper.pushAndClearStack(context, LoginPage());
+                    showTopSheet(
+                      context,
+                      TopOptionSheet(
+                        name: UserData().getUserData.name!.isEmpty
+                            ? 'NA'
+                            : UserData().getUserData.name.toString(),
+                        subtitle: UserData().getUserData.instituteName!.isEmpty
+                            ? 'NA'
+                            : UserData().getUserData.instituteName.toString(),
+                        profileImage:
+                            '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
+                      ),
+                    );
                   },
                 ),
                 body: provider.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : SingleChildScrollView(
-                  padding: EdgeInsets.all(10.sp),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomText(
-                            text: "Dashboard",
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'DMSerif',
-                            color: AppColors.themeColor,
-                          ),
-                          CustomContainer(
-                            text: "Add Student",
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Inter',
-                            borderRadius: 15,
-                            innerPadding: EdgeInsets.symmetric(
-                              vertical: 4.sp,
-                              horizontal: 10.sp,
+                        padding: EdgeInsets.all(10.sp),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(
+                                  text: "Dashboard",
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'DMSerif',
+                                  color: AppColors.themeColor,
+                                ),
+                                InkWell(
+                                  splashColor: AppColors.transparent,
+                                  highlightColor: AppColors.transparent,
+                                  onTap: () {
+                                    NavigationHelper.push(context, AddStudentView());
+                                  },
+                                  child: CustomContainer(
+                                    text: "Add Student",
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
+                                    borderRadius: 15,
+                                    innerPadding: EdgeInsets.symmetric(
+                                      vertical: 4.sp,
+                                      horizontal: 10.sp,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10.sp),
+                            SizedBox(height: 10.sp),
 
-                      /// Weekly Goal Chart
-                      _buildChartSection(
-                        title: 'Weekly Goal Report',
-                        chartData: weekChartData,
-                        tooltip: tooltip,
-                        yMax: 100,
-                      ),
+                            /// Weekly Goal Chart
+                            _buildChartSection(
+                              title: 'Weekly Goal Report',
+                              chartData: weekChartData,
+                              tooltip: tooltip,
+                              yMax: 100,
+                            ),
 
-                      SizedBox(height: 20.sp),
+                            SizedBox(height: 20.sp),
 
-                      /// Long Goal Chart
-                      _buildChartSection(
-                        title: 'Long Goal Report',
-                        chartData: longChartData,
-                        tooltip: tooltip,
-                        yMax: 100,
-                      ),
+                            /// Long Goal Chart
+                            _buildChartSection(
+                              title: 'Long Goal Report',
+                              chartData: longChartData,
+                              tooltip: tooltip,
+                              yMax: 100,
+                            ),
 
-                      SizedBox(height: 20.sp),
+                            SizedBox(height: 20.sp),
 
-                      /// Student List
-                      if (provider.studentData != null &&
-                          provider.studentData!.isNotEmpty)
-                        Column(
-                          children: provider.studentData!
-                              .map(
-                                (student) => CustomViewCard(
-                              student: student,
-                              onViewPressed: () => debugPrint(
-                                'Viewing student: ${student.studentName}',
+                            /// Student List
+                            if (provider.studentData != null &&
+                                provider.studentData!.isNotEmpty)
+                              Column(
+                                children: provider.studentData!
+                                    .map(
+                                      (student) => CustomViewCard(
+                                        student: student,
+                                        onViewPressed: () => debugPrint(
+                                          'Viewing student: ${student.studentName}',
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              )
+                            else
+                              Padding(
+                                padding: EdgeInsets.all(16.sp),
+                                child: CustomText(
+                                  text: "No student data available",
+                                  fontSize: 14.sp,
+                                  color: Colors.grey,
+                                ),
                               ),
-                            ),
-                          )
-                              .toList(),
-                        )
-                      else
-                        Padding(
-                          padding: EdgeInsets.all(16.sp),
-                          child: CustomText(
-                            text: "No student data available",
-                            fontSize: 14.sp,
-                            color: Colors.grey,
-                          ),
+                          ],
                         ),
-                    ],
-                  ),
-                ),
+                      ),
               ),
             ),
           );
@@ -185,34 +205,34 @@ class DashboardView extends StatelessWidget {
           ),
           chartData.isEmpty
               ? Padding(
-            padding: EdgeInsets.all(16.sp),
-            child: CustomText(
-              text: "No data available",
-              fontSize: 14.sp,
-              color: Colors.grey,
-            ),
-          )
+                  padding: EdgeInsets.all(16.sp),
+                  child: CustomText(
+                    text: "No data available",
+                    fontSize: 14.sp,
+                    color: Colors.grey,
+                  ),
+                )
               : SizedBox(
-            height: 250,
-            child: SfCartesianChart(
-              primaryXAxis: CategoryAxis(),
-              primaryYAxis: NumericAxis(
-                minimum: 0,
-                maximum: yMax,
-                interval: 20,
-              ),
-              tooltipBehavior: tooltip,
-              series: <CartesianSeries<_ChartData, String>>[
-                ColumnSeries<_ChartData, String>(
-                  dataSource: chartData,
-                  xValueMapper: (_ChartData data, _) => data.x,
-                  yValueMapper: (_ChartData data, _) => data.y,
-                  pointColorMapper: (_ChartData data, _) => data.color,
-                  name: 'Completion %',
+                  height: 250,
+                  child: SfCartesianChart(
+                    primaryXAxis: CategoryAxis(),
+                    primaryYAxis: NumericAxis(
+                      minimum: 0,
+                      maximum: yMax,
+                      interval: 20,
+                    ),
+                    tooltipBehavior: tooltip,
+                    series: <CartesianSeries<_ChartData, String>>[
+                      ColumnSeries<_ChartData, String>(
+                        dataSource: chartData,
+                        xValueMapper: (_ChartData data, _) => data.x,
+                        yValueMapper: (_ChartData data, _) => data.y,
+                        pointColorMapper: (_ChartData data, _) => data.color,
+                        name: 'Completion %',
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
         ],
       ),
     );

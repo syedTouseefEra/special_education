@@ -6,7 +6,7 @@ class AppColors {
   static const Color black = Color(0xff000000);
   static const Color golden = Color(0xffffd700);
   static const Color red = Color(0xffFF0000);
-  static const Color green = Color(0xff14AE5C);
+  static const Color green = Color(0xff34c759);
   static const Color yellow = Color(0xffFF9B04);
   static const Color darkGrey = Color(0xff3C3C3C);
   static const Color textGrey = Color(0xff727272);
@@ -24,8 +24,8 @@ class AppColors {
 
   static const Color gradientColorOne = Color(0xFFFFF9E2);
   static const Color gradientColorTwo = Color(0xFFFEF1BB);
-
-
+  static const Color gradientColorThree = Color(0xF1205E);
+  static const Color gradientColorFour = Color(0xF1205E);
 
 
 }
