@@ -16,9 +16,12 @@ class ApiServiceUrl {
   static String elearningFileUpload = "https://elearningapi.edumation.in/api/CommonDropdown/FileUpload";
 
 
-  // static String apiBaseUrl= "http://172.16.82.6:50/api/";
-  // static String urlLauncher = "http://172.16.82.6:50/FileUploads/";
-  // static String fileUpload = "http://172.16.82.6:50/api/CommonDropdown/FileUpload";
+  // static String elearningApiBaseUrl= "http://172.16.82.6:50/api/";
+  // static String hamaareSitaareApiBaseUrl= "http://172.16.82.6:56/api/";
+  // static String urlLauncher = "http://172.16.82.6:56/FileUploads/";
+  // static String uploadFile = "http://172.16.82.6:56/api/CommonDropdown/FileUpload";
+  // static String elearningFileUpload = "http://172.16.82.6:56/api/CommonDropdown/FileUpload";
+  // static String countryBaseUrl = "https://apiapp.edumation.in/api/";
 
   static String login = "User/Login";
   static String generateOtp = "User/GenerateOtp";

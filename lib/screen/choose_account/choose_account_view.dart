@@ -29,7 +29,7 @@ class _ChooseAccountViewState extends State<ChooseAccountView> {
   @override
   Widget build(BuildContext context) {
     final filteredData = widget.chooseAccountData
-        .where((data) => data.userId == 10 && data.organizationTypeId == 4)
+        .where((data) => data.userRoleId == 10 && data.organizationTypeId == 4)
         .toList();
 
     return PopScope(

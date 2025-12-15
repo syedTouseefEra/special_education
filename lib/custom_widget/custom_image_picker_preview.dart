@@ -14,6 +14,7 @@ class ImagePickerWithPreview extends StatelessWidget {
   final ValueNotifier<File?> imageFileNotifier;
   final ValueNotifier<String?> uploadedFileNameNotifier;
   final String? imageUrl;
+  final String? uploadedFolderName;
   final String uploadButtonText;
   final double containerHeight;
   final double thumbnailHeight;
@@ -25,6 +26,7 @@ class ImagePickerWithPreview extends StatelessWidget {
     required this.imageFileNotifier,
     required this.uploadedFileNameNotifier,
     this.imageUrl,
+    this.uploadedFolderName,
     required this.uploadButtonText,
     required this.containerHeight,
     required this.thumbnailHeight,
@@ -207,7 +209,10 @@ class ImagePickerWithPreview extends StatelessWidget {
             }
             // Uploaded image
             else if (uploadedFileName != null && uploadedFileName.isNotEmpty) {
-              final fullUrl = "${ApiServiceUrl.urlLauncher}Documents/$uploadedFileName";
+              final String fullUrl = (uploadedFolderName == null ||
+                  uploadedFolderName!.isEmpty)
+                  ? "${ApiServiceUrl.urlLauncher}Uploads/$uploadedFileName"
+                  : "${ApiServiceUrl.urlLauncher}$uploadedFolderName/$uploadedFileName";
               previewImage = GestureDetector(
                 onTap: () => _showFullScreenImage(
                   context,

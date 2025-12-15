@@ -75,3 +75,11 @@ String formatDuration(String? startDateStr, String? endDateStr) {
 }
 
 String fmt(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
+
+
+DateTime parseDob(dynamic dob) {
+  if (dob == null) return DateTime.now();
+  if (dob is DateTime) return dob;
+  if (dob is String) return DateTime.parse(dob);
+  return DateTime.now();
+}

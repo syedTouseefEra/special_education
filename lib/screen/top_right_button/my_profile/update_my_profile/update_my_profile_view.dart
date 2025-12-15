@@ -57,12 +57,17 @@ class _UpdateMyProfileViewState extends State<UpdateMyProfileView> {
   final TextEditingController aadharCardNumberController =
       TextEditingController();
 
-  late final ValueNotifier<File?> studentImageNotifier;
-  late final ValueNotifier<File?> aadhaarImageFrontNotifier;
-  late final ValueNotifier<File?> aadhaarImageBackNotifier;
-  late final ValueNotifier<String?> studentUploadedFileNameNotifier;
-  late final ValueNotifier<String?> aadhaarFrontUploadedFileNameNotifier;
-  late final ValueNotifier<String?> aadhaarBackUploadedFileNameNotifier;
+  final ValueNotifier<File?> studentImageNotifier = ValueNotifier<File?>(null);
+  final ValueNotifier<File?> aadhaarImageFrontNotifier = ValueNotifier<File?>(null);
+  final ValueNotifier<File?> aadhaarImageBackNotifier = ValueNotifier<File?>(null);
+
+  final ValueNotifier<String?> studentUploadedFileNameNotifier =
+  ValueNotifier<String?>(null);
+  final ValueNotifier<String?> aadhaarFrontUploadedFileNameNotifier =
+  ValueNotifier<String?>(null);
+  final ValueNotifier<String?> aadhaarBackUploadedFileNameNotifier =
+  ValueNotifier<String?>(null);
+
 
   var updateGender = [
     {'id': 1, 'status': "Male"},
@@ -103,13 +108,6 @@ class _UpdateMyProfileViewState extends State<UpdateMyProfileView> {
     nationalityController.text = setNA(widget.profile.nationality);
     aadharCardNumberController.text = setNA(widget.profile.adharCardNumber);
 
-    studentImageNotifier = ValueNotifier<File?>(null);
-    aadhaarImageFrontNotifier = ValueNotifier<File?>(null);
-    aadhaarImageBackNotifier = ValueNotifier<File?>(null);
-
-    studentUploadedFileNameNotifier = ValueNotifier<String?>(null);
-    aadhaarFrontUploadedFileNameNotifier = ValueNotifier<String?>(null);
-    aadhaarBackUploadedFileNameNotifier = ValueNotifier<String?>(null);
     loadInitialData();
   }
 
@@ -584,7 +582,7 @@ class _UpdateMyProfileViewState extends State<UpdateMyProfileView> {
                   SizedBox(height: 3.sp),
                   ImagePickerWithPreview(
                     imageFileNotifier: studentImageNotifier,
-                    imageUrl: '${ApiServiceUrl.urlLauncher}Documents/${widget.profile.image}',
+                    imageUrl: '${ApiServiceUrl.urlLauncher}Uploads/${widget.profile.image}',
                     uploadButtonText: "Upload Image",
                     containerHeight: 40,
                     thumbnailHeight: 120,
@@ -600,7 +598,7 @@ class _UpdateMyProfileViewState extends State<UpdateMyProfileView> {
                   ImagePickerWithPreview(
                     imageFileNotifier: aadhaarImageFrontNotifier,
                     imageUrl:
-                    '${ApiServiceUrl.urlLauncher}Documents/${widget.profile.adharCardImage}',
+                    '${ApiServiceUrl.urlLauncher}Uploads/${widget.profile.adharCardImage}',
                     uploadButtonText: "Upload Image",
                     containerHeight: 40,
                     thumbnailHeight: 120,
@@ -613,12 +611,12 @@ class _UpdateMyProfileViewState extends State<UpdateMyProfileView> {
 
                   SizedBox(height: 20.h),
 
-                  FieldLabel(text: "Aadhar Card Image"),
+                  FieldLabel(text: "Signature Image"),
                   SizedBox(height: 3.sp),
                   ImagePickerWithPreview(
                     imageFileNotifier: aadhaarImageBackNotifier,
                     imageUrl:
-                    '${ApiServiceUrl.urlLauncher}Documents/${widget.profile.adharCardImage}',
+                    '${ApiServiceUrl.urlLauncher}Uploads/${widget.profile.signature}',
                     uploadButtonText: "Upload Image",
                     containerHeight: 40,
                     thumbnailHeight: 120,

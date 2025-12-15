@@ -8,12 +8,14 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/all_videos_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/long_term_goal_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/profile_details_view.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/widget/weekly_goal_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class ProfileView extends StatefulWidget {
   final StudentProfileDataModel student;
@@ -143,14 +145,19 @@ class _ProfileViewState extends State<ProfileView> {
                                   horizontal: 35.sp,
                                 ),
                               ),
-                              CustomContainer(
-                                borderRadius: 10.sp,
-                                text: 'Update',
-                                containerColor: AppColors.green,
-                                padding: 1,
-                                innerPadding: EdgeInsets.symmetric(
-                                  vertical: 8.sp,
-                                  horizontal: 25.sp,
+                              InkWell(
+                                onTap: (){
+                                  NavigationHelper.push(context, UpdateStudentProfileView(student: widget.student,));
+                                },
+                                child: CustomContainer(
+                                  borderRadius: 10.sp,
+                                  text: 'Update',
+                                  containerColor: AppColors.green,
+                                  padding: 1,
+                                  innerPadding: EdgeInsets.symmetric(
+                                    vertical: 8.sp,
+                                    horizontal: 25.sp,
+                                  ),
                                 ),
                               ),
                             ],
