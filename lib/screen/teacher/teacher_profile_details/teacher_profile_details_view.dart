@@ -82,7 +82,7 @@ class _TeacherProfileDetailsViewState extends State<TeacherProfileDetailsView> {
                                 "",
                                 "Are you sure? You can't undo this action afterwards.",
                                 () async {
-                                  Navigator.pop(context); // close dialog
+                                  Navigator.pop(context);
                                   final success = await provider.deleteTeacher(
                                     context,
                                     widget.id.toString(),

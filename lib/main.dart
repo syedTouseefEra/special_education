@@ -8,6 +8,7 @@ import 'package:special_education/screen/dashboard/dashboard_provider.dart';
 import 'package:special_education/screen/login/forget_password/forget_password_provider.dart';
 import 'package:special_education/screen/login/login_provider.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_provider.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
@@ -48,6 +49,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
         ChangeNotifierProvider(create: (_) => ForgetPasswordProvider()),
         ChangeNotifierProvider(create: (_) => UpdateMyProfileProvider()),
+        ChangeNotifierProvider(create: (_) => UpdateStudentProfileProvider()),
       ],
       child: const MyApp(),
     ),

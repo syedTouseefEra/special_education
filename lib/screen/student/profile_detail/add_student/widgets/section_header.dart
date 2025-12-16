@@ -15,7 +15,7 @@ class SectionHeader extends StatelessWidget {
       children: [
         CustomText(
           text: title,
-          fontSize: 17.sp,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w500,
         ),
         SizedBox(height: 5.sp),

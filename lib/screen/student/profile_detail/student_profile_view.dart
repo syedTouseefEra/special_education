@@ -2,6 +2,7 @@ import 'package:flutter/Material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
@@ -60,7 +61,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   SizedBox(height: 15.sp),
                   Container(
-                    height: 220.sp,
+
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [AppColors.gradientColorOne, AppColors.gradientColorTwo],
@@ -98,36 +99,38 @@ class _ProfileViewState extends State<ProfileView> {
                                 ),
                               ),
                               SizedBox(width: 20.sp),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomContainer(
-                                    borderRadius: 0,
-                                    text:
-                                        '${widget.student.firstName} ${widget.student.middleName} ${widget.student.lastName}'
-                                            .trim(),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomContainer(
+                                      borderRadius: 0,
+                                      text:
+                                          '${widget.student.firstName} ${widget.student.middleName} ${widget.student.lastName}'
+                                              .trim(),
 
-                                    containerColor: AppColors.yellow,
-                                    padding: 1,
-                                    innerPadding: EdgeInsets.symmetric(
-                                      vertical: 5.sp,
-                                      horizontal: 15.sp,
+                                      containerColor: AppColors.yellow,
+                                      padding: 1,
+                                      innerPadding: EdgeInsets.symmetric(
+                                        vertical: 5.sp,
+                                        horizontal: 15.sp,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 5.sp),
-                                  CustomText(
-                                    text: 'Age- ${widget.student.age}',
-                                  ),
-                                  CustomText(
-                                    text: 'PID- ${widget.student.pidNumber}',
-                                  ),
-                                  CustomText(
-                                    text: 'Gender- ${widget.student.gender}',
-                                  ),
-                                  CustomText(
-                                    text: 'D.O.B- ${widget.student.dob}',
-                                  ),
-                                ],
+                                    SizedBox(height: 5.sp),
+                                    CustomText(
+                                      text: 'Age- ${widget.student.age}',
+                                    ),
+                                    CustomText(
+                                      text: 'PID- ${widget.student.pidNumber}',
+                                    ),
+                                    CustomText(
+                                      text: 'Gender- ${widget.student.gender}',
+                                    ),
+                                    CustomText(
+                                      text: 'D.O.B- ${widget.student.dob}',
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -174,8 +177,23 @@ class _ProfileViewState extends State<ProfileView> {
                     child: InkWell(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      onTap: () {
-                        print('delete Student');
+                      onTap: () async {
+                        doubleButton(
+                          context,
+                          "",
+                          "Are you sure? You can't undo this action afterwards.",
+                              () async {
+                            Navigator.pop(context); // close dialog first
+
+                            await Provider.of<StudentDashboardProvider>(
+                              context,
+                              listen: false,
+                            ).deleteStudent(
+                              context,
+                              widget.student.studentId.toString(),
+                            );
+                          },
+                        );
                       },
                       child: CustomContainer(
                         textAlign: TextAlign.center,
@@ -189,6 +207,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
+
 
                   Row(
                     children: [

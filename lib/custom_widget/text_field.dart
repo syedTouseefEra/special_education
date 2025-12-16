@@ -138,7 +138,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             showCursor: widget.isEditable,
             textAlignVertical: TextAlignVertical.center,
             style: TextStyle(
-              fontSize: widget.fontSize ?? 16.sp,
+              fontSize: widget.fontSize ?? 14.sp,
               color: widget.isEditable
                   ? (widget.fontColor ?? AppColors.themeBlue)
                   : AppColors.darkGrey,

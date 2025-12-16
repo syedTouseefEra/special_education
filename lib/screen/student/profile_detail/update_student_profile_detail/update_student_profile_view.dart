@@ -1,23 +1,22 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/constant/colors.dart';
+import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_image_picker_preview.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
-import 'package:special_education/screen/student/profile_detail/add_student/widgets/save_button.dart';
 import 'package:special_education/screen/student/profile_detail/country_state_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
-import 'package:special_education/screen/student/student_dashboard_provider.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_data_model.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_provider.dart';
 
 import 'package:special_education/components/custom_api_call.dart';
-import 'package:special_education/utils/date_picker_utils.dart';
-import 'package:special_education/utils/null_safely_handle.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 import '../add_student/widgets/city_picker_modal.dart';
 import '../add_student/widgets/country_picker_modal.dart';
@@ -25,33 +24,37 @@ import '../add_student/widgets/date_of_birth_picker.dart';
 import '../add_student/widgets/form_text_field.dart';
 import '../add_student/widgets/section_header.dart';
 import '../add_student/widgets/state_picker_modal.dart';
-import '../add_student/widgets/upload_image_box.dart';
 
 class UpdateStudentProfileView extends StatefulWidget {
   final StudentProfileDataModel student;
   const UpdateStudentProfileView({super.key, required this.student});
 
   @override
-  State<UpdateStudentProfileView> createState() => _UpdateStudentProfileViewState();
+  State<UpdateStudentProfileView> createState() =>
+      _UpdateStudentProfileViewState();
 }
 
 class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController middleNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController mobileNumberController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController diagnosisController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
-  final TextEditingController pidController = TextEditingController();
-  final TextEditingController pincodeController = TextEditingController();
-  final TextEditingController addressLine1Controller = TextEditingController();
-  final TextEditingController addressLine2Controller = TextEditingController();
-  final TextEditingController countryController = TextEditingController();
-  final TextEditingController stateController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController nationalityController = TextEditingController();
-  final TextEditingController aadharCardController = TextEditingController();
+  /// Controllers
+  final firstNameController = TextEditingController();
+  final middleNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final mobileNumberController = TextEditingController();
+  final emailController = TextEditingController();
+  final diagnosisController = TextEditingController();
+
+  final genderController = TextEditingController();
+  final pidController = TextEditingController();
+  final pincodeController = TextEditingController();
+  final addressLine1Controller = TextEditingController();
+  final addressLine2Controller = TextEditingController();
+  final countryController = TextEditingController();
+  final stateController = TextEditingController();
+  final cityController = TextEditingController();
+  final nationalityController = TextEditingController();
+  final aadharCardController = TextEditingController();
+
+  bool _isDataSet = false;
 
   DateTime selectedDate = DateTime.now();
 
@@ -75,52 +78,17 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
   void initState() {
     super.initState();
 
-    final s = widget.student;
-
-    firstNameController.text = s.firstName ?? '';
-    middleNameController.text = s.middleName ?? '';
-    lastNameController.text = s.lastName ?? '';
-    mobileNumberController.text = s.mobileNumber ?? '';
-    emailController.text = s.emailId ?? '';
-    diagnosisController.text = s.diagnosis ?? '';
-
-    pidController.text = s.pidNumber?.toString() ?? '';
-    pincodeController.text = s.pidNumber.toString() ?? '';
-
-    addressLine1Controller.text = s.firstName ?? '';
-    addressLine2Controller.text = s.firstName ?? '';
-
-    aadharCardController.text = s.aadharCardNumber ?? '';
-
-    selectedDate = parseDob(s.dob);
-
-    genderController.text =
-    s.genderId == 1 ? "Male" : s.genderId == 2 ? "Female" : "Others";
-
-    countryController.text = s.firstName ?? '';
-    stateController.text = s.firstName ?? '';
-    cityController.text = s.firstName ?? '';
-    nationalityController.text = s.firstName ?? '';
-
-    selectedCountryId = s.pidNumber ?? 0;
-    selectedStateId = s.pidNumber ?? 0;
-    selectedCityId = s.pidNumber ?? 0;
-    selectedNationality = s.pidNumber ?? 0;
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UpdateStudentProfileProvider>(
+        context,
+        listen: false,
+      ).getStudentProfileDetail(
+        context,
+        widget.student.studentId.toString(),
+      );
+    });
     loadCountries();
-    if (selectedCountryId != 0) loadStates(selectedCountryId.toString());
-    if (selectedStateId != 0) loadCities(selectedStateId.toString());
-
-    studentImageNotifier = ValueNotifier<File?>(null);
-    aadhaarImageFrontNotifier = ValueNotifier<File?>(null);
-
-    studentUploadedFileNameNotifier =
-        ValueNotifier<String?>(s.image);
-
-    aadhaarFrontUploadedFileNameNotifier =
-        ValueNotifier<String?>(s.aadharCardImage);
   }
-
 
   Future<void> loadCountries() async {
     final countries = await locationService.fetchLocationData<CountryDataModal>(
@@ -235,8 +203,47 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     );
   }
 
-  void _submitForm() {
+  void _setStudentData(UpdateStudentProfileDataModel s) {
+    if (_isDataSet) return;
+    _isDataSet = true;
 
+    firstNameController.text = s.firstName ?? '';
+    middleNameController.text = s.middleName ?? '';
+    lastNameController.text = s.lastName ?? '';
+    mobileNumberController.text = s.mobileNumber ?? '';
+    emailController.text = s.emailId ?? '';
+    diagnosisController.text = s.diagnosis ?? '';
+
+    // 🔽 EXTRA FIELDS
+    genderController.text =
+    s.genderId == 1 ? 'Male' : s.genderId == 2 ? 'Female' : 'Others';
+
+    pidController.text = s.pidNumber?.toString() ?? '';
+    pincodeController.text = s.pinCode ?? '';
+    addressLine1Controller.text = s.addressLine1 ?? '';
+    addressLine2Controller.text = s.addressLine2 ?? '';
+    countryController.text = s.countryName ?? '';
+    stateController.text = s.stateName ?? '';
+    cityController.text = s.cityName ?? '';
+    selectedCountryId = s.countryId ?? 0;
+    selectedStateId = s.stateId ?? 0;
+    selectedCityId = s.cityId ?? 0;
+    selectedNationality = s.nationalityId ?? 0;
+    nationalityController.text = s.nationalityName ?? '';
+    aadharCardController.text = s.aadharCardNumber ?? '';
+    studentImageNotifier = ValueNotifier<File?>(null);
+    aadhaarImageFrontNotifier = ValueNotifier<File?>(null);
+
+    studentUploadedFileNameNotifier =
+        ValueNotifier<String?>(s.studentImage);
+
+    aadhaarFrontUploadedFileNameNotifier =
+        ValueNotifier<String?>(s.aadharCardImage);
+  }
+
+
+  void _submitForm() {
+      print("adadadadadDAD");
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final mobileNumber = mobileNumberController.text.trim();
@@ -330,8 +337,6 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     final nationalityId = selectedNationality;
     final aadharCardNumber = aadharCardController.text.trim();
 
-    // final aadharCardImageName = _aadharCardImage?.path.split('/').last;
-    // final studentImageName = _studentImage?.path.split('/').last;
     final studentImageName =
         studentUploadedFileNameNotifier.value;
 
@@ -339,7 +344,8 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
         aadhaarFrontUploadedFileNameNotifier.value;
 
 
-    Provider.of<StudentDashboardProvider>(context, listen: false).addStudent(
+    Provider.of<UpdateStudentProfileProvider>(context, listen: false).updateStudentProfile(context,
+      id: widget.student.studentId.toString(),
       firstName: firstName,
       middleName: middleName.isEmpty ? null : middleName,
       lastName: lastName,
@@ -362,185 +368,237 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
+    return Consumer<UpdateStudentProfileProvider>(
+      builder: (context, provider, _) {
+        if (provider.isLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (provider.studentProfileData != null &&
+            provider.studentProfileData!.isNotEmpty) {
+          _setStudentData(provider.studentProfileData!.first);
+        }
+
+        return _buildUI();
+      },
+    );
+  }
+
+  Widget _buildUI() {
     return Container(
       color: AppColors.themeColor,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: AppColors.white,
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(60.sp),
             child: Column(
               children: [
                 SizedBox(height: 5.sp),
-                CustomHeaderView(courseName: "", moduleName: "Add Student"),
+                CustomHeaderView(
+                  courseName: "",
+                  moduleName: "Update Student",
+                ),
                 Divider(thickness: 0.7.sp),
               ],
             ),
           ),
-          backgroundColor: AppColors.white,
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18.sp, vertical: 0.sp),
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SectionHeader(title: 'General Information'),
-                    FormTextField(
-                      label: "First Name",
-                      controller: firstNameController,
-                      isRequired: true,
-                      onlyLetters: true,
-                    ),
-                    FormTextField(
-                      label: "Middle Name",
-                      controller: middleNameController,
-                      onlyLetters: true,
-                    ),
-                    FormTextField(
-                      label: "Last Name",
-                      controller: lastNameController,
-                      onlyLetters: true,
-                    ),
-                    FormTextField(
-                      label: "Mobile Number",
-                      controller: mobileNumberController,
-                      isRequired: true,
-                      keyboardType: TextInputType.number,
-                      maxLength: 10,
-                    ),
-                    FormTextField(
-                      label: "Email ID",
-                      controller: emailController,
-                      isEmail: true,
-                    ),
-                    FormTextField(
-                      label: "Diagnosis",
-                      controller: diagnosisController,
-                      isRequired: true,
-                    ),
-                    DateOfBirthPicker(
-                      selectedDate: selectedDate,
-                      onChanged: (date) => setState(() => selectedDate = date),
-                    ),
-                    FormTextField(
-                      label: "Gender",
-                      controller: genderController,
-                      isEditable: false,
-                      isRequired: true,
-                      suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: _openGenderPicker,
-                    ),
-                    // CustomDropdownFormField(
-                    //   items: updateGender,
-                    //   selectedValue: selectedGender,
-                    //   hintText: 'Select Gender',
-                    //   controller: genderController,
-                    //   onChanged: (value) {
-                    //     selectedGender = value;
-                    //   },
-                    // ),
-                    FormTextField(
-                      label: "PID Number",
-                      controller: pidController,
-                      isRequired: true,
-                      keyboardType: TextInputType.number,
-                      maxLength: 10,
-                    ),
-
-                    SizedBox(height: 25.sp),
-
-                    const SectionHeader(title: 'Address Details'),
-
-                    FormTextField(
-                      label: "Pincode",
-                      controller: pincodeController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 6,
-                    ),
-                    FormTextField(
-                      label: "Address Line 1",
-                      controller: addressLine1Controller,
-                    ),
-                    FormTextField(
-                      label: "Address Line 2",
-                      controller: addressLine2Controller,
-                    ),
-                    FormTextField(
-                      label: "Country",
-                      controller: countryController,
-                      isEditable: false,
-                      isRequired: true,
-                      suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: () => _openCountryPicker(isNationality: false),
-                    ),
-                    FormTextField(
-                      label: "State",
-                      controller: stateController,
-                      isEditable: false,
-                      isRequired: true,
-                      suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: _openStatePicker,
-                    ),
-                    FormTextField(
-                      label: "City/Town",
-                      controller: cityController,
-                      isEditable: false,
-                      isRequired: true,
-                      suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: _openCityPicker,
-                    ),
-
-                    SizedBox(height: 25.sp),
-                    const SectionHeader(title: 'Additional Details'),
-
-                    FormTextField(
-                      label: "Nationality",
-                      controller: nationalityController,
-                      isEditable: false,
-                      isRequired: true,
-                      suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                      onTap: () => _openCountryPicker(isNationality: true),
-                    ),
-                    FormTextField(
-                      label: "Aadhar Card Number",
-                      controller: aadharCardController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 12,
-                    ),
-
-
-                    ImagePickerWithPreview(
-                      imageFileNotifier: aadhaarImageFrontNotifier,
-                      uploadedFolderName: 'Uploads',
-                      uploadButtonText: "Upload Image",
-                      containerHeight: 40,
-                      thumbnailHeight: 120,
-                      thumbnailWidth: 200,
-                      fullscreenHeight: 500,
-                      bottomSheetTitle: 'Update Aadhar Image',
-                      uploadedFileNameNotifier: aadhaarFrontUploadedFileNameNotifier,
-                    ),
-                    SizedBox(height: 15.sp),
-                    ImagePickerWithPreview(
-                      imageFileNotifier: studentImageNotifier,
-                      uploadButtonText: "Upload Image",
-                      uploadedFolderName: 'Uploads',
-                      containerHeight: 40,
-                      thumbnailHeight: 120,
-                      thumbnailWidth: 200,
-                      fullscreenHeight: 500,
-                      bottomSheetTitle: 'Update Student Image',
-                      uploadedFileNameNotifier: studentUploadedFileNameNotifier,
-                    ),
-
-                    SizedBox(height: 40.sp),
-                    SaveButton(onPressed: _submitForm),
-                  ],
+          body: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 18.sp),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SectionHeader(title: 'General Information'),
+                FormTextField(
+                  label: "First Name",
+                  controller: firstNameController,
+                  isRequired: true,
+                  onlyLetters: true,
                 ),
+                FormTextField(
+                  label: "Middle Name",
+                  controller: middleNameController,
+                  onlyLetters: true,
+                ),
+                FormTextField(
+                  label: "Last Name",
+                  controller: lastNameController,
+                  onlyLetters: true,
+                ),
+                FormTextField(
+                  label: "Mobile Number",
+                  controller: mobileNumberController,
+                  isRequired: true,
+                  keyboardType: TextInputType.number,
+                  maxLength: 10,
+                ),
+                FormTextField(
+                  label: "Email ID",
+                  controller: emailController,
+                  isEmail: true,
+                ),
+                FormTextField(
+                  label: "Diagnosis",
+                  controller: diagnosisController,
+                  isRequired: true,
+                ),
+                DateOfBirthPicker(
+                  selectedDate: selectedDate,
+                  onChanged: (date) => setState(() => selectedDate = date),
+                ),
+                FormTextField(
+                  label: "Gender",
+                  controller: genderController,
+                  isEditable: false,
+                  isRequired: true,
+                  suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                  onTap: _openGenderPicker,
+                ),
+
+                FormTextField(
+                  label: "PID Number",
+                  controller: pidController,
+                  isRequired: true,
+                  keyboardType: TextInputType.number,
+                  maxLength: 10,
+                ),
+
+                SizedBox(height: 25.sp),
+
+                const SectionHeader(title: 'Address Details'),
+
+                FormTextField(
+                  label: "Pincode",
+                  controller: pincodeController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 6,
+                ),
+                FormTextField(
+                  label: "Address Line 1",
+                  controller: addressLine1Controller,
+                ),
+                FormTextField(
+                  label: "Address Line 2",
+                  controller: addressLine2Controller,
+                ),
+                FormTextField(
+                  label: "Country",
+                  controller: countryController,
+                  isEditable: false,
+                  isRequired: true,
+                  suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                  onTap: () => _openCountryPicker(isNationality: false),
+                ),
+                FormTextField(
+                  label: "State",
+                  controller: stateController,
+                  isEditable: false,
+                  isRequired: true,
+                  suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                  onTap: _openStatePicker,
+                ),
+                FormTextField(
+                  label: "City/Town",
+                  controller: cityController,
+                  isEditable: false,
+                  isRequired: true,
+                  suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                  onTap: _openCityPicker,
+                ),
+
+                SizedBox(height: 25.sp),
+                const SectionHeader(title: 'Additional Details'),
+
+                FormTextField(
+                  label: "Nationality",
+                  controller: nationalityController,
+                  isEditable: false,
+                  isRequired: true,
+                  suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                  onTap: () => _openCountryPicker(isNationality: true),
+                ),
+                FormTextField(
+                  label: "Aadhar Card Number",
+                  controller: aadharCardController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 12,
+                ),
+
+
+                ImagePickerWithPreview(
+                  title: 'Aadhar Card Image',
+                  requiredField: true,
+                  imageFileNotifier: aadhaarImageFrontNotifier,
+                  uploadedFolderName: 'Uploads',
+                  uploadButtonText: "Upload Image",
+                  containerHeight: 40,
+                  thumbnailHeight: 120,
+                  thumbnailWidth: 200,
+                  fullscreenHeight: 500,
+                  bottomSheetTitle: 'Update Aadhar Image',
+                  uploadedFileNameNotifier: aadhaarFrontUploadedFileNameNotifier,
+                ),
+                SizedBox(height: 15.sp),
+                ImagePickerWithPreview(
+                  title: "Student Image",
+                  requiredField: true,
+                  imageFileNotifier: studentImageNotifier,
+                  uploadButtonText: "Upload Image",
+                  uploadedFolderName: 'Uploads',
+                  containerHeight: 40,
+                  thumbnailHeight: 120,
+                  thumbnailWidth: 200,
+                  fullscreenHeight: 500,
+                  bottomSheetTitle: 'Update Student Image',
+                  uploadedFileNameNotifier: studentUploadedFileNameNotifier,
+                ),
+
+                SizedBox(height: 50.sp),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    splashColor: AppColors.transparent,
+                    highlightColor: AppColors.transparent,
+                    onTap: (){
+                      NavigationHelper.pop(context);
+                    },
+                    child: CustomContainer(
+                      borderRadius: 20.r,
+                      borderColor: AppColors.yellow,
+                      text: 'Back',
+                      textColor: AppColors.yellow,
+                      containerColor: AppColors.transparent,
+                      padding: 1.sp,
+                      innerPadding: EdgeInsets.symmetric(
+                        vertical: 8.sp,
+                        horizontal: 35.sp,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20.sp),
+                  InkWell(
+                    splashColor: AppColors.transparent,
+                    highlightColor: AppColors.transparent,
+                    onTap: _submitForm,
+                    child: CustomContainer(
+                      text: 'Save And Continue',
+                      fontWeight: FontWeight.w400,
+                      padding: 5.sp,
+                      innerPadding: EdgeInsets.symmetric(horizontal: 18.sp, vertical: 8.sp),
+                      borderRadius: 20.r,
+                    ),
+                  ),
+                ],
               ),
+                // SaveButton(onPressed: _submitForm),
+                SizedBox(height: 40.sp),
+              ],
             ),
           ),
         ),
@@ -568,4 +626,7 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     aadharCardController.dispose();
     super.dispose();
   }
+
 }
+
+

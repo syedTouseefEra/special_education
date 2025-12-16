@@ -63,7 +63,7 @@ class FormTextField extends StatelessWidget {
         FieldLabel(
           text: label,
           isRequired: isRequired,
-          fontSize: fontSize ?? 14.sp,
+          fontSize: fontSize ?? 13.sp,
           color: AppColors.black,
         ),
         SizedBox(height: 5.sp),

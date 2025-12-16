@@ -36,16 +36,18 @@ class ApiServiceUrl {
   static String getDashboardLongTermGoal = "Dashboard/GetDashboardLongTermGoal";
   static String getStudentByInstituteId = "Student/GetStudentByinstituteId";
   static String getStudentProfile = "Student/GetStudentProfile";
+  static String student = "Student";
   static String getLongTermGoal = "StudentSkill/GetLongTermGoal";
   static String addLongTermCourse = "StudentSkill/AddLongTermCourse";
   static String updateLongTermGoal = "StudentSkill/UpdateLongTermGoal";
+
+  static String studentSkill = "StudentSkill";
 
   static String getStudentGoals = "StudentSkill/GetStudentGoals";
   static String saveStudentGoals = "StudentSkill/SaveStudentGoals";
   static String updateStudentGoal = "StudentSkill/UpdateStudentGoal";
   static String getStudentVideos = "StudentSkill/GetStudentVideos";
 
-  static String saveStudent = "Student";
   static String getCountry = "Universal/GetCountry";
   static String getState = "Universal/GetState";
   static String getCity = "Universal/GetCity";
