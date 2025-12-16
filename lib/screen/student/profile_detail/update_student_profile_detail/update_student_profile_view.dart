@@ -82,10 +82,7 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
       Provider.of<UpdateStudentProfileProvider>(
         context,
         listen: false,
-      ).getStudentProfileDetail(
-        context,
-        widget.student.studentId.toString(),
-      );
+      ).getStudentProfileDetail(context, widget.student.studentId.toString());
     });
     loadCountries();
   }
@@ -215,8 +212,11 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     diagnosisController.text = s.diagnosis ?? '';
 
     // 🔽 EXTRA FIELDS
-    genderController.text =
-    s.genderId == 1 ? 'Male' : s.genderId == 2 ? 'Female' : 'Others';
+    genderController.text = s.genderId == 1
+        ? 'Male'
+        : s.genderId == 2
+        ? 'Female'
+        : 'Others';
 
     pidController.text = s.pidNumber?.toString() ?? '';
     pincodeController.text = s.pinCode ?? '';
@@ -234,16 +234,15 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     studentImageNotifier = ValueNotifier<File?>(null);
     aadhaarImageFrontNotifier = ValueNotifier<File?>(null);
 
-    studentUploadedFileNameNotifier =
-        ValueNotifier<String?>(s.studentImage);
+    studentUploadedFileNameNotifier = ValueNotifier<String?>(s.studentImage);
 
-    aadhaarFrontUploadedFileNameNotifier =
-        ValueNotifier<String?>(s.aadharCardImage);
+    aadhaarFrontUploadedFileNameNotifier = ValueNotifier<String?>(
+      s.aadharCardImage,
+    );
   }
 
-
   void _submitForm() {
-      print("adadadadadDAD");
+    print("adadadadadDAD");
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final mobileNumber = mobileNumberController.text.trim();
@@ -318,7 +317,6 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
       return;
     }
 
-
     final middleName = middleNameController.text.trim();
     final emailId = emailController.text.trim();
     final dob = selectedDate;
@@ -337,14 +335,15 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     final nationalityId = selectedNationality;
     final aadharCardNumber = aadharCardController.text.trim();
 
-    final studentImageName =
-        studentUploadedFileNameNotifier.value;
+    final studentImageName = studentUploadedFileNameNotifier.value;
 
-    final aadharCardImageName =
-        aadhaarFrontUploadedFileNameNotifier.value;
+    final aadharCardImageName = aadhaarFrontUploadedFileNameNotifier.value;
 
-
-    Provider.of<UpdateStudentProfileProvider>(context, listen: false).updateStudentProfile(context,
+    Provider.of<UpdateStudentProfileProvider>(
+      context,
+      listen: false,
+    ).updateStudentProfile(
+      context,
       id: widget.student.studentId.toString(),
       firstName: firstName,
       middleName: middleName.isEmpty ? null : middleName,
@@ -367,7 +366,6 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
       studentImageName: studentImageName,
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -400,10 +398,7 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
             child: Column(
               children: [
                 SizedBox(height: 5.sp),
-                CustomHeaderView(
-                  courseName: "",
-                  moduleName: "Update Student",
-                ),
+                CustomHeaderView(courseName: "", moduleName: "Update Student"),
                 Divider(thickness: 0.7.sp),
               ],
             ),
@@ -529,7 +524,6 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
                   maxLength: 12,
                 ),
 
-
                 ImagePickerWithPreview(
                   title: 'Aadhar Card Image',
                   requiredField: true,
@@ -541,7 +535,8 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
                   thumbnailWidth: 200,
                   fullscreenHeight: 500,
                   bottomSheetTitle: 'Update Aadhar Image',
-                  uploadedFileNameNotifier: aadhaarFrontUploadedFileNameNotifier,
+                  uploadedFileNameNotifier:
+                      aadhaarFrontUploadedFileNameNotifier,
                 ),
                 SizedBox(height: 15.sp),
                 ImagePickerWithPreview(
@@ -559,44 +554,46 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
                 ),
 
                 SizedBox(height: 50.sp),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    splashColor: AppColors.transparent,
-                    highlightColor: AppColors.transparent,
-                    onTap: (){
-                      NavigationHelper.pop(context);
-                    },
-                    child: CustomContainer(
-                      borderRadius: 20.r,
-                      borderColor: AppColors.yellow,
-                      text: 'Back',
-                      textColor: AppColors.yellow,
-                      containerColor: AppColors.transparent,
-                      padding: 1.sp,
-                      innerPadding: EdgeInsets.symmetric(
-                        vertical: 8.sp,
-                        horizontal: 35.sp,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      splashColor: AppColors.transparent,
+                      highlightColor: AppColors.transparent,
+                      onTap: () {
+                        NavigationHelper.pop(context);
+                      },
+                      child: CustomContainer(
+                        borderRadius: 20.r,
+                        borderColor: AppColors.yellow,
+                        text: 'Back',
+                        textColor: AppColors.yellow,
+                        containerColor: AppColors.transparent,
+                        padding: 1.sp,
+                        innerPadding: EdgeInsets.symmetric(
+                          vertical: 8.sp,
+                          horizontal: 35.sp,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 20.sp),
-                  InkWell(
-                    splashColor: AppColors.transparent,
-                    highlightColor: AppColors.transparent,
-                    onTap: _submitForm,
-                    child: CustomContainer(
-                      text: 'Save And Continue',
-                      fontWeight: FontWeight.w400,
-                      padding: 5.sp,
-                      innerPadding: EdgeInsets.symmetric(horizontal: 18.sp, vertical: 8.sp),
-                      borderRadius: 20.r,
+                    SizedBox(width: 20.sp),
+                    InkWell(
+                      splashColor: AppColors.transparent,
+                      highlightColor: AppColors.transparent,
+                      onTap: _submitForm,
+                      child: CustomContainer(
+                        text: 'Save And Continue',
+                        fontWeight: FontWeight.w400,
+                        padding: 5.sp,
+                        innerPadding: EdgeInsets.symmetric(
+                          horizontal: 18.sp,
+                          vertical: 8.sp,
+                        ),
+                        borderRadius: 20.r,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-                // SaveButton(onPressed: _submitForm),
+                  ],
+                ),
                 SizedBox(height: 40.sp),
               ],
             ),
@@ -626,7 +623,4 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     aadharCardController.dispose();
     super.dispose();
   }
-
 }
-
-

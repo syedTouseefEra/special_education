@@ -7,6 +7,9 @@ import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_academic_skill_view.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_psycho_motor_skill_view.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/utils/text_case_utils.dart';
 
 class ProfileDetailsView extends StatelessWidget {
@@ -121,16 +124,23 @@ class ProfileDetailsView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        CustomContainer(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w400,
-                          borderRadius: 8.r,
-                          text: 'Update',
-                          containerColor: AppColors.green,
-                          padding: 1,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 8.sp,
-                            horizontal: 30.sp,
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: (){
+                            NavigationHelper.push(context, UpdateAcademicSkillView(id: student.studentId.toString(),));
+                          },
+                          child: CustomContainer(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                            borderRadius: 8.r,
+                            text: 'Update',
+                            containerColor: AppColors.green,
+                            padding: 1,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 8.sp,
+                              horizontal: 30.sp,
+                            ),
                           ),
                         ),
                       ],
@@ -224,16 +234,23 @@ class ProfileDetailsView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        CustomContainer(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w400,
-                          borderRadius: 8.r,
-                          text: 'Update',
-                          containerColor: AppColors.green,
-                          padding: 1,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 8.sp,
-                            horizontal: 30.sp,
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: (){
+                            NavigationHelper.push(context, UpdatePsychoMotorAssessmentView(id: student.studentId.toString(),));
+                          },
+                          child: CustomContainer(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                            borderRadius: 8.r,
+                            text: 'Update',
+                            containerColor: AppColors.green,
+                            padding: 1,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 8.sp,
+                              horizontal: 30.sp,
+                            ),
                           ),
                         ),
                       ],
