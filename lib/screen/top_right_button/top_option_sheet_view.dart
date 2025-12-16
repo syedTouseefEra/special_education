@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/login/login_view.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_view.dart';
+import 'package:special_education/screen/top_right_button/my_profile/my_profile_view.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/screen/top_right_button/change_password/change_password_view.dart';

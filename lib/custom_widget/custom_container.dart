@@ -57,7 +57,7 @@ class CustomContainer extends StatelessWidget {
         width: width,
         decoration: BoxDecoration(
           color: gradient == null ? containerColor : null, // Solid color only if gradient is null
-          gradient: gradient, // 🎉 Gradient support
+          gradient: gradient,
           borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
             width: borderWidth,

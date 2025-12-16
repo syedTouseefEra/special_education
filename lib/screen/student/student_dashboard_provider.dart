@@ -202,8 +202,8 @@ class StudentDashboardProvider with ChangeNotifier {
       );
 
       if (response["responseStatus"] == true && response["data"] is List) {
-        _weeklyGoalData = (response["data"] as List)
-            .map((e) => WeeklyGoal.fromJson(Map<String, dynamic>.from(e)))
+        _longTermGoalData = (response["data"] as List)
+            .map((e) => LongTermGoal.fromJson(Map<String, dynamic>.from(e)))
             .toList();
 
         _setLoading(false);
@@ -228,32 +228,6 @@ class StudentDashboardProvider with ChangeNotifier {
 
     return false;
   }
-
-
-  // Future<bool> addLongTermCourse(String studentId, String longTermGoal) async {
-  //   await Future.delayed(Duration(milliseconds: 10));
-  //   _setLoading(true);
-  //
-  //   try {
-  //     final response = await _api.postApiCall(
-  //       url:
-  //           "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.addLongTermCourse}",
-  //       body: {"studentId": studentId, "longTermGoal": longTermGoal},
-  //       token: ApiServiceUrl.token,
-  //     );
-  //     final body = json.decode(response.body);
-  //     if (response.statusCode == 201 && body["responseStatus"] == true) {
-  //       return true;
-  //     }
-  //     _setError(body["responseMessage"] ?? "Something went wrong");
-  //   } catch (e) {
-  //     _setError("Exception: $e");
-  //   } finally {
-  //     _setLoading(false);
-  //   }
-  //
-  //   return false;
-  // }
 
   Future<bool> addLongTermCourse(dynamic context,String studentId, String longTermGoal) async {
     _setLoading(true);
@@ -290,7 +264,6 @@ class StudentDashboardProvider with ChangeNotifier {
     return false;
   }
 
-
   Future<bool> updateLongTermCourse(dynamic context,String id, String longTermGoal) async {
     await Future.delayed(Duration(milliseconds: 10));
     _setLoading(true);
@@ -298,7 +271,7 @@ class StudentDashboardProvider with ChangeNotifier {
     try {
       final response = await _api.putApiCall(
         url:
-            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.updateLongTermGoal}",
         body: {"id": id, "longTermGoal": longTermGoal},
         token: token,
       );
@@ -363,43 +336,6 @@ class StudentDashboardProvider with ChangeNotifier {
 
     return false;
   }
-
-
-  // Future<Map<String, dynamic>> addWeeklyGoal(
-  //     String studentId,
-  //     String durationDate,
-  //     String goals,
-  //     String intervention,
-  //     String learningBarriers,
-  //     ) async {
-  //   await Future.delayed(Duration(milliseconds: 10));
-  //   _setLoading(true);
-  //
-  //   try {
-  //     final response = await _api.postApiCall(
-  //       url:
-  //       "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveStudentGoals}",
-  //       body: {
-  //         "studentId": studentId,
-  //         "durationDate": durationDate,
-  //         "goals": goals,
-  //         "intervention": intervention,
-  //         "learningBarriers": learningBarriers,
-  //       },
-  //       token: token,
-  //     );
-  //
-  //     final body = json.decode(response.body);
-  //     return body;
-  //   } catch (e) {
-  //     return {
-  //       "responseStatus": false,
-  //       "responseMessage": "Exception: $e",
-  //     };
-  //   } finally {
-  //     _setLoading(false);
-  //   }
-  // }
 
   Future<Map<String, dynamic>> addWeeklyGoal(
       String studentId,
@@ -511,70 +447,7 @@ class StudentDashboardProvider with ChangeNotifier {
     return false;
   }
 
-  // Future<bool> addStudent({
-  //   required String firstName,
-  //   String? middleName,
-  //   required String lastName,
-  //   required String mobileNumber,
-  //   String? emailId,
-  //   required String diagnosis,
-  //   required DateTime dob,
-  //   required int genderId,
-  //   required String pidNumber,
-  //   String? pinCode,
-  //   String? addressLine1,
-  //   String? addressLine2,
-  //   required int countryId,
-  //   required int stateId,
-  //   required int cityId,
-  //   required int nationalityId,
-  //   required String aadharCardNumber,
-  //   String? aadharCardImageName,
-  //   String? studentImageName,
-  // }) async {
-  //   _setLoading(true);
-  //
-  //   try {
-  //     final response = await _api.postApiCall(
-  //       url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveStudent}",
-  //       body: {
-  //         "instituteId": 22,
-  //         "firstName": firstName,
-  //         "middleName": middleName ?? "",
-  //         "lastName": lastName,
-  //         "mobileNumber": mobileNumber,
-  //         "emailId": emailId ?? "",
-  //         "diagnosis": diagnosis,
-  //         "dob": dob.toIso8601String().split("T")[0],
-  //         "genderId": genderId,
-  //         "pidNumber": pidNumber,
-  //         "pinCode": pinCode ?? "",
-  //         "addressLine1": addressLine1 ?? "",
-  //         "addressLine2": addressLine2 ?? "",
-  //         "countryId": countryId,
-  //         "stateId": stateId,
-  //         "cityId": cityId,
-  //         "nationalityId": nationalityId,
-  //         "aadharCardNumber": aadharCardNumber,
-  //         "aadharCardImage": aadharCardImageName ?? "",
-  //         "studentImage": studentImageName ?? "",
-  //       },
-  //       token: token,
-  //     );
-  //
-  //     final body = json.decode(response.body);
-  //     if (response.statusCode == 201 && body["responseStatus"] == true) {
-  //       return true;
-  //     }
-  //     _setError(body["responseMessage"] ?? "Something went wrong");
-  //   } catch (e) {
-  //     _setError("Exception: $e");
-  //   } finally {
-  //     _setLoading(false);
-  //   }
-  //   return false;
-  // }
-  Future<bool> addStudent({
+  Future<bool> addStudent(context,{
     required String firstName,
     String? middleName,
     required String lastName,
@@ -599,9 +472,9 @@ class StudentDashboardProvider with ChangeNotifier {
 
     try {
       final data = await _api.postApiCall(
-        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.saveStudent}",
+        url: "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.student}",
         body: {
-          "instituteId": 22,
+          "instituteId": instituteId,
           "firstName": firstName,
           "middleName": middleName ?? "",
           "lastName": lastName,
@@ -626,12 +499,14 @@ class StudentDashboardProvider with ChangeNotifier {
       );
 
       if (data["responseStatus"] == true) {
+        showSnackBar(data["responseMessage"] ?? "Add successfully",context);
+        NavigationHelper.pop(context);
         return true;
       } else {
-        _setError(data["responseMessage"] ?? "Something went wrong");
+        showSnackBar(data["responseMessage"] ?? "Something went wrong",context);
       }
     } catch (e) {
-      _setError("Exception: $e");
+      showSnackBar("Exception: $e",context);
     } finally {
       _setLoading(false);
     }
@@ -668,5 +543,44 @@ class StudentDashboardProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> deleteStudent(BuildContext context, String id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await _api.deleteDataApiCall(
+        url:
+        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl
+            .student}",
+        params: {"id": id},
+        token: token,
+      );
+
+      final body = json.decode(response.body);
+
+      if (response.statusCode == 200 && body["responseStatus"] == true) {
+        await fetchStudentList(context);
+
+        if (context.mounted) {
+          NavigationHelper.pop(context);
+
+          Future.delayed(const Duration(milliseconds: 300), () {
+            showSnackBar(body["responseMessage"], context);
+          });
+        }
+      }
+      else {
+        _error = body["responseMessage"] ?? "Invalid data received";
+      }
+    } catch (e) {
+      _error = "Exception: $e";
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+
+    return _studentData != null && _studentData!.isNotEmpty;
+  }
 
 }

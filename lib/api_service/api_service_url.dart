@@ -16,9 +16,12 @@ class ApiServiceUrl {
   static String elearningFileUpload = "https://elearningapi.edumation.in/api/CommonDropdown/FileUpload";
 
 
-  // static String apiBaseUrl= "http://172.16.82.6:50/api/";
-  // static String urlLauncher = "http://172.16.82.6:50/FileUploads/";
-  // static String fileUpload = "http://172.16.82.6:50/api/CommonDropdown/FileUpload";
+  // static String elearningApiBaseUrl= "http://172.16.82.6:50/api/";
+  // static String hamaareSitaareApiBaseUrl= "http://172.16.82.6:56/api/";
+  // static String urlLauncher = "http://172.16.82.6:56/FileUploads/";
+  // static String uploadFile = "http://172.16.82.6:56/api/CommonDropdown/FileUpload";
+  // static String elearningFileUpload = "http://172.16.82.6:56/api/CommonDropdown/FileUpload";
+  // static String countryBaseUrl = "https://apiapp.edumation.in/api/";
 
   static String login = "User/Login";
   static String generateOtp = "User/GenerateOtp";
@@ -33,16 +36,18 @@ class ApiServiceUrl {
   static String getDashboardLongTermGoal = "Dashboard/GetDashboardLongTermGoal";
   static String getStudentByInstituteId = "Student/GetStudentByinstituteId";
   static String getStudentProfile = "Student/GetStudentProfile";
+  static String student = "Student";
   static String getLongTermGoal = "StudentSkill/GetLongTermGoal";
   static String addLongTermCourse = "StudentSkill/AddLongTermCourse";
   static String updateLongTermGoal = "StudentSkill/UpdateLongTermGoal";
+
+  static String studentSkill = "StudentSkill";
 
   static String getStudentGoals = "StudentSkill/GetStudentGoals";
   static String saveStudentGoals = "StudentSkill/SaveStudentGoals";
   static String updateStudentGoal = "StudentSkill/UpdateStudentGoal";
   static String getStudentVideos = "StudentSkill/GetStudentVideos";
 
-  static String saveStudent = "Student";
   static String getCountry = "Universal/GetCountry";
   static String getState = "Universal/GetState";
   static String getCity = "Universal/GetCity";
@@ -63,5 +68,6 @@ class ApiServiceUrl {
   static String getTrimesterReportPDF = "Report/GetTrimesterReportPDF";
 
   static String getProfile = "teacher/GetProfile";
+  static String teacherProfileUpdate = "teacher/TeacherProfileUpdate";
 
 }

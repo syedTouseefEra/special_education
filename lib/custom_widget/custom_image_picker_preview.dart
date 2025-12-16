@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:path/path.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
@@ -7,6 +8,7 @@ import 'package:special_education/custom_widget/custom_text.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:special_education/custom_widget/field_label_row.dart';
 import 'package:special_education/utils/image_picker.dart';
 import 'package:special_education/utils/image_uploader.dart';
 
@@ -14,23 +16,29 @@ class ImagePickerWithPreview extends StatelessWidget {
   final ValueNotifier<File?> imageFileNotifier;
   final ValueNotifier<String?> uploadedFileNameNotifier;
   final String? imageUrl;
+  final String? title;
+  final String? uploadedFolderName;
   final String uploadButtonText;
   final double containerHeight;
   final double thumbnailHeight;
   final double thumbnailWidth;
   final double fullscreenHeight;
   final String bottomSheetTitle;
+  final bool requiredField;
 
   const ImagePickerWithPreview({
     required this.imageFileNotifier,
     required this.uploadedFileNameNotifier,
     this.imageUrl,
+    this.title,
+    this.uploadedFolderName,
     required this.uploadButtonText,
     required this.containerHeight,
     required this.thumbnailHeight,
     required this.thumbnailWidth,
     required this.fullscreenHeight,
     required this.bottomSheetTitle,
+    this.requiredField = false,
     super.key,
   });
 
@@ -152,6 +160,7 @@ class ImagePickerWithPreview extends StatelessWidget {
     if (uploadedFileName != null) {
       imageFileNotifier.value = pickedFile;
       uploadedFileNameNotifier.value = uploadedFileName;
+      print("uploadedFileNameNotifier "+uploadedFileNameNotifier.value.toString());
     }
   }
 
@@ -206,7 +215,10 @@ class ImagePickerWithPreview extends StatelessWidget {
             }
             // Uploaded image
             else if (uploadedFileName != null && uploadedFileName.isNotEmpty) {
-              final fullUrl = "${ApiServiceUrl.urlLauncher}Documents/$uploadedFileName";
+              final String fullUrl = (uploadedFolderName == null ||
+                  uploadedFolderName!.isEmpty)
+                  ? "${ApiServiceUrl.urlLauncher}Uploads/$uploadedFileName"
+                  : "${ApiServiceUrl.urlLauncher}$uploadedFolderName/$uploadedFileName";
               previewImage = GestureDetector(
                 onTap: () => _showFullScreenImage(
                   context,
@@ -240,57 +252,69 @@ class ImagePickerWithPreview extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // ---------------- UPLOAD BUTTON + FILE NAME ROW ----------------
-                Container(
-                  height: containerHeight.h,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
+                FieldLabel(
+                  text: title ?? "",
+                  isRequired: requiredField,
+                  fontSize: 13.sp,
+                  color: AppColors.black,
+                ),
+                SizedBox(height: 5.sp,),
+                DottedBorder(
+                  options: RoundedRectDottedBorderOptions(
+                    color: Colors.grey.shade400,
+                    strokeWidth: 1,
+                    dashPattern: const [6, 4],
+                    radius: Radius.circular(6.r),
+                    padding: EdgeInsets.zero,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: Row(
-                    children: [
-                      InkWell(
-                        onTap: () => _showImagePickerModal(context),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.sp,
-                            vertical: 2.sp,
-                          ),
-                          child: CustomText(
-                            text: uploadButtonText,
-                            fontSize: 11.h,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: CustomText(
-                          text: uploadedFileName ??
-                              (imageFile != null
-                                  ? basename(imageFile.path)
-                                  : imageUrl != null
-                                  ? basename(imageUrl!)
-                                  : ""),
-                          maxLines: 2,
-                          fontSize: 10,
-                        ),
-                      ),
 
-                      // Clear Button
-                      if (imageFile != null || uploadedFileName != null)
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 8.sp),
+                    child: Row(
+                      children: [
                         InkWell(
-                          onTap: () {
-                            imageFileNotifier.value = null;
-                            uploadedFileNameNotifier.value = null;
-                          },
-                          child: Icon(Icons.close, size: 15.h, color: AppColors.red),
+                          onTap: () => _showImagePickerModal(context),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.sp,
+                              vertical: 2.sp,
+                            ),
+                            child: CustomText(
+                              text: uploadButtonText,
+                              fontSize: 11.h,
+                            ),
+                          ),
                         ),
-                    ],
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: CustomText(
+                            text: uploadedFileName ??
+                                (imageFile != null
+                                    ? basename(imageFile.path)
+                                    : imageUrl != null
+                                    ? basename(imageUrl!)
+                                    : ""),
+                            maxLines: 2,
+                            fontSize: 10,
+                          ),
+                        ),
+
+                        // Clear Button
+                        if (imageFile != null || uploadedFileName != null)
+                          InkWell(
+                            onTap: () {
+                              imageFileNotifier.value = null;
+                              uploadedFileNameNotifier.value = null;
+                            },
+                            child: Icon(Icons.close, size: 15.h, color: AppColors.red),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
 

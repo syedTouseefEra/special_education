@@ -29,7 +29,7 @@ class DatePickerHelper {
         if (picked != null) onChanged(picked);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 15.sp),
+        padding: EdgeInsets.symmetric(vertical: 7.sp, horizontal: 10.sp),
         decoration: BoxDecoration(
           border: Border.all(
             color: borderColor ?? AppColors.themeColor,
@@ -41,14 +41,14 @@ class DatePickerHelper {
           children: [
             CustomText(
               text: DateFormat('dd-MM-yyyy').format(date),
-              fontSize: 15.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-              color: dateColor ?? AppColors.themeColor,  // use dateColor first, then fallback
+              color: dateColor ?? AppColors.themeColor,
             ),
             SizedBox(width: 15.w),
             Icon(
               Icons.calendar_month,
-              size: 25.sp,
+              size: 20.sp,
               color: iconColor ?? AppColors.themeColor,
             ),
           ],
@@ -75,3 +75,11 @@ String formatDuration(String? startDateStr, String? endDateStr) {
 }
 
 String fmt(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
+
+
+DateTime parseDob(dynamic dob) {
+  if (dob == null) return DateTime.now();
+  if (dob is DateTime) return dob;
+  if (dob is String) return DateTime.parse(dob);
+  return DateTime.now();
+}

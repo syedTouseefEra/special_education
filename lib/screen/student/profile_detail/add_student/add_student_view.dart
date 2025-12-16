@@ -318,6 +318,7 @@ class _AddStudentViewState extends State<AddStudentView> {
     final studentImageName = _studentImage?.path.split('/').last;
 
     Provider.of<StudentDashboardProvider>(context, listen: false).addStudent(
+      context,
       firstName: firstName,
       middleName: middleName.isEmpty ? null : middleName,
       lastName: lastName,

@@ -39,7 +39,7 @@ class UploadBox extends StatelessWidget {
             FieldLabel(
               text: title,
               isRequired: requiredField,
-              fontSize: 14.sp,
+              fontSize: 13.sp,
               color: AppColors.black,
             ),
           ],
@@ -82,7 +82,7 @@ class UploadBox extends StatelessWidget {
                           child: CustomText(
                             text: 'Upload File',
                             color: Colors.grey.shade700,
-                            fontSize: 14.sp,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ] else ...[
@@ -132,7 +132,7 @@ class UploadBox extends StatelessWidget {
 
         Row(
           children: [
-            Icon(Icons.error_outline, size: 16.sp, color: Colors.orange),
+            Icon(Icons.error_outline, size: 14.sp, color: Colors.orange),
             SizedBox(width: 3.sp),
             CustomText(
               text: 'File should be in jpg/png format (5 MB).',

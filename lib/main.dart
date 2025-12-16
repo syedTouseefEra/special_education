@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:pdf/widgets.dart' as pw show Font;
 import 'package:provider/provider.dart';
 import 'package:special_education/screen/choose_account/choose_account_provider.dart';
 import 'package:special_education/screen/dashboard/dashboard_provider.dart';
+import 'package:special_education/screen/login/forget_password/forget_password_provider.dart';
 import 'package:special_education/screen/login/login_provider.dart';
 import 'package:special_education/screen/report/report_dashboard_provider.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_provider.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/screen/tabbar_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
 import 'package:special_education/screen/teacher/teacher_dashboard_provider.dart';
 import 'package:special_education/screen/top_right_button/change_password/change_password_provider.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_provider.dart';
+import 'package:special_education/screen/top_right_button/my_profile/my_profile_provider.dart';
+import 'package:special_education/screen/top_right_button/my_profile/update_my_profile/update_my_profile_provider.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/image_upload_provider.dart';
 
@@ -46,6 +47,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ReportDashboardProvider()),
         ChangeNotifierProvider(create: (_) => MyProfileProvider()),
         ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
+        ChangeNotifierProvider(create: (_) => ForgetPasswordProvider()),
+        ChangeNotifierProvider(create: (_) => UpdateMyProfileProvider()),
+        ChangeNotifierProvider(create: (_) => UpdateStudentProfileProvider()),
       ],
       child: const MyApp(),
     ),

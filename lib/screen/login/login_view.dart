@@ -22,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController(text: "7007552754");
+  // final _usernameController = TextEditingController(text: "9369997878");
   final _passwordController = TextEditingController(text: "Abc@123");
   bool isPasswordVisible = false;
 
@@ -109,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.symmetric(horizontal: 20.sp),
                         child: CustomTextField(
                           fontSize: 18.sp,
+                          maxLines: 1,
                           controller: _passwordController,
                           label: 'Password',
                           obscureText: !isPasswordVisible,

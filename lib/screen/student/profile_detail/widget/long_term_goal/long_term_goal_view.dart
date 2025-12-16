@@ -5,6 +5,8 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
+import 'package:special_education/screen/student/profile_detail/add_student/add_student_view.dart';
+import 'package:special_education/screen/student/profile_detail/widget/long_term_goal/add_long_term_goal_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/utils/text_case_utils.dart';
@@ -20,10 +22,7 @@ class LongTermGoalView extends StatefulWidget {
 class _LongTermGoalViewState extends State<LongTermGoalView> {
   final TextEditingController learningTextController = TextEditingController();
 
-  void showLongTermGoalDialog({
-    String? initialText,
-    String? goalId,
-  }) {
+  void showLongTermGoalDialog({String? initialText, String? goalId}) {
     bool isEdit = goalId != null;
     if (initialText != null) {
       learningTextController.text = initialText;
@@ -48,13 +47,17 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: isEdit ? 'Update Long Term Goal' : 'Add Long Term Goal',
+                      text: isEdit
+                          ? 'Update Long Term Goal'
+                          : 'Add Long Term Goal',
                       fontWeight: FontWeight.w600,
                       fontSize: 18.sp,
                       color: AppColors.themeColor,
                     ),
                     CustomText(
-                      text: isEdit ? 'Update your long term goal below' : 'Add Long Term Goal',
+                      text: isEdit
+                          ? 'Update your long term goal below'
+                          : 'Add Long Term Goal',
                       fontWeight: FontWeight.w400,
                       fontSize: 16.sp,
                       color: AppColors.grey,
@@ -89,38 +92,56 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         InkWell(
+                          splashColor: AppColors.transparent,
+                          highlightColor: AppColors.transparent,
                           onTap: () async {
-                            final provider = Provider.of<StudentDashboardProvider>(
-                              context,
-                              listen: false,
-                            );
+                            final provider =
+                                Provider.of<StudentDashboardProvider>(
+                                  context,
+                                  listen: false,
+                                );
 
                             final text = learningTextController.text.trim();
 
                             bool success = false;
 
                             if (isEdit) {
-                              success = await provider.updateLongTermCourse(context,goalId, text);
+                              success = await provider.updateLongTermCourse(
+                                context,
+                                goalId,
+                                text,
+                              );
                               if (success) {
                                 if (!mounted) return;
                                 NavigationHelper.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Goal updated successfully!')),
+                                  const SnackBar(
+                                    content: Text('Goal updated successfully!'),
+                                  ),
                                 );
                               }
                             } else {
-                              success = await provider.addLongTermCourse(context,widget.studentId, text);
+                              success = await provider.addLongTermCourse(
+                                context,
+                                widget.studentId,
+                                text,
+                              );
                               if (success) {
                                 if (!mounted) return;
                                 NavigationHelper.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Goal added successfully!')),
+                                  const SnackBar(
+                                    content: Text('Goal added successfully!'),
+                                  ),
                                 );
                               }
                             }
 
                             if (success) {
-                              await provider.getLongTermGoal(context,widget.studentId);
+                              await provider.getLongTermGoal(
+                                context,
+                                widget.studentId,
+                              );
                               learningTextController.clear();
                             }
                           },
@@ -155,7 +176,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
       Provider.of<StudentDashboardProvider>(
         context,
         listen: false,
-      ).getLongTermGoal(context,widget.studentId);
+      ).getLongTermGoal(context, widget.studentId);
     });
   }
 
@@ -176,7 +197,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
             children: [
               CustomText(
                 text: 'Add Long Term Goal Which Kid Achieve',
-                fontSize: 17.sp,
+                fontSize: 16.sp,
                 color: AppColors.textGrey,
                 fontWeight: FontWeight.w400,
               ),
@@ -184,7 +205,10 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () {
-                  showLongTermGoalDialog();
+                  NavigationHelper.push(
+                    context,
+                    AddLongTermGoalView(studentId: widget.studentId),
+                  );
                 },
                 child: CustomContainer(
                   width: MediaQuery.sizeOf(context).width,
@@ -207,9 +231,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                   itemBuilder: (context, index) {
                     final goal = longTermGoals[index];
                     return Container(
-                      margin: EdgeInsets.symmetric(
-                        vertical: 8.sp,
-                      ),
+                      margin: EdgeInsets.symmetric(vertical: 8.sp),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(8),
@@ -259,10 +281,16 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     InkWell(
+                                      splashColor: AppColors.transparent,
+                                      highlightColor: AppColors.transparent,
                                       onTap: () {
-                                        showLongTermGoalDialog(
-                                          initialText: goal.longTermGoal,
-                                          goalId: goal.id.toString(),
+                                        NavigationHelper.push(
+                                          context,
+                                          AddLongTermGoalView(
+                                            studentId: widget.studentId,
+                                            initialText: goal.longTermGoal,
+                                            goalId: goal.id.toString(),
+                                          ),
                                         );
                                       },
                                       child: CustomContainer(
@@ -294,4 +322,3 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
     );
   }
 }
-

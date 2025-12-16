@@ -315,7 +315,6 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                               if (buttonText ==
                                                       'Generate Report' &&
                                                   status == 'Completed') {
-                                                // 👉 Open Learning Area Report
                                                 NavigationHelper.push(
                                                   context,
                                                   LearningAreaReportView(

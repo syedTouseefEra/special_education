@@ -2,18 +2,21 @@ import 'package:flutter/Material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/api_service/api_service_url.dart';
+import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/components/custom_appbar.dart';
 import 'package:special_education/constant/assets.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/all_videos_view.dart';
-import 'package:special_education/screen/student/profile_detail/widget/long_term_goal_view.dart';
+import 'package:special_education/screen/student/profile_detail/widget/long_term_goal/long_term_goal_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/profile_details_view.dart';
 import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
 import 'package:special_education/screen/student/profile_detail/widget/weekly_goal_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
+import 'package:special_education/utils/navigation_utils.dart';
 
 class ProfileView extends StatefulWidget {
   final StudentProfileDataModel student;
@@ -58,7 +61,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   SizedBox(height: 15.sp),
                   Container(
-                    height: 220.sp,
+
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [AppColors.gradientColorOne, AppColors.gradientColorTwo],
@@ -96,36 +99,38 @@ class _ProfileViewState extends State<ProfileView> {
                                 ),
                               ),
                               SizedBox(width: 20.sp),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomContainer(
-                                    borderRadius: 0,
-                                    text:
-                                        '${widget.student.firstName} ${widget.student.middleName} ${widget.student.lastName}'
-                                            .trim(),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomContainer(
+                                      borderRadius: 0,
+                                      text:
+                                          '${widget.student.firstName} ${widget.student.middleName} ${widget.student.lastName}'
+                                              .trim(),
 
-                                    containerColor: AppColors.yellow,
-                                    padding: 1,
-                                    innerPadding: EdgeInsets.symmetric(
-                                      vertical: 5.sp,
-                                      horizontal: 15.sp,
+                                      containerColor: AppColors.yellow,
+                                      padding: 1,
+                                      innerPadding: EdgeInsets.symmetric(
+                                        vertical: 5.sp,
+                                        horizontal: 15.sp,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 5.sp),
-                                  CustomText(
-                                    text: 'Age- ${widget.student.age}',
-                                  ),
-                                  CustomText(
-                                    text: 'PID- ${widget.student.pidNumber}',
-                                  ),
-                                  CustomText(
-                                    text: 'Gender- ${widget.student.gender}',
-                                  ),
-                                  CustomText(
-                                    text: 'D.O.B- ${widget.student.dob}',
-                                  ),
-                                ],
+                                    SizedBox(height: 5.sp),
+                                    CustomText(
+                                      text: 'Age- ${widget.student.age}',
+                                    ),
+                                    CustomText(
+                                      text: 'PID- ${widget.student.pidNumber}',
+                                    ),
+                                    CustomText(
+                                      text: 'Gender- ${widget.student.gender}',
+                                    ),
+                                    CustomText(
+                                      text: 'D.O.B- ${widget.student.dob}',
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -143,14 +148,19 @@ class _ProfileViewState extends State<ProfileView> {
                                   horizontal: 35.sp,
                                 ),
                               ),
-                              CustomContainer(
-                                borderRadius: 10.sp,
-                                text: 'Update',
-                                containerColor: AppColors.green,
-                                padding: 1,
-                                innerPadding: EdgeInsets.symmetric(
-                                  vertical: 8.sp,
-                                  horizontal: 25.sp,
+                              InkWell(
+                                onTap: (){
+                                  NavigationHelper.push(context, UpdateStudentProfileView(student: widget.student,));
+                                },
+                                child: CustomContainer(
+                                  borderRadius: 10.sp,
+                                  text: 'Update',
+                                  containerColor: AppColors.green,
+                                  padding: 1,
+                                  innerPadding: EdgeInsets.symmetric(
+                                    vertical: 8.sp,
+                                    horizontal: 25.sp,
+                                  ),
                                 ),
                               ),
                             ],
@@ -167,8 +177,23 @@ class _ProfileViewState extends State<ProfileView> {
                     child: InkWell(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      onTap: () {
-                        print('delete Student');
+                      onTap: () async {
+                        doubleButton(
+                          context,
+                          "",
+                          "Are you sure? You can't undo this action afterwards.",
+                              () async {
+                            Navigator.pop(context); // close dialog first
+
+                            await Provider.of<StudentDashboardProvider>(
+                              context,
+                              listen: false,
+                            ).deleteStudent(
+                              context,
+                              widget.student.studentId.toString(),
+                            );
+                          },
+                        );
                       },
                       child: CustomContainer(
                         textAlign: TextAlign.center,
@@ -182,6 +207,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
+
 
                   Row(
                     children: [

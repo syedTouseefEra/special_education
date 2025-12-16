@@ -5,7 +5,7 @@ import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
-import 'package:special_education/screen/top_right_button/my_profile/teacher_profile/my_profile_data_model.dart';
+import 'package:special_education/screen/top_right_button/my_profile/my_profile_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
 import 'package:special_education/utils/navigation_utils.dart';
