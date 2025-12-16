@@ -131,7 +131,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             controller: widget.controller,
             keyboardType: widget.keyboardType,
             obscureText: widget.obscureText,
-            maxLines: 1,
+            maxLines: widget.maxLines,
             maxLength: widget.maxLength,
             readOnly: !widget.isEditable,
             enableInteractiveSelection: widget.isEditable,
@@ -148,11 +148,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
             onTap: widget.onTap,
             decoration: InputDecoration(
               counterText: "",
-              labelText: widget.label,
-              labelStyle: TextStyle(
+              hintText: widget.label,
+              hintStyle: TextStyle(
                 color: AppColors.grey,
                 fontSize: widget.labelFontSize ?? 14.sp,
               ),
+              alignLabelWithHint: true, // 👈 KEY LINE
               floatingLabelStyle: TextStyle(
                 fontSize: 13.sp,
                 color: AppColors.darkGrey,

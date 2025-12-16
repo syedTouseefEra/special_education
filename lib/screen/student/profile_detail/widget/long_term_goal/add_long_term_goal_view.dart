@@ -1,10 +1,9 @@
-
-
 import 'package:flutter/Material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
+import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/text_field.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
@@ -34,8 +33,9 @@ class _AddLongTermGoalViewState extends State<AddLongTermGoalView> {
   @override
   void initState() {
     super.initState();
-    learningTextController =
-        TextEditingController(text: widget.initialText ?? '');
+    learningTextController = TextEditingController(
+      text: widget.initialText ?? '',
+    );
   }
 
   @override
@@ -46,135 +46,175 @@ class _AddLongTermGoalViewState extends State<AddLongTermGoalView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: AppColors.themeColor,
-          onPressed: () => NavigationHelper.pop(context),
-        ),
-        title: CustomText(
-          text: isEdit
-              ? 'Update Long Term Goal'
-              : 'Add Long Term Goal',
-          fontWeight: FontWeight.w600,
-          fontSize: 18.sp,
-          color: AppColors.themeColor,
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20.sp),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText(
-                text: isEdit
-                    ? 'Update your long term goal below'
-                    : 'Add Long Term Goal',
-                fontWeight: FontWeight.w400,
-                fontSize: 16.sp,
-                color: AppColors.grey,
-              ),
-              const Divider(thickness: 1),
-              SizedBox(height: 10.h),
-              Row(
+    return Container(
+      color: AppColors.themeColor,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: AppColors.white,
+          // appBar: AppBar(
+          //   backgroundColor: AppColors.white,
+          //   elevation: 0,
+          //   leading: IconButton(
+          //     icon: const Icon(Icons.arrow_back),
+          //     color: AppColors.themeColor,
+          //     onPressed: () => NavigationHelper.pop(context),
+          //   ),
+          //   title: CustomText(
+          //     text: isEdit
+          //         ? 'Update Long Term Goal'
+          //         : 'Add Long Term Goal',
+          //     fontWeight: FontWeight.w600,
+          //     fontSize: 18.sp,
+          //     color: AppColors.themeColor,
+          //   ),
+          // ),
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(55.sp),
+            child: Column(
+              children: [
+                SizedBox(height: 5.sp),
+                CustomHeaderView(
+                  courseName: "",
+                  moduleName: isEdit
+                      ? 'Update Long Term Goal'
+                      : 'Add Long Term Goal',
+                ),
+                Divider(thickness: 0.7.sp),
+              ],
+            ),
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.sp,vertical: 10.sp),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: 'Long Term Goal',
-                    color: AppColors.textGrey,
-                    fontSize: 14.h,
+                    text: isEdit
+                        ? 'Update your long term goal below'
+                        : 'Add Long Term Goal!',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 15.sp,
+                    color: AppColors.darkGrey,
                   ),
-                  Icon(
-                    Icons.star,
-                    size: 10.sp,
-                    color: AppColors.themeColor,
+                  const Divider(thickness: 1),
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      CustomText(
+                        text: 'Long Term Goal',
+                        color: AppColors.darkGrey,
+                        fontSize: 14.h,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 5.sp),
+                        child: Icon(Icons.star, size: 8.sp, color: AppColors.themeColor),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: 10.h),
-              CustomTextField(
-                controller: learningTextController,
-                maxLines: 10,
-                borderRadius: 0,
-                borderColor: AppColors.grey,
-                height: 220.sp,
-                label: '',
-              ),
-              const Spacer(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                  onTap: () async {
-                    final provider =
-                    Provider.of<StudentDashboardProvider>(
-                      context,
-                      listen: false,
-                    );
-
-                    final text =
-                    learningTextController.text.trim();
-
-                    if (text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Goal cannot be empty'),
-                        ),
-                      );
-                      return;
-                    }
-
-                    bool success;
-
-                    if (isEdit) {
-                      success = await provider.updateLongTermCourse(
-                        context,
-                        widget.goalId!,
-                        text,
-                      );
-                    } else {
-                      success = await provider.addLongTermCourse(
-                        context,
-                        widget.studentId.toString(),
-                        text,
-                      );
-                    }
-
-                    if (success && mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            isEdit
-                                ? 'Goal updated successfully!'
-                                : 'Goal added successfully!',
+                  SizedBox(height: 10.h),
+                  CustomTextField(
+                    controller: learningTextController,
+                    maxLines: 8,
+                    borderRadius: 0,
+                    fontColor: AppColors.textGrey,
+                    fontSize: 14.sp,
+                    borderColor: AppColors.grey,
+                    label: 'Enter Learning Outcome!',
+                  ),
+                  SizedBox(height: 30.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        splashColor: AppColors.transparent,
+                        highlightColor: AppColors.transparent,
+                        onTap: (){
+                          NavigationHelper.pop(context);
+                        },
+                        child: CustomContainer(
+                          borderRadius: 20.r,
+                          borderColor: AppColors.yellow,
+                          text: 'Back',
+                          textColor: AppColors.yellow,
+                          containerColor: AppColors.transparent,
+                          padding: 1,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 8.sp,
+                            horizontal: 35.sp,
                           ),
                         ),
-                      );
+                      ),
+                      SizedBox(width: 25.sp),
+                      InkWell(
+                        splashColor: AppColors.transparent,
+                        highlightColor: AppColors.transparent,
+                        onTap: () async {
+                          final provider = Provider.of<StudentDashboardProvider>(
+                            context,
+                            listen: false,
+                          );
 
-                      await provider.getLongTermGoal(
-                        context,
-                        widget.studentId.toString(),
-                      );
+                          final text = learningTextController.text.trim();
 
-                      NavigationHelper.pop(context);
-                    }
-                  },
-                  child: CustomContainer(
-                    borderRadius: 20.r,
-                    text: isEdit ? 'Update' : 'Add',
-                    containerColor: AppColors.yellow,
-                    padding: 1,
-                    innerPadding: EdgeInsets.symmetric(
-                      vertical: 8.sp,
-                      horizontal: 35.sp,
-                    ),
-                  ),
-                ),
+                          if (text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Goal cannot be empty')),
+                            );
+                            return;
+                          }
+
+                          bool success;
+
+                          if (isEdit) {
+                            success = await provider.updateLongTermCourse(
+                              context,
+                              widget.goalId!,
+                              text,
+                            );
+                          } else {
+                            success = await provider.addLongTermCourse(
+                              context,
+                              widget.studentId.toString(),
+                              text,
+                            );
+                          }
+
+                          if (success && mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  isEdit
+                                      ? 'Goal updated successfully!'
+                                      : 'Goal added successfully!',
+                                ),
+                              ),
+                            );
+
+                            await provider.getLongTermGoal(
+                              context,
+                              widget.studentId.toString(),
+                            );
+
+                            NavigationHelper.pop(context);
+                          }
+                        },
+                        child: CustomContainer(
+                          borderRadius: 20.r,
+                          text: isEdit ? 'Update' : 'Add',
+                          containerColor: AppColors.yellow,
+                          padding: 1,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 8.sp,
+                            horizontal: 35.sp,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
