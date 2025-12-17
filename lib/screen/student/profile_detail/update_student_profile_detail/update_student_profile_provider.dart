@@ -6,7 +6,7 @@ import 'package:special_education/api_service/api_service_url.dart';
 import 'package:special_education/api_service/response_checker.dart';
 import 'package:special_education/components/alert_view.dart';
 import 'package:special_education/screen/login/login_view.dart';
-import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_psycho_motor_skill_view.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_psycho_motor_skill_view/update_psycho_motor_skill_view.dart';
 import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_data_model.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/user_data/user_data.dart';

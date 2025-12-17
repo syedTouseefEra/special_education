@@ -115,7 +115,6 @@ class _UpdateAcademicSkillViewState
                       itemBuilder: (context, index) {
                         final skill = skills[index];
 
-                        /// CASE 1: Skill has children (Visual)
                         if ((skill.skillQualityParent ?? []).isNotEmpty) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

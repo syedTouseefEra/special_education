@@ -6,11 +6,12 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/label_value_text.dart';
-import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
-import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_academic_skill_view.dart';
-import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_psycho_motor_skill_view.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_academic_skill_view/update_academic_skill_view.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 import 'package:special_education/utils/text_case_utils.dart';
+import 'package:special_education/screen/student/profile_detail/student_profile_data_model.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_psycho_motor_skill_view/update_psycho_motor_skill_view.dart';
+
 
 class ProfileDetailsView extends StatelessWidget {
   final StudentProfileDataModel student;
@@ -30,7 +31,7 @@ class ProfileDetailsView extends StatelessWidget {
         case 4:
           return "Excellent";
         case 0:
-          return "Not Applicable";
+          return "Not Rated";
         default:
           return "Unknown Rating";
       }
@@ -204,21 +205,55 @@ class ProfileDetailsView extends StatelessWidget {
                     child: Divider(thickness: 1),
                   ),
                   ...skill.skillRating!.map<Widget>((rating) {
-                    String label = rating.name!;
+                    // CASE 1: Rating has sub-items (Visual)
                     if (rating.quality != null && rating.quality!.isNotEmpty) {
-                      final qualityNames = rating.quality!.map((q) => q.name).join(", ");
-                      label += " ($qualityNames)";
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Section title (Visual)
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10.sp, 5.sp, 10.sp, 5.sp),
+                            child: Text(
+                              rating.name!,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.grey,
+                              ),
+                            ),
+                          ),
+
+                          // Sub-items (Eye Contact, Vision)
+                          ...rating.quality!.map((q) => Padding(
+                            padding: EdgeInsets.fromLTRB(20.sp, 0, 10.sp, 5.sp),
+                            child: LabelValueText(
+                              isRow: true,
+                              label: "${q.name}:",
+                              value: getRatingDescription(rating.ratingId ?? 0),
+                              labelStyle: TextStyle(
+                                fontSize: 14.sp,
+                                color: AppColors.grey,
+                              ),
+                              valueStyle: TextStyle(
+                                fontSize: 14.sp,
+                                color: AppColors.textGrey,
+                              ),
+                              valueCase: TextCase.title,
+                            ),
+                          )),
+                        ],
+                      );
                     }
 
+                    // CASE 2: Normal single rating
                     return Padding(
                       padding: EdgeInsets.fromLTRB(10.sp, 0, 10.sp, 5.sp),
                       child: LabelValueText(
                         isRow: true,
-                        label: "$label:",
+                        label: "${rating.name}:",
                         value: getRatingDescription(rating.ratingId ?? 0),
                         labelStyle: TextStyle(
                           fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
                           color: AppColors.grey,
                         ),
                         valueStyle: TextStyle(
@@ -229,6 +264,7 @@ class ProfileDetailsView extends StatelessWidget {
                       ),
                     );
                   }),
+
                   Padding(
                     padding: EdgeInsets.all(15.sp),
                     child: Row(
