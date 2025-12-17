@@ -435,16 +435,16 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<StudentDashboardProvider>(
-        context,
-        listen: false,
-      ).getWeeklyGoals(context,widget.studentId);
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Provider.of<StudentDashboardProvider>(
+  //       context,
+  //       listen: false,
+  //     ).getWeeklyGoals(context,widget.studentId);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -29,7 +29,7 @@ class StudentDashboardProvider with ChangeNotifier {
   List<StateDataModel>? _stateData;
   List<CityDataModel>? _cityData;
 
-  List<StudentProfileDataModel>? _studentProfileData;
+
 
   String _searchQuery = "";
 
@@ -49,6 +49,8 @@ class StudentDashboardProvider with ChangeNotifier {
     }
   }
 
+
+  List<StudentProfileDataModel>? _studentProfileData;
   List<StudentProfileDataModel>? get studentProfileData {
     return _studentProfileData;
   }

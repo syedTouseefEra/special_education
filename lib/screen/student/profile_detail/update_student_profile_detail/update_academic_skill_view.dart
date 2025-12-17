@@ -1,12 +1,14 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/constant/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:special_education/utils/navigation_utils.dart';
+import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
-import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_provider.dart';
-import 'package:special_education/utils/navigation_utils.dart';
+
 
 class UpdateAcademicSkillView extends StatefulWidget {
   final String id;
