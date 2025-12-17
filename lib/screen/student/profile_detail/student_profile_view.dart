@@ -75,7 +75,6 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
             ),
           ),
 
-          /// 🔹 CONSUMER
           body: Consumer<StudentDashboardProvider>(
             builder: (context, provider, child) {
               if (provider.isLoading) {
@@ -91,19 +90,21 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
               return SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                  padding: EdgeInsets.symmetric(horizontal: 10.sp),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10.sp),
-                      CustomText(
-                        text: 'Add Weekly Goal And Possible Outcome!',
-                        fontSize: 16.sp,
-                        color: AppColors.textGrey,
-                      ),
-                      SizedBox(height: 15.sp),
 
-                      /// 🔹 PROFILE CARD
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5.sp),
+                        child: CustomText(
+                          text: 'Add Weekly Goal And Possible Outcome!',
+                          fontSize: 16.sp,
+                          color: AppColors.textGrey,
+                        ),
+                      ),
+                      SizedBox(height: 10.sp),
+
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -115,7 +116,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.all(20.sp),
+                          padding: EdgeInsets.symmetric(vertical: 10.sp,horizontal: 15.sp),
                           child: Column(
                             children: [
                               Row(
@@ -141,18 +142,22 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                                             ),
                                     ),
                                   ),
-                                  SizedBox(width: 20.sp),
+                                  SizedBox(width: 15.sp),
                                   Expanded(
                                     child: Column(
+
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        SizedBox(height: 15.sp,),
                                         CustomContainer(
+                                          padding:0,
                                           text:
                                               '${student.firstName} ${student.middleName ?? ''} ${student.lastName}'
                                                   .trim(),
                                           containerColor: AppColors.yellow,
                                         ),
+                                        SizedBox(height: 5.sp,),
                                         CustomText(
                                           text: 'Age - ${student.age}',
                                         ),
@@ -170,7 +175,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 20.sp),
+                              SizedBox(height: 15.sp),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -207,6 +212,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 5.sp),
                             ],
                           ),
                         ),
@@ -214,7 +220,6 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
                       SizedBox(height: 15.sp),
 
-                      /// 🔹 DELETE STUDENT
                       Visibility(
                         visible: selectedTab != 'Learning Objective',
                         child: InkWell(
