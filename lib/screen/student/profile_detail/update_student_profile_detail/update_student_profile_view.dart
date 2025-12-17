@@ -54,7 +54,6 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
   final nationalityController = TextEditingController();
   final aadharCardController = TextEditingController();
 
-  bool _isDataSet = false;
 
   DateTime selectedDate = DateTime.now();
 
@@ -77,6 +76,10 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
   @override
   void initState() {
     super.initState();
+    studentImageNotifier = ValueNotifier<File?>(null);
+    aadhaarImageFrontNotifier = ValueNotifier<File?>(null);
+    studentUploadedFileNameNotifier = ValueNotifier<String?>(null);
+    aadhaarFrontUploadedFileNameNotifier = ValueNotifier<String?>(null);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UpdateStudentProfileProvider>(
@@ -201,8 +204,6 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
   }
 
   void _setStudentData(UpdateStudentProfileDataModel s) {
-    if (_isDataSet) return;
-    _isDataSet = true;
 
     firstNameController.text = s.firstName ?? '';
     middleNameController.text = s.middleName ?? '';
@@ -231,18 +232,12 @@ class _UpdateStudentProfileViewState extends State<UpdateStudentProfileView> {
     selectedNationality = s.nationalityId ?? 0;
     nationalityController.text = s.nationalityName ?? '';
     aadharCardController.text = s.aadharCardNumber ?? '';
-    studentImageNotifier = ValueNotifier<File?>(null);
-    aadhaarImageFrontNotifier = ValueNotifier<File?>(null);
 
-    studentUploadedFileNameNotifier = ValueNotifier<String?>(s.studentImage);
-
-    aadhaarFrontUploadedFileNameNotifier = ValueNotifier<String?>(
-      s.aadharCardImage,
-    );
+    studentUploadedFileNameNotifier.value = s.studentImage;
+    aadhaarFrontUploadedFileNameNotifier.value = s.aadharCardImage;
   }
 
   void _submitForm() {
-    print("adadadadadDAD");
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final mobileNumber = mobileNumberController.text.trim();

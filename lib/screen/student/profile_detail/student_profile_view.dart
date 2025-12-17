@@ -50,6 +50,14 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
   }
 
   @override
+  void didPopNext() {
+    Provider.of<StudentDashboardProvider>(
+      context,
+      listen: false,
+    ).fetchProfileDetail(context,widget.id);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.themeColor,
@@ -337,7 +345,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                         padding: EdgeInsets.symmetric(horizontal: 5.sp),
                         child: CustomText(
                           text: selectedTab,
-                          fontSize: 22.sp,
+                          fontSize: 16.sp,
                           fontFamily: 'Dm Serif',
                           fontWeight: FontWeight.w500,
                           color: AppColors.themeColor,
@@ -346,7 +354,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
                       SizedBox(height: 10.sp),
 
-                      /// 🔹 TAB CONTENT
+
                       if (selectedTab == 'Profile Details')
                         ProfileDetailsView(student: student)
                       else if (selectedTab == 'Learning Objective')
