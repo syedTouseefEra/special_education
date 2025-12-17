@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/constant/colors.dart';
@@ -71,7 +73,44 @@ class _UpdateAcademicSkillViewState
     }
   }
 
-  void _submitForm(){}
+  void _submitForm() {
+    final provider = Provider.of<UpdateStudentProfileProvider>(context, listen: false);
+    final skills = provider.psychoSkillData?.first.skillQuality ?? [];
+    final qualityText = generateQualityText(skills);
+
+    provider.updatePsychoStudentSkillData(
+      widget.id,
+      "2",
+      qualityText,
+      context,
+    );
+  }
+
+  String generateQualityText(List<dynamic> skills) {
+    final List<Map<String, dynamic>> qualityList = [];
+
+    for (var skill in skills) {
+      if ((skill.skillQualityParent ?? []).isNotEmpty) {
+        for (var child in skill.skillQualityParent!) {
+          qualityList.add({
+            "qualityId": child.qualityId,
+            "qualityParentId": child.qualityParentId,
+            "ratingId": child.ratingId,
+            "studentSkillId": child.studentSkillId,
+          });
+        }
+      } else {
+        qualityList.add({
+          "qualityId": skill.qualityId,
+          "qualityParentId": 0,
+          "ratingId": skill.ratingId,
+          "studentSkillId": skill.studentSkillId,
+        });
+      }
+    }
+
+    return qualityList.isNotEmpty ? jsonEncode(qualityList) : "[]";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +244,7 @@ class _UpdateAcademicSkillViewState
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.sp),
+                  SizedBox(height: 10.sp),
                 ],
               );
             },
