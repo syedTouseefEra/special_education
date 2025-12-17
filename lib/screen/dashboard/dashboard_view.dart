@@ -191,12 +191,12 @@ class DashboardView extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            height: 55.sp,
+            height: 45.sp,
             decoration: BoxDecoration(
               color: Colors.blue,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.r),
-                topRight: Radius.circular(10.r),
+                topLeft: Radius.circular(8.r),
+                topRight: Radius.circular(8.r),
               ),
             ),
             alignment: Alignment.centerLeft,
@@ -213,7 +213,7 @@ class DashboardView extends StatelessWidget {
                   ),
                 )
               : SizedBox(
-                  height: 250,
+                  height: 250.sp,
                   child: SfCartesianChart(
                     primaryXAxis: CategoryAxis(),
                     primaryYAxis: NumericAxis(

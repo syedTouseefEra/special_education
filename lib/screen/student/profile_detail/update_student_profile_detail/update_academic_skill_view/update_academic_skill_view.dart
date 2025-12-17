@@ -1,12 +1,16 @@
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/constant/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:special_education/utils/navigation_utils.dart';
+import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
-import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_provider.dart';
-import 'package:special_education/utils/navigation_utils.dart';
+
 
 class UpdateAcademicSkillView extends StatefulWidget {
   final String id;
@@ -69,7 +73,44 @@ class _UpdateAcademicSkillViewState
     }
   }
 
-  void _submitForm(){}
+  void _submitForm() {
+    final provider = Provider.of<UpdateStudentProfileProvider>(context, listen: false);
+    final skills = provider.psychoSkillData?.first.skillQuality ?? [];
+    final qualityText = generateQualityText(skills);
+
+    provider.updatePsychoStudentSkillData(
+      widget.id,
+      "2",
+      qualityText,
+      context,
+    );
+  }
+
+  String generateQualityText(List<dynamic> skills) {
+    final List<Map<String, dynamic>> qualityList = [];
+
+    for (var skill in skills) {
+      if ((skill.skillQualityParent ?? []).isNotEmpty) {
+        for (var child in skill.skillQualityParent!) {
+          qualityList.add({
+            "qualityId": child.qualityId,
+            "qualityParentId": child.qualityParentId,
+            "ratingId": child.ratingId,
+            "studentSkillId": child.studentSkillId,
+          });
+        }
+      } else {
+        qualityList.add({
+          "qualityId": skill.qualityId,
+          "qualityParentId": 0,
+          "ratingId": skill.ratingId,
+          "studentSkillId": skill.studentSkillId,
+        });
+      }
+    }
+
+    return qualityList.isNotEmpty ? jsonEncode(qualityList) : "[]";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +154,6 @@ class _UpdateAcademicSkillViewState
                       itemBuilder: (context, index) {
                         final skill = skills[index];
 
-                        /// CASE 1: Skill has children (Visual)
                         if ((skill.skillQualityParent ?? []).isNotEmpty) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +244,7 @@ class _UpdateAcademicSkillViewState
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.sp),
+                  SizedBox(height: 10.sp),
                 ],
               );
             },

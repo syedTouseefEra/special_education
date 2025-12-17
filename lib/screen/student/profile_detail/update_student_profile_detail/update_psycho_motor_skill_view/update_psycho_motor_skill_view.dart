@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
+import 'package:special_education/custom_widget/custom_text.dart';
 import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
@@ -18,25 +21,16 @@ class UpdatePsychoMotorAssessmentView extends StatefulWidget {
 
 class _UpdatePsychoMotorAssessmentViewState
     extends State<UpdatePsychoMotorAssessmentView> {
-
-  final List<String> options = const [
-    'Poor',
-    'Average',
-    'Good',
-    'Excellent',
-    'Not Applicable',
-  ];
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UpdateStudentProfileProvider>()
+      context
+          .read<UpdateStudentProfileProvider>()
           .getPsychoStudentSkillData(context, widget.id, '1');
     });
   }
 
-  /// API ratingId → UI text
   String ratingFromId(int id) {
     switch (id) {
       case 1:
@@ -52,7 +46,6 @@ class _UpdatePsychoMotorAssessmentViewState
     }
   }
 
-  /// UI text → API ratingId
   int ratingToId(String value) {
     switch (value) {
       case 'Poor':
@@ -68,7 +61,44 @@ class _UpdatePsychoMotorAssessmentViewState
     }
   }
 
-  void _submitForm(){}
+  void _submitForm() {
+    final provider = Provider.of<UpdateStudentProfileProvider>(context, listen: false);
+    final skills = provider.psychoSkillData?.first.skillQuality ?? [];
+    final qualityText = generateQualityText(skills);
+
+    provider.updatePsychoStudentSkillData(
+      widget.id,
+      "1",
+      qualityText,
+      context,
+    );
+  }
+
+  String generateQualityText(List<dynamic> skills) {
+    final List<Map<String, dynamic>> qualityList = [];
+
+    for (var skill in skills) {
+      if ((skill.skillQualityParent ?? []).isNotEmpty) {
+        for (var child in skill.skillQualityParent!) {
+          qualityList.add({
+            "qualityId": child.qualityId,
+            "qualityParentId": child.qualityParentId,
+            "ratingId": child.ratingId,
+            "studentSkillId": child.studentSkillId,
+          });
+        }
+      } else {
+        qualityList.add({
+          "qualityId": skill.qualityId,
+          "qualityParentId": 0,
+          "ratingId": skill.ratingId,
+          "studentSkillId": skill.studentSkillId,
+        });
+      }
+    }
+
+    return qualityList.isNotEmpty ? jsonEncode(qualityList) : "[]";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,12 +126,8 @@ class _UpdatePsychoMotorAssessmentViewState
                 return const Center(child: CircularProgressIndicator());
               }
 
-              if (provider.psychoSkillData == null ||
-                  provider.psychoSkillData!.isEmpty) {
-                return const Center(child: Text("No data found"));
-              }
-
-              final skills = provider.psychoSkillData?.first.skillQuality ?? [];
+              final skills =
+                  provider.psychoSkillData?.first.skillQuality ?? [];
 
               return Column(
                 children: [
@@ -112,33 +138,36 @@ class _UpdatePsychoMotorAssessmentViewState
                       itemBuilder: (context, index) {
                         final skill = skills[index];
 
-                        /// CASE 1: Skill has children (Visual)
+                        /// ===============================
+                        /// PARENT WITH CHILDREN (Visual)
+                        /// ===============================
                         if ((skill.skillQualityParent ?? []).isNotEmpty) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              /// Parent title ONCE
-                              Text(
-                                skill.name ?? '',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              /// Parent title
+                              CustomText(
+                                text: '${index + 1}. ${skill.name ?? ''}',
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(height: 12),
+                              SizedBox(height: 12.sp),
 
-                              /// Child sections
+                              /// Children
                               ...List.generate(
                                 skill.skillQualityParent!.length,
                                     (i) {
-                                  final child = skill.skillQualityParent![i];
-
+                                  final child =
+                                  skill.skillQualityParent![i];
                                   return _buildAssessmentRow(
-                                    title: "${String.fromCharCode(65 + i)}. ${child.name}",
-                                    groupValue: ratingFromId(child.ratingId ?? 0),
+                                    title:
+                                    '${String.fromCharCode(65 + i)}. ${child.name}',
+                                    groupValue:
+                                    ratingFromId(child.ratingId ?? 0),
                                     onChanged: (value) {
                                       context
-                                          .read<UpdateStudentProfileProvider>()
+                                          .read<
+                                          UpdateStudentProfileProvider>()
                                           .updateChildSkillRating(
                                         child.qualityParentId!,
                                         ratingToId(value!),
@@ -151,9 +180,12 @@ class _UpdatePsychoMotorAssessmentViewState
                           );
                         }
 
-                        /// CASE 2: Skill has NO children → show only ONE section
+                        /// ===============================
+                        /// PARENT WITHOUT CHILDREN (Speech)
+                        /// ===============================
                         return _buildAssessmentRow(
-                          title: skill.name ?? '',
+                          title: '${index + 1}. ${skill.name ?? ''}',
+                          isParent: true,
                           groupValue: ratingFromId(skill.ratingId ?? 0),
                           onChanged: (value) {
                             context
@@ -167,22 +199,19 @@ class _UpdatePsychoMotorAssessmentViewState
                       },
                     ),
                   ),
+
+                  /// Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
-                        splashColor: AppColors.transparent,
-                        highlightColor: AppColors.transparent,
-                        onTap: () {
-                          NavigationHelper.pop(context);
-                        },
+                        onTap: () => NavigationHelper.pop(context),
                         child: CustomContainer(
                           borderRadius: 20.r,
                           borderColor: AppColors.yellow,
                           text: 'Back',
                           textColor: AppColors.yellow,
-                          containerColor: AppColors.transparent,
-                          padding: 1.sp,
+                          containerColor: Colors.transparent,
                           innerPadding: EdgeInsets.symmetric(
                             vertical: 8.sp,
                             horizontal: 35.sp,
@@ -196,18 +225,16 @@ class _UpdatePsychoMotorAssessmentViewState
                         onTap: _submitForm,
                         child: CustomContainer(
                           text: 'Save And Continue',
-                          fontWeight: FontWeight.w400,
-                          padding: 5.sp,
-                          innerPadding: EdgeInsets.symmetric(
-                            horizontal: 18.sp,
-                            vertical: 8.sp,
-                          ),
                           borderRadius: 20.r,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 8.sp,
+                            horizontal: 18.sp,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.sp),
+                  SizedBox(height: 10.sp),
                 ],
               );
             },
@@ -217,62 +244,51 @@ class _UpdatePsychoMotorAssessmentViewState
     );
   }
 
+  /// ===============================
+  /// Assessment Row Widget
+  /// ===============================
   Widget _buildAssessmentRow({
     required String title,
     required String groupValue,
     required Function(String?) onChanged,
+    bool isParent = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+          style: TextStyle(
+            fontSize: isParent ? 15.sp : 14.sp,
+            fontWeight:
+            isParent ? FontWeight.bold : FontWeight.w600,
           ),
         ),
         SizedBox(height: 10.sp),
 
         Row(
           children: [
-            Expanded(
-              child: _radioItem('Poor', groupValue, onChanged),
-            ),
-            Expanded(
-              child: _radioItem('Average', groupValue, onChanged),
-            ),
+            Expanded(child: _radioItem('Poor', groupValue, onChanged)),
+            Expanded(child: _radioItem('Average', groupValue, onChanged)),
           ],
         ),
-
         SizedBox(height: 5.sp),
 
         Row(
           children: [
+            Expanded(child: _radioItem('Good', groupValue, onChanged)),
             Expanded(
-              child: _radioItem('Good', groupValue, onChanged),
-            ),
-            Expanded(
-              child: _radioItem('Excellent', groupValue, onChanged),
-            ),
+                child: _radioItem('Excellent', groupValue, onChanged)),
           ],
         ),
-
         SizedBox(height: 5.sp),
 
-        Row(
-          children: [
-            Expanded(
-              child: _radioItem('Not Applicable', groupValue, onChanged),
-            ),
-          ],
-        ),
+        _radioItem('Not Applicable', groupValue, onChanged),
 
         const Divider(height: 32),
       ],
     );
   }
-
 
   Widget _radioItem(
       String value,
@@ -280,7 +296,6 @@ class _UpdatePsychoMotorAssessmentViewState
       Function(String?) onChanged,
       ) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Radio<String>(
           value: value,
@@ -291,13 +306,12 @@ class _UpdatePsychoMotorAssessmentViewState
         Expanded(
           child: Text(
             value,
-            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 13.sp),
           ),
         ),
       ],
     );
   }
-
-
-
 }
+
+

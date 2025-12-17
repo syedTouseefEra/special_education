@@ -24,17 +24,18 @@ class AllVideosView extends StatefulWidget {
 }
 
 class _AllVideosViewState extends State<AllVideosView> {
-  @override
-  void initState() {
-    super.initState();
-    FlutterDownloader.registerCallback(downloadCallback);
-    Future.microtask(() {
-      Provider.of<StudentDashboardProvider>(
-        context,
-        listen: false,
-      ).getAllVideos(context,widget.studentId);
-    });
-  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   FlutterDownloader.registerCallback(downloadCallback);
+  //   Future.microtask(() {
+  //     Provider.of<StudentDashboardProvider>(
+  //       context,
+  //       listen: false,
+  //     ).getAllVideos(context,widget.studentId);
+  //   });
+  // }
 
 
 

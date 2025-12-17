@@ -170,17 +170,6 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<StudentDashboardProvider>(
-        context,
-        listen: false,
-      ).getLongTermGoal(context, widget.studentId);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer<StudentDashboardProvider>(
       builder: (context, provider, _) {

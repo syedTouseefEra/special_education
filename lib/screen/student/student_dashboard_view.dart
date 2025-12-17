@@ -75,11 +75,16 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                 onNotificationTap: () {
                   showTopSheet(
                     context,
-                      TopOptionSheet(
-                        name: UserData().getUserData.name!.isEmpty?'NA': UserData().getUserData.name.toString(),
-                        subtitle: UserData().getUserData.instituteName!.isEmpty?'NA': UserData().getUserData.instituteName.toString(),
-                        profileImage: '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
-                      ),
+                    TopOptionSheet(
+                      name: UserData().getUserData.name!.isEmpty
+                          ? 'NA'
+                          : UserData().getUserData.name.toString(),
+                      subtitle: UserData().getUserData.instituteName!.isEmpty
+                          ? 'NA'
+                          : UserData().getUserData.instituteName.toString(),
+                      profileImage:
+                          '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
+                    ),
                   );
                 },
               ),
@@ -274,7 +279,7 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                                                 provider.studentProfileData![0];
                                             NavigationHelper.push(
                                               scaffoldContext,
-                                              ProfileView(student: profile),
+                                              ProfileView(id: profile.studentId.toString()),
                                             );
                                           } else {
                                             ScaffoldMessenger.of(
