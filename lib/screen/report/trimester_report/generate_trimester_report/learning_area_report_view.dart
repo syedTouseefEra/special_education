@@ -214,7 +214,7 @@ class _LearningAreaReportViewState extends State<LearningAreaReportView> {
                                       color: AppColors.themeColor,
                                       width: 1.sp,
                                     ),
-                                    borderRadius: BorderRadius.circular(10.sp),
+                                    borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   padding: EdgeInsets.all(10.sp),
                                   child: Column(

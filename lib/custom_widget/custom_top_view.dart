@@ -1,5 +1,6 @@
 
 import 'package:flutter/Material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTopView extends StatefulWidget {
   const CustomTopView({super.key});
@@ -13,7 +14,6 @@ class _CustomTopViewState extends State<CustomTopView>
   late AnimationController _controller;
   late Animation<double> _animation;
 
-  // Height of the bottom view when expanded
   final double expandedHeight = 200;
   final double collapsedHeight = 60;
 
@@ -66,12 +66,12 @@ class _CustomTopViewState extends State<CustomTopView>
                   decoration: BoxDecoration(
                     color: Colors.blueAccent,
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
+                      top: Radius.circular(20.r),
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,
-                        blurRadius: 10,
+                        blurRadius: 10.r,
                       ),
                     ],
                   ),
@@ -88,7 +88,7 @@ class _CustomTopViewState extends State<CustomTopView>
                             height: 6,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(3),
+                              borderRadius: BorderRadius.circular(3.r),
                             ),
                           ),
                         ),

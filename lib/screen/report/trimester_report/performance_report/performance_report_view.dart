@@ -103,7 +103,7 @@ class _PerformanceReportViewState extends State<PerformanceReportView> {
                                       color: AppColors.themeColor,
                                       width: 1.sp,
                                     ),
-                                    borderRadius: BorderRadius.circular(10.sp),
+                                    borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   padding: EdgeInsets.all(10.sp),
 

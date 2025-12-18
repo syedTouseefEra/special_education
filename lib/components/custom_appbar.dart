@@ -77,7 +77,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25.sp),
+                        borderRadius: BorderRadius.circular(25.r),
                         color: AppColors.white,
                       ),
                       child: Padding(
@@ -97,7 +97,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                           decoration: BoxDecoration(
                             color: badgeBackgroundColor,
-                            borderRadius: BorderRadius.circular(20.sp),
+                            borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Center(
                             child: CustomText(

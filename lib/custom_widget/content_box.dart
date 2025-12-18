@@ -28,7 +28,7 @@ class ContentBox extends StatelessWidget {
         width: width.sp,
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(5.r),
           color: AppColors.themeColor,
         ),
         child: Row(

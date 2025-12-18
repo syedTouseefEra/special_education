@@ -7,6 +7,7 @@ import 'package:special_education/constant/colors.dart';
 import 'package:special_education/custom_widget/custom_container.dart';
 import 'package:special_education/custom_widget/custom_header_view.dart';
 import 'package:special_education/custom_widget/custom_text.dart';
+import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_psycho_motor_skill_view/widget/assessment_row_view.dart';
 import 'package:special_education/screen/student/profile_detail/update_student_profile_detail/update_student_profile_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
@@ -21,6 +22,7 @@ class UpdatePsychoMotorAssessmentView extends StatefulWidget {
 
 class _UpdatePsychoMotorAssessmentViewState
     extends State<UpdatePsychoMotorAssessmentView> {
+
   @override
   void initState() {
     super.initState();
@@ -138,14 +140,11 @@ class _UpdatePsychoMotorAssessmentViewState
                       itemBuilder: (context, index) {
                         final skill = skills[index];
 
-                        /// ===============================
-                        /// PARENT WITH CHILDREN (Visual)
-                        /// ===============================
                         if ((skill.skillQualityParent ?? []).isNotEmpty) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              /// Parent title
+
                               CustomText(
                                 text: '${index + 1}. ${skill.name ?? ''}',
                                 fontSize: 15.sp,
@@ -153,37 +152,30 @@ class _UpdatePsychoMotorAssessmentViewState
                               ),
                               SizedBox(height: 12.sp),
 
-                              /// Children
                               ...List.generate(
                                 skill.skillQualityParent!.length,
                                     (i) {
                                   final child =
                                   skill.skillQualityParent![i];
-                                  return _buildAssessmentRow(
-                                    title:
-                                    '${String.fromCharCode(65 + i)}. ${child.name}',
-                                    groupValue:
-                                    ratingFromId(child.ratingId ?? 0),
+                                  return AssessmentRowView(
+                                    title: '${String.fromCharCode(65 + i)}. ${child.name}',
+                                    groupValue: ratingFromId(child.ratingId ?? 0),
                                     onChanged: (value) {
                                       context
-                                          .read<
-                                          UpdateStudentProfileProvider>()
+                                          .read<UpdateStudentProfileProvider>()
                                           .updateChildSkillRating(
                                         child.qualityParentId!,
                                         ratingToId(value!),
                                       );
                                     },
                                   );
-                                },
+
+                                    },
                               ),
                             ],
                           );
                         }
-
-                        /// ===============================
-                        /// PARENT WITHOUT CHILDREN (Speech)
-                        /// ===============================
-                        return _buildAssessmentRow(
+                        return AssessmentRowView(
                           title: '${index + 1}. ${skill.name ?? ''}',
                           isParent: true,
                           groupValue: ratingFromId(skill.ratingId ?? 0),
@@ -196,22 +188,27 @@ class _UpdatePsychoMotorAssessmentViewState
                             );
                           },
                         );
+
                       },
                     ),
                   ),
 
-                  /// Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
-                        onTap: () => NavigationHelper.pop(context),
+                        splashColor: AppColors.transparent,
+                        highlightColor: AppColors.transparent,
+                        onTap: () {
+                          NavigationHelper.pop(context);
+                        },
                         child: CustomContainer(
                           borderRadius: 20.r,
                           borderColor: AppColors.yellow,
                           text: 'Back',
                           textColor: AppColors.yellow,
-                          containerColor: Colors.transparent,
+                          containerColor: AppColors.transparent,
+                          padding: 1.sp,
                           innerPadding: EdgeInsets.symmetric(
                             vertical: 8.sp,
                             horizontal: 35.sp,
@@ -225,11 +222,13 @@ class _UpdatePsychoMotorAssessmentViewState
                         onTap: _submitForm,
                         child: CustomContainer(
                           text: 'Save And Continue',
-                          borderRadius: 20.r,
+                          fontWeight: FontWeight.w400,
+                          padding: 5.sp,
                           innerPadding: EdgeInsets.symmetric(
-                            vertical: 8.sp,
                             horizontal: 18.sp,
+                            vertical: 8.sp,
                           ),
+                          borderRadius: 20.r,
                         ),
                       ),
                     ],
@@ -244,74 +243,6 @@ class _UpdatePsychoMotorAssessmentViewState
     );
   }
 
-  /// ===============================
-  /// Assessment Row Widget
-  /// ===============================
-  Widget _buildAssessmentRow({
-    required String title,
-    required String groupValue,
-    required Function(String?) onChanged,
-    bool isParent = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: isParent ? 15.sp : 14.sp,
-            fontWeight:
-            isParent ? FontWeight.bold : FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 10.sp),
-
-        Row(
-          children: [
-            Expanded(child: _radioItem('Poor', groupValue, onChanged)),
-            Expanded(child: _radioItem('Average', groupValue, onChanged)),
-          ],
-        ),
-        SizedBox(height: 5.sp),
-
-        Row(
-          children: [
-            Expanded(child: _radioItem('Good', groupValue, onChanged)),
-            Expanded(
-                child: _radioItem('Excellent', groupValue, onChanged)),
-          ],
-        ),
-        SizedBox(height: 5.sp),
-
-        _radioItem('Not Applicable', groupValue, onChanged),
-
-        const Divider(height: 32),
-      ],
-    );
-  }
-
-  Widget _radioItem(
-      String value,
-      String groupValue,
-      Function(String?) onChanged,
-      ) {
-    return Row(
-      children: [
-        Radio<String>(
-          value: value,
-          groupValue: groupValue,
-          activeColor: Colors.pink,
-          onChanged: onChanged,
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(fontSize: 13.sp),
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 

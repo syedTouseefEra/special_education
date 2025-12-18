@@ -82,7 +82,7 @@ class AssessmentSection extends StatelessWidget {
               fontSize: 14.sp,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(5.r),
               borderSide: BorderSide(color: AppColors.grey),
             ),
           ),

@@ -35,7 +35,7 @@ class ProfileViewWidget extends StatelessWidget {
             height: 330.sp,
             width: MediaQuery.sizeOf(context).width,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.sp),
+              borderRadius: BorderRadius.circular(20.r),
               gradient: LinearGradient(
                 colors: [AppColors.gradientColorOne, AppColors.gradientColorTwo],
                 begin: Alignment.centerRight,

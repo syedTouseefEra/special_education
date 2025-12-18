@@ -179,7 +179,7 @@ class ProfileDetailsView extends StatelessWidget {
                           image: AssetImage(ImgAssets.user),
                           fit: BoxFit.cover,
                         ),
-                        borderRadius: BorderRadius.circular(10), // optional: for slightly rounded corners
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                     ),
                   ),

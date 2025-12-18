@@ -102,7 +102,7 @@ class CreatePasswordView extends StatelessWidget {
                           color: AppColors.themeColor,
                           width: 0.7.sp,
                         ),
-                        borderRadius: BorderRadius.circular(5.sp),
+                        borderRadius: BorderRadius.circular(5.r),
                       ),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
@@ -125,7 +125,7 @@ class CreatePasswordView extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.themeColor,
-                        borderRadius: BorderRadius.circular(5.sp),
+                        borderRadius: BorderRadius.circular(5.r),
                       ),
                       child: Padding(
                         padding: EdgeInsets.symmetric(

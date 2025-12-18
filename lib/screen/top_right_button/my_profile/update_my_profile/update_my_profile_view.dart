@@ -641,7 +641,7 @@ class _UpdateMyProfileViewState extends State<UpdateMyProfileView> {
                               color: AppColors.darkGrey,
                               width: 0.7.sp
                             ),
-                            borderRadius: BorderRadius.circular(5.sp)
+                            borderRadius: BorderRadius.circular(5.r)
                           ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 25.sp,vertical: 5.sp),
@@ -685,7 +685,7 @@ class _UpdateMyProfileViewState extends State<UpdateMyProfileView> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: AppColors.yellow,
-                            borderRadius: BorderRadius.circular(5.sp)
+                            borderRadius: BorderRadius.circular(5.r)
                           ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20.sp,vertical: 6.sp),

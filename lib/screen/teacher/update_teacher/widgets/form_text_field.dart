@@ -82,7 +82,7 @@ class FormTextField extends StatelessWidget {
           onlyLetters: onlyLetters,
           onlyLettersAndNumbers: onlyLettersAndNumbers,
           borderColor: borderColor ?? AppColors.grey,
-          borderRadius: borderRadius ?? 8.sp,
+          borderRadius: borderRadius ?? 8.r,
           fontSize: fontSize,
           fontColor: fontColor,
           height: height,

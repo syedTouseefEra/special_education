@@ -160,7 +160,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: AppColors.textGrey,
-                                        borderRadius: BorderRadius.circular(5),
+                                        borderRadius: BorderRadius.circular(5.r),
                                       ),
                                       padding: EdgeInsets.symmetric(
                                         vertical: 5.sp,
@@ -592,7 +592,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                             0.2,
                                           ),
                                           borderRadius: BorderRadius.circular(
-                                            8.sp,
+                                            8.r,
                                           ),
                                           border: Border.all(
                                             color: AppColors.grey,

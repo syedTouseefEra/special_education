@@ -45,7 +45,7 @@ void doubleButton(
             padding: const EdgeInsets.all(25.0),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.sp),
+                borderRadius: BorderRadius.circular(15.r),
                 color: Colors.white,
               ),
               width: MediaQuery.sizeOf(context).width,
@@ -92,7 +92,7 @@ void doubleButton(
                                     width: 1.sp,
                                     color: AppColors.black,
                                   ),
-                                  borderRadius: BorderRadius.circular(20.sp),
+                                  borderRadius: BorderRadius.circular(20.r),
                                 ),
                                 child: CustomText(
                                   text: "Cancel",
@@ -116,7 +116,7 @@ void doubleButton(
                                 ),
                                 decoration: BoxDecoration(
                                   color: AppColors.red,
-                                  borderRadius: BorderRadius.circular(20.sp),
+                                  borderRadius: BorderRadius.circular(20.r),
                                 ),
                                 child: CustomText(
                                   text: "Delete",

@@ -49,7 +49,7 @@ class ImagePickerWithPreview extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.h)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       builder: (BuildContext context) {
         return Padding(
@@ -278,7 +278,7 @@ class ImagePickerWithPreview extends StatelessWidget {
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
                               color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(5.r),
                             ),
                             padding: EdgeInsets.symmetric(
                               horizontal: 8.sp,

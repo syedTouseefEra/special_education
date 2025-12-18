@@ -34,7 +34,7 @@ class DatePickerHelper {
           border: Border.all(
             color: borderColor ?? AppColors.themeColor,
           ),
-          borderRadius: BorderRadius.circular(4.w),
+          borderRadius: BorderRadius.circular(4.r),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

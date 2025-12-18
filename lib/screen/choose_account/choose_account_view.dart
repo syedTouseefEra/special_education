@@ -110,7 +110,7 @@ class _ChooseAccountViewState extends State<ChooseAccountView> {
                             return Container(
                               margin: EdgeInsets.only(bottom: 12.sp),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.sp),
+                                borderRadius: BorderRadius.circular(5.r),
                                 border: Border.all(
                                   width: 1,
                                   color: AppColors.textGrey,
