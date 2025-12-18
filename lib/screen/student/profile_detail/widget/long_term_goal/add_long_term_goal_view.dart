@@ -51,23 +51,6 @@ class _AddLongTermGoalViewState extends State<AddLongTermGoalView> {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: AppColors.white,
-          // appBar: AppBar(
-          //   backgroundColor: AppColors.white,
-          //   elevation: 0,
-          //   leading: IconButton(
-          //     icon: const Icon(Icons.arrow_back),
-          //     color: AppColors.themeColor,
-          //     onPressed: () => NavigationHelper.pop(context),
-          //   ),
-          //   title: CustomText(
-          //     text: isEdit
-          //         ? 'Update Long Term Goal'
-          //         : 'Add Long Term Goal',
-          //     fontWeight: FontWeight.w600,
-          //     fontSize: 18.sp,
-          //     color: AppColors.themeColor,
-          //   ),
-          // ),
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(55.sp),
             child: Column(

@@ -13,7 +13,6 @@ import 'package:special_education/screen/student/student_dashboard_provider.dart
 import 'package:special_education/utils/video_player_screen.dart';
 import 'package:special_education/utils/video_thumbnail_generator.dart';
 
-
 class AllVideosView extends StatefulWidget {
   final String studentId;
 
@@ -24,21 +23,6 @@ class AllVideosView extends StatefulWidget {
 }
 
 class _AllVideosViewState extends State<AllVideosView> {
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   FlutterDownloader.registerCallback(downloadCallback);
-  //   Future.microtask(() {
-  //     Provider.of<StudentDashboardProvider>(
-  //       context,
-  //       listen: false,
-  //     ).getAllVideos(context,widget.studentId);
-  //   });
-  // }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Consumer<StudentDashboardProvider>(
@@ -48,18 +32,17 @@ class _AllVideosViewState extends State<AllVideosView> {
         final videos = (provider.allVideoData ?? [])
             .where(
               (video) => video.videoList != null && video.videoList!.isNotEmpty,
-        )
+            )
             .toList();
 
         return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 10.sp),
+          padding: EdgeInsets.symmetric(horizontal: 5.sp),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
                 text: 'Add Long Term Goal Which Kid Achieve',
-                fontSize: 17.sp,
-                fontFamily: 'Poppins',
+                fontSize: 15.sp,
                 color: AppColors.textGrey,
                 fontWeight: FontWeight.w400,
               ),
@@ -126,30 +109,33 @@ class _AllVideosViewState extends State<AllVideosView> {
                                   itemBuilder: (context, videoIndex) {
                                     final mainUrl =
                                         'https://hamaaresitaareapi.edumation.in/FileUploads/weeklyGoal/';
-                                    final videoUrl = video.videoList![videoIndex];
+                                    final videoUrl =
+                                        video.videoList![videoIndex];
                                     final fullUrl =
                                         '$mainUrl${videoUrl.videoName ?? ''}';
-                                    final fileName = videoUrl.videoName ?? 'video.mp4';
+                                    final fileName =
+                                        videoUrl.videoName ?? 'video.mp4';
 
                                     return Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           height: 180.h,
-                                          width:
-                                          MediaQuery.sizeOf(context).width,
+                                          width: MediaQuery.sizeOf(
+                                            context,
+                                          ).width,
                                           child: FutureBuilder<String?>(
-                                            future: VideoThumbnailGenerator
-                                                .generateThumbnail(
-                                              fullUrl,
-                                            ),
+                                            future:
+                                                VideoThumbnailGenerator.generateThumbnail(
+                                                  fullUrl,
+                                                ),
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
                                                 return const Center(
                                                   child:
-                                                  CircularProgressIndicator(),
+                                                      CircularProgressIndicator(),
                                                 );
                                               }
                                               if (snapshot.hasError ||
@@ -178,21 +164,24 @@ class _AllVideosViewState extends State<AllVideosView> {
                                                   children: [
                                                     Stack(
                                                       alignment:
-                                                      Alignment.center,
+                                                          Alignment.center,
                                                       children: [
                                                         ClipRRect(
                                                           child: Image.file(
-                                                            File(snapshot.data!),
+                                                            File(
+                                                              snapshot.data!,
+                                                            ),
                                                             width:
-                                                            MediaQuery.sizeOf(
-                                                              context,
-                                                            ).width,
+                                                                MediaQuery.sizeOf(
+                                                                  context,
+                                                                ).width,
                                                             height: 149.h,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
                                                         Icon(
-                                                          Icons.play_circle_fill,
+                                                          Icons
+                                                              .play_circle_fill,
                                                           size: 40.sp,
                                                           color: Colors.white
                                                               .withOpacity(0.8),
@@ -201,47 +190,51 @@ class _AllVideosViewState extends State<AllVideosView> {
                                                     ),
                                                     Container(
                                                       color:
-                                                      AppColors.themeColor,
+                                                          AppColors.themeColor,
                                                       height: 30.sp,
                                                       child: Padding(
                                                         padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 10.0,
-                                                        ),
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 10.0,
+                                                            ),
                                                         child: Row(
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
                                                           children: [
                                                             Icon(
                                                               Icons.fullscreen,
-                                                              color:
-                                                              AppColors.white,
+                                                              color: AppColors
+                                                                  .white,
                                                               size: 25.sp,
                                                             ),
                                                             InkWell(
                                                               onTap: () {
                                                                 downloadAndShareVideo(
-                                                                    fullUrl,
-                                                                    fileName);
+                                                                  fullUrl,
+                                                                  fileName,
+                                                                );
                                                               },
                                                               child: Row(
                                                                 children: [
                                                                   Icon(
-                                                                    Icons.save_alt,
-                                                                    color:
-                                                                    AppColors.white,
+                                                                    Icons
+                                                                        .save_alt,
+                                                                    color: AppColors
+                                                                        .white,
                                                                     size: 18.sp,
                                                                   ),
-                                                                  SizedBox(width: 2.sp),
+                                                                  SizedBox(
+                                                                    width: 2.sp,
+                                                                  ),
                                                                   CustomText(
                                                                     text:
-                                                                    'Download',
+                                                                        'Download',
                                                                     color: AppColors
                                                                         .white,
                                                                     fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                        FontWeight
+                                                                            .w600,
                                                                   ),
                                                                 ],
                                                               ),
@@ -276,8 +269,11 @@ class _AllVideosViewState extends State<AllVideosView> {
     );
   }
 }
+
 @pragma('vm:entry-point')
 void downloadCallback(String id, int status, int progress) {
   final taskStatus = DownloadTaskStatus.values[status];
-  debugPrint('Download task ($id) is in status ($taskStatus) and progress ($progress)%');
+  debugPrint(
+    'Download task ($id) is in status ($taskStatus) and progress ($progress)%',
+  );
 }

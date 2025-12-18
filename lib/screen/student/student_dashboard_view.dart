@@ -260,8 +260,8 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: InkWell(
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
+                                        splashColor: AppColors.transparent,
+                                        highlightColor: AppColors.transparent,
                                         onTap: () async {
                                           final success = await provider
                                               .fetchProfileDetail(

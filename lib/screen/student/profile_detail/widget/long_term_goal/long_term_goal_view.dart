@@ -186,7 +186,7 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
             children: [
               CustomText(
                 text: 'Add Long Term Goal Which Kid Achieve',
-                fontSize: 16.sp,
+                fontSize: 15.sp,
                 color: AppColors.textGrey,
                 fontWeight: FontWeight.w400,
               ),

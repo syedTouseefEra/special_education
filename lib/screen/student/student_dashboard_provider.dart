@@ -326,10 +326,7 @@ class StudentDashboardProvider with ChangeNotifier {
         print("UnauthorizedException");
       }
       if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
+        if (context is BuildContext) unauthorizedUser(context);
         return false;
       }
     } finally {
@@ -436,10 +433,7 @@ class StudentDashboardProvider with ChangeNotifier {
         print("UnauthorizedException");
       }
       if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
+        if (context is BuildContext) unauthorizedUser(context);
         return false;
       }
     } finally {

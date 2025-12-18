@@ -321,9 +321,8 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                                           Align(
                                             alignment: Alignment.centerRight,
                                             child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
+                                              splashColor: AppColors.transparent,
+                                              highlightColor: AppColors.transparent,
                                               onTap: () async {
                                                 if (isSelected) {
                                                   final success = await provider

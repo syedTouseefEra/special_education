@@ -13,7 +13,7 @@ import 'package:special_education/screen/student/profile_detail/update_student_p
 import 'package:special_education/screen/student/profile_detail/widget/all_videos_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/long_term_goal/long_term_goal_view.dart';
 import 'package:special_education/screen/student/profile_detail/widget/profile_details_view.dart';
-import 'package:special_education/screen/student/profile_detail/widget/weekly_goal_view.dart';
+import 'package:special_education/screen/student/profile_detail/widget/weekly_goal/weekly_goal_view.dart';
 import 'package:special_education/screen/student/student_dashboard_provider.dart';
 import 'package:special_education/utils/navigation_utils.dart';
 
@@ -223,8 +223,8 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                       Visibility(
                         visible: selectedTab != 'Learning Objective',
                         child: InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
+                          splashColor: AppColors.transparent,
+                          highlightColor: AppColors.transparent,
                           onTap: () {
                             doubleButton(
                               context,
@@ -254,7 +254,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
                       SizedBox(height: 10.sp),
 
-                      /// 🔹 TAB ROW 1
+
                       Row(
                         children: [
                           Expanded(
@@ -293,15 +293,15 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                         ],
                       ),
 
-                      /// 🔹 TAB ROW 2
+
                       Row(
                         children: [
                           Expanded(
                             child: _tabButton(
                               text: 'Weekly Goal',
-                              isSelected: selectedTab == 'Weekly Goal',
+                              isSelected: selectedTab == 'Time Frame',
                               onTap: () async {
-                                if (selectedTab == 'Weekly Goal') return;
+                                if (selectedTab == 'Time Frame') return;
 
                                 final success = await provider.getWeeklyGoals(
                                   context,
@@ -310,7 +310,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
                                 if (success) {
                                   setState(() {
-                                    selectedTab = 'Weekly Goal';
+                                    selectedTab = 'Time Frame';
                                   });
                                 } else {
                                   _showError(provider.error);
@@ -321,9 +321,9 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                           Expanded(
                             child: _tabButton(
                               text: 'All Videos',
-                              isSelected: selectedTab == 'All Videos',
+                              isSelected: selectedTab == 'Progress Videos',
                               onTap: () async {
-                                if (selectedTab == 'All Videos') return;
+                                if (selectedTab == 'Progress Videos') return;
 
                                 final success = await provider.getAllVideos(
                                   context,
@@ -332,7 +332,7 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
                                 if (success) {
                                   setState(() {
-                                    selectedTab = 'All Videos';
+                                    selectedTab = 'Progress Videos';
                                   });
                                 } else {
                                   _showError(provider.error);
@@ -364,9 +364,9 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                         ProfileDetailsView(student: student)
                       else if (selectedTab == 'Learning Objective')
                         LongTermGoalView(studentId: widget.id)
-                      else if (selectedTab == 'Weekly Goal')
+                      else if (selectedTab == 'Time Frame')
                         WeeklyGoalView(studentId: widget.id)
-                      else if (selectedTab == 'All Videos')
+                      else if (selectedTab == 'Progress Videos')
                         AllVideosView(studentId: widget.id),
 
                       SizedBox(height: 20.sp),
