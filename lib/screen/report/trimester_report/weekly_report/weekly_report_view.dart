@@ -187,30 +187,43 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          CustomText(
-                                            text: 'Week $weekCount',
-                                            fontSize: 16.sp,
-                                            color: AppColors.themeColor,
-                                            fontWeight: FontWeight.w500,
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              CustomText(
+                                                text: 'Week $weekCount',
+                                                fontSize: 16.sp,
+                                                color: AppColors.themeColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              SizedBox(width: 8.sp),
+                                              CustomText(
+                                                text: '|',
+                                                color: AppColors.grey,
+                                                fontSize: 14.sp,
+                                              ),
+                                              SizedBox(width: 12.sp),
+                                              CustomText(
+                                                text: goalStatus == "2"
+                                                    ? '.Completed'
+                                                    : ' .Ongoing',
+                                                color: goalStatus == "2"
+                                                    ? AppColors.green
+                                                    : AppColors.yellow,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+
+                                            ],
                                           ),
-                                          SizedBox(width: 8.sp),
-                                          CustomText(
-                                            text: '|',
-                                            color: AppColors.grey,
-                                            fontSize: 14.sp,
-                                          ),
-                                          SizedBox(width: 12.sp),
-                                          CustomText(
-                                            text: goalStatus == "2"
-                                                ? '.Completed'
-                                                : ' .Ongoing',
-                                            color: goalStatus == "2"
-                                                ? AppColors.green
-                                                : AppColors.yellow,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                          Icon(Icons.check_box_outline_blank_sharp,
+                                              color: AppColors.black,
+                                              size: 20.sp)
                                         ],
                                       ),
                                       SizedBox(height: 3.sp),
@@ -491,6 +504,26 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 30.sp),
+                  Visibility(
+                    visible: weeklyGoal.isNotEmpty,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CustomContainer(
+                          borderRadius: 20.r,
+                          padding: 0.sp,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 10.sp,
+                            horizontal: 15.sp,
+                          ),
+                          containerColor: AppColors.themeColor,
+                          text: 'Generate Report',
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30.sp),
                 ],
               ),
             ),

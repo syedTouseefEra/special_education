@@ -212,7 +212,11 @@ class DashboardView extends StatelessWidget {
               : SizedBox(
                   height: 250.sp,
                   child: SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
+                    primaryXAxis: CategoryAxis(
+                      interval: 1,
+                      // labelRotation: 90,
+                      labelIntersectAction: AxisLabelIntersectAction.rotate45,
+                    ),
                     primaryYAxis: NumericAxis(
                       minimum: 0,
                       maximum: yMax,
@@ -225,7 +229,7 @@ class DashboardView extends StatelessWidget {
                         xValueMapper: (_ChartData data, _) => data.x,
                         yValueMapper: (_ChartData data, _) => data.y,
                         pointColorMapper: (_ChartData data, _) => data.color,
-                        name: 'Completion %',
+                        name: 'Progress %',
                       ),
                     ],
                   ),
