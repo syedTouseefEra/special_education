@@ -120,7 +120,6 @@ class DashboardView extends StatelessWidget {
                             ),
                             SizedBox(height: 10.sp),
 
-                            /// Weekly Goal Chart
                             _buildChartSection(
                               title: 'Weekly Goal Report',
                               chartData: weekChartData,
@@ -130,7 +129,6 @@ class DashboardView extends StatelessWidget {
 
                             SizedBox(height: 20.sp),
 
-                            /// Long Goal Chart
                             _buildChartSection(
                               title: 'Long Goal Report',
                               chartData: longChartData,
@@ -140,7 +138,6 @@ class DashboardView extends StatelessWidget {
 
                             SizedBox(height: 20.sp),
 
-                            /// Student List
                             if (provider.studentData != null &&
                                 provider.studentData!.isNotEmpty)
                               Column(
