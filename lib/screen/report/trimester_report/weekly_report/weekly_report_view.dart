@@ -31,11 +31,18 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
   late final List<dynamic> weeklyGoal;
   late final ReportDashboardProvider provider;
 
+  bool isGenerateClicked = false;
+  List<bool> checkedList = [];
+
+
+
   @override
   void initState() {
     super.initState();
     weeklyGoal = widget.student.weeklyGoal ?? <dynamic>[];
     provider = Provider.of<ReportDashboardProvider>(context, listen: false);
+
+    checkedList = List<bool>.filled(weeklyGoal.length, false);
   }
 
   @override
@@ -80,18 +87,18 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                   color: AppColors.themeColor.withOpacity(0.1),
                                   shape: BoxShape.circle,
                                   image:
-                                      widget.student.image != null &&
-                                          widget.student.image!.isNotEmpty
+                                  widget.student.image != null &&
+                                      widget.student.image!.isNotEmpty
                                       ? DecorationImage(
-                                          image: NetworkImage(
-                                            '${ApiServiceUrl.urlLauncher}uploads/${widget.student.image}',
-                                          ),
-                                          fit: BoxFit.cover,
-                                        )
+                                    image: NetworkImage(
+                                      '${ApiServiceUrl.urlLauncher}uploads/${widget.student.image}',
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )
                                       : const DecorationImage(
-                                          image: AssetImage(ImgAssets.user),
-                                          fit: BoxFit.cover,
-                                        ),
+                                    image: AssetImage(ImgAssets.user),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 20.sp),
@@ -119,11 +126,11 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                     ),
                                     CustomText(
                                       text:
-                                          'Gender- ${widget.student.gender ?? 'NA'}',
+                                      'Gender- ${widget.student.gender ?? 'NA'}',
                                     ),
                                     CustomText(
                                       text:
-                                          'D.O.B- ${widget.student.age == ' Years' ? "NA" : widget.student.age}',
+                                      'D.O.B- ${widget.student.age == ' Years' ? "NA" : widget.student.age}',
                                     ),
                                   ],
                                 ),
@@ -159,10 +166,10 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                 item.intervention?.toString().checkNull ?? 'NA';
                             final learningBarriers =
                                 item.learningBarriers?.toString().checkNull ??
-                                'NA';
+                                    'NA';
                             final learningOutCome =
                                 item.learningOutCome?.toString().checkNull ??
-                                'NA';
+                                    'NA';
                             final remarks =
                                 item.remarks?.toString().checkNull ?? 'NA';
                             final videoList = item.videoList.length.toString();
@@ -184,16 +191,13 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                   padding: EdgeInsets.all(10.sp),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               CustomText(
                                                 text: 'Week $weekCount',
@@ -209,23 +213,39 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                               ),
                                               SizedBox(width: 12.sp),
                                               CustomText(
-                                                text: goalStatus == "2"
-                                                    ? '.Completed'
-                                                    : ' .Ongoing',
+                                                text: goalStatus == "2" ? '.Completed' : ' .Ongoing',
                                                 color: goalStatus == "2"
                                                     ? AppColors.green
                                                     : AppColors.yellow,
                                                 fontSize: 14.sp,
                                                 fontWeight: FontWeight.w600,
                                               ),
-
                                             ],
                                           ),
-                                          Icon(Icons.check_box_outline_blank_sharp,
-                                              color: AppColors.black,
-                                              size: 20.sp)
+
+                                          // ✅ Checkbox appears only after Generate
+                                          if (isGenerateClicked)
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  checkedList[index] = !checkedList[index];
+                                                });
+                                              },
+                                              child: Icon(
+                                                checkedList[index]
+                                                    ? Icons.check_box
+                                                    : Icons.check_box_outline_blank,
+                                                color: checkedList[index]
+                                                    ? AppColors.green
+                                                    : AppColors.black,
+                                                size: 20.sp,
+                                              ),
+                                            ),
+
+
                                         ],
                                       ),
+
                                       SizedBox(height: 3.sp),
                                       Divider(
                                         thickness: 0.7.sp,
@@ -331,7 +351,7 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                       ListView.builder(
                                         itemCount: item.videoList?.length ?? 0,
                                         physics:
-                                            const NeverScrollableScrollPhysics(),
+                                        const NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
                                         itemBuilder: (context, videoIndex) {
                                           final mainUrl =
@@ -346,7 +366,7 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
 
                                           return Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                             children: [
                                               SizedBox(
                                                 height: 180.h,
@@ -355,17 +375,17 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                                 ).width,
                                                 child: FutureBuilder<String?>(
                                                   future:
-                                                      VideoThumbnailGenerator.generateThumbnail(
-                                                        fullUrl,
-                                                      ),
+                                                  VideoThumbnailGenerator.generateThumbnail(
+                                                    fullUrl,
+                                                  ),
                                                   builder: (context, snapshot) {
                                                     if (snapshot
-                                                            .connectionState ==
+                                                        .connectionState ==
                                                         ConnectionState
                                                             .waiting) {
                                                       return const Center(
                                                         child:
-                                                            CircularProgressIndicator(),
+                                                        CircularProgressIndicator(),
                                                       );
                                                     }
 
@@ -387,7 +407,7 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                                             builder: (_) =>
                                                                 VideoPlayerScreen(
                                                                   videoUrl:
-                                                                      fullUrl,
+                                                                  fullUrl,
                                                                 ),
                                                           ),
                                                         );
@@ -405,9 +425,9 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                                                         .data!,
                                                                   ),
                                                                   width:
-                                                                      MediaQuery.sizeOf(
-                                                                        context,
-                                                                      ).width,
+                                                                  MediaQuery.sizeOf(
+                                                                    context,
+                                                                  ).width,
                                                                   height: 149.h,
                                                                   fit: BoxFit
                                                                       .cover,
@@ -420,8 +440,8 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                                                 color: Colors
                                                                     .white
                                                                     .withOpacity(
-                                                                      0.8,
-                                                                    ),
+                                                                  0.8,
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
@@ -431,14 +451,14 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                                             height: 30.sp,
                                                             child: Padding(
                                                               padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        10.0,
-                                                                  ),
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal:
+                                                                10.0,
+                                                              ),
                                                               child: Row(
                                                                 mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                                 children: [
                                                                   Icon(
                                                                     Icons
@@ -460,21 +480,21 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                                                           Icons
                                                                               .save_alt,
                                                                           color:
-                                                                              AppColors.white,
+                                                                          AppColors.white,
                                                                           size:
-                                                                              18.sp,
+                                                                          18.sp,
                                                                         ),
                                                                         SizedBox(
                                                                           width:
-                                                                              2.sp,
+                                                                          2.sp,
                                                                         ),
                                                                         CustomText(
                                                                           text:
-                                                                              'Download',
+                                                                          'Download',
                                                                           color:
-                                                                              AppColors.white,
+                                                                          AppColors.white,
                                                                           fontWeight:
-                                                                              FontWeight.w600,
+                                                                          FontWeight.w600,
                                                                         ),
                                                                       ],
                                                                     ),
@@ -510,19 +530,75 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        CustomContainer(
-                          borderRadius: 20.r,
-                          padding: 0.sp,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 10.sp,
-                            horizontal: 15.sp,
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              isGenerateClicked = true;
+                              checkedList = List<bool>.filled(weeklyGoal.length, false);
+                            });
+                          },
+                          child: CustomContainer(
+                            borderRadius: 20.r,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 10.sp,
+                              horizontal: 15.sp,
+                            ),
+                            containerColor: AppColors.themeColor,
+                            text: 'Generate Report',
                           ),
-                          containerColor: AppColors.themeColor,
-                          text: 'Generate Report',
-                        )
+                        ),
+
                       ],
                     ),
                   ),
+
+                  Visibility(
+                    visible: isGenerateClicked,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              isGenerateClicked = false;
+                              checkedList = List<bool>.filled(weeklyGoal.length, false);
+                            });
+                          },
+
+                          child: CustomContainer(
+                            borderRadius: 20.r,
+                            borderColor: AppColors.black,
+                            borderWidth: 0.7.sp,
+                            textColor: AppColors.black,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 10.sp,
+                              horizontal: 15.sp,
+                            ),
+                            containerColor: AppColors.transparent,
+                            text: 'Cancel',
+                          ),
+                        ),
+
+                        SizedBox(width: 10.sp),
+                        InkWell(
+                          onTap: () {
+                            // TODO: Save report logic
+                          },
+                          child: CustomContainer(
+                            borderRadius: 20.r,
+                            padding: 0.sp,
+                            innerPadding: EdgeInsets.symmetric(
+                              vertical: 10.sp,
+                              horizontal: 15.sp,
+                            ),
+                            containerColor: AppColors.themeColor,
+                            text: 'Save Report',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   SizedBox(height: 30.sp),
                 ],
               ),
@@ -533,3 +609,4 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
     );
   }
 }
+
