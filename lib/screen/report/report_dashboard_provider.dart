@@ -1,4 +1,3 @@
-
 import 'package:flutter/Material.dart';
 import 'package:special_education/api_service/api_calling_types.dart';
 import 'package:special_education/api_service/api_service_url.dart';
@@ -10,6 +9,8 @@ import 'package:special_education/screen/report/trimester_report/generate_trimes
 import 'package:special_education/screen/report/trimester_report/performance_report/performance_report_view.dart';
 import 'package:special_education/screen/report/trimester_report/trimester_report_data_model.dart';
 import 'package:special_education/screen/report/trimester_report/view_report/view_pdf_report_data_model.dart';
+import 'package:special_education/screen/report/trimester_report/weekly_report/weekly_pdf_report_data_model.dart';
+import 'package:special_education/screen/report/trimester_report/weekly_report/weekly_pdf_report_view.dart';
 import 'package:special_education/screen/report/trimester_report/weekly_report/weekly_report_data_model.dart';
 import 'package:special_education/user_data/user_data.dart';
 import 'package:special_education/utils/exception_handle.dart';
@@ -61,6 +62,11 @@ class ReportDashboardProvider extends ChangeNotifier {
     return _viewPDFReportData;
   }
 
+  List<WeeklyPdfReportDataModel>? _weeklyPDFReportData;
+  List<WeeklyPdfReportDataModel>? get weeklyPDFReportData {
+    return _weeklyPDFReportData;
+  }
+
   final UserData userData = UserData();
   late var token = userData.getUserData.token;
   late var instituteId = userData.getUserData.instituteId ?? "0";
@@ -96,10 +102,7 @@ class ReportDashboardProvider extends ChangeNotifier {
       }
     } catch (e) {
       if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
+        if (context is BuildContext) unauthorizedUser(context);
         return false;
       }
     }
@@ -122,9 +125,8 @@ class ReportDashboardProvider extends ChangeNotifier {
       if (response["responseStatus"] == true && response["data"] is List) {
         _weeklyReportData = (response["data"] as List)
             .map(
-              (e) => WeeklyReportDataModel.fromJson(
-                Map<String, dynamic>.from(e),
-              ),
+              (e) =>
+                  WeeklyReportDataModel.fromJson(Map<String, dynamic>.from(e)),
             )
             .toList();
         _setLoading(false);
@@ -134,10 +136,50 @@ class ReportDashboardProvider extends ChangeNotifier {
       }
     } catch (e) {
       if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
+        if (context is BuildContext) unauthorizedUser(context);
+        return false;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> getWeeklyPDFReportData(
+    dynamic context,
+    String studentId,
+    String weekId,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    _setLoading(true);
+    try {
+      final response = await _api.getApiCall(
+        url:
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.getWeekReport}",
+        params: {"studentId": studentId, "weekId": weekId},
+        token: token,
+      );
+
+      if (response["responseStatus"] == true && response["data"] is List) {
+        _weeklyPDFReportData = (response["data"] as List)
+            .map(
+              (e) => WeeklyPdfReportDataModel.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
+            .toList();
+        if (weeklyPDFReportData != null && weeklyPDFReportData!.isNotEmpty) {
+          NavigationHelper.push(context, WeeklyReportPdfView(
+            reportData: weeklyPDFReportData!,
+          ),);
+        }
+
+        _setLoading(false);
+        return true;
+      } else {
+        _setError(response["responseMessage"] ?? "Invalid data received");
+      }
+    } catch (e) {
+      if (e is UnauthorizedException) {
+        if (context is BuildContext) unauthorizedUser(context);
         return false;
       }
     }
@@ -170,10 +212,7 @@ class ReportDashboardProvider extends ChangeNotifier {
       }
     } catch (e) {
       if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
+        if (context is BuildContext) unauthorizedUser(context);
         return false;
       }
     }
@@ -216,7 +255,11 @@ class ReportDashboardProvider extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> getTrimesterReportPDFData(dynamic context, String studentId, String trimesterId) async {
+  Future<bool> getTrimesterReportPDFData(
+    dynamic context,
+    String studentId,
+    String trimesterId,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
     try {
@@ -230,9 +273,8 @@ class ReportDashboardProvider extends ChangeNotifier {
       if (response["responseStatus"] == true && response["data"] is List) {
         _viewPDFReportData = (response["data"] as List)
             .map(
-              (e) => ViewPDFReportDataModel.fromJson(
-                Map<String, dynamic>.from(e),
-              ),
+              (e) =>
+                  ViewPDFReportDataModel.fromJson(Map<String, dynamic>.from(e)),
             )
             .toList();
         _setLoading(false);
@@ -242,10 +284,7 @@ class ReportDashboardProvider extends ChangeNotifier {
       }
     } catch (e) {
       if (e is UnauthorizedException) {
-        showSnackBar("Session expired. Please login again.", context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          NavigationHelper.pushAndClearStack(context, LoginPage());
-        });
+        if (context is BuildContext) unauthorizedUser(context);
         return false;
       }
     }
@@ -288,7 +327,13 @@ class ReportDashboardProvider extends ChangeNotifier {
         if (context is BuildContext) {
           learningAreasData!.clear();
           ResponseChecker.showSnackBarFromResponse(context, apiResp);
-          NavigationHelper.push(context, PerformanceReportView(studentName: studentName, studentId: studentId,));
+          NavigationHelper.push(
+            context,
+            PerformanceReportView(
+              studentName: studentName,
+              studentId: studentId,
+            ),
+          );
         } else {
           print('Success: ${apiResp.message}');
         }
@@ -321,16 +366,16 @@ class ReportDashboardProvider extends ChangeNotifier {
   }
 
   Future<bool> savePerformanceReport(
-      dynamic context,
-      String performanceText,
-      ) async {
+    dynamic context,
+    String performanceText,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 10));
     _setLoading(true);
 
     try {
       final dynamic rawResponse = await _api.postApiCall(
         url:
-        "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.savePerformanceReport}",
+            "${ApiServiceUrl.hamaareSitaareApiBaseUrl}${ApiServiceUrl.savePerformanceReport}",
         body: {
           "trimesterId": trimesterId,
           "studentId": studentId,
@@ -405,6 +450,4 @@ class ReportDashboardProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
-
-
 }

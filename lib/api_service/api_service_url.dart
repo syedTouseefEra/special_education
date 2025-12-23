@@ -59,6 +59,7 @@ class ApiServiceUrl {
   static String masterRole = "MasterRole";
 
   static String getWeeklyGoal = "Report/GetWeeklyGoal";
+  static String getWeekReport = "Report/GetWeekReport";
   static String getTrimesterReport = "Report/GetTrimesterReport";
   static String learningAreas = "Report/LearningAreas";
   static String saveGenerateReport = "Report/SaveGenerateReport";

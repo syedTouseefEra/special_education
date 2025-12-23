@@ -79,9 +79,14 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                   showTopSheet(
                     context,
                     TopOptionSheet(
-                      name: UserData().getUserData.name!.isEmpty?'NA': UserData().getUserData.name.toString(),
-                      subtitle: UserData().getUserData.instituteName!.isEmpty?'NA': UserData().getUserData.instituteName.toString(),
-                      profileImage: '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
+                      name: UserData().getUserData.name!.isEmpty
+                          ? 'NA'
+                          : UserData().getUserData.name.toString(),
+                      subtitle: UserData().getUserData.instituteName!.isEmpty
+                          ? 'NA'
+                          : UserData().getUserData.instituteName.toString(),
+                      profileImage:
+                          '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
                     ),
                   );
                 },
@@ -143,39 +148,44 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                             ),
                           ),
                         ),
-                        Consumer<TeacherDashboardProvider>(
-                          builder: (context, provider, _) {
-                            bool showAddButton =
-                                provider.teacherData != null &&
-                                provider.teacherData!.isNotEmpty &&
-                                !provider.isLoading &&
-                                provider.error == null;
+                        SizedBox(width: 10.sp),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.sp),
+                          child: Consumer<TeacherDashboardProvider>(
+                            builder: (context, provider, _) {
+                              bool showAddButton =
+                                  provider.teacherData != null &&
+                                  provider.teacherData!.isNotEmpty &&
+                                  !provider.isLoading &&
+                                  provider.error == null;
 
-                            return Visibility(
-                              visible: showAddButton,
-                              child: InkWell(
-                                splashColor: AppColors.transparent,
-                                highlightColor: AppColors.transparent,
-                                onTap: () {
-                                  NavigationHelper.push(
-                                    context,
-                                    const AddTeacherView(),
-                                  );
-                                },
-                                child: CustomContainer(
-                                  text: "Add Teacher",
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Inter',
-                                  borderRadius: 20.r,
-                                  innerPadding: EdgeInsets.symmetric(
-                                    vertical: 10.sp,
-                                    horizontal: 18.sp,
+                              return Visibility(
+                                visible: showAddButton,
+                                child: InkWell(
+                                  splashColor: AppColors.transparent,
+                                  highlightColor: AppColors.transparent,
+                                  onTap: () {
+                                    NavigationHelper.push(
+                                      context,
+                                      const AddTeacherView(),
+                                    );
+                                  },
+                                  child: CustomContainer(
+                                    text: "Add Teacher",
+                                    fontSize: 13.sp,
+                                    padding: 0.sp,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
+                                    borderRadius: 20.r,
+                                    innerPadding: EdgeInsets.symmetric(
+                                      vertical: 10.sp,
+                                      horizontal: 15.sp,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),

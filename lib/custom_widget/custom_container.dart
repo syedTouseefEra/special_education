@@ -25,6 +25,9 @@ class CustomContainer extends StatelessWidget {
   final int? maxLines;
   final TextOverflow? overflow;
 
+  /// 🔹 Optional tap callback
+  final VoidCallback? onTap;
+
   const CustomContainer({
     super.key,
     this.width,
@@ -47,37 +50,49 @@ class CustomContainer extends StatelessWidget {
     this.fontFamily,
     this.maxLines,
     this.overflow,
+
+    this.onTap, // 👈 added
   });
 
   @override
   Widget build(BuildContext context) {
+    final content = Container(
+      width: width,
+      decoration: BoxDecoration(
+        color: gradient == null ? containerColor : null,
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(
+          width: borderWidth,
+          color: borderColor,
+        ),
+      ),
+      child: Padding(
+        padding: innerPadding,
+        child: CustomText(
+          text: text,
+          color: textColor,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+          textAlign: textAlign,
+          textCase: textCase,
+          fontFamily: fontFamily,
+          maxLines: maxLines,
+          overflow: overflow,
+        ),
+      ),
+    );
+
     return Padding(
       padding: EdgeInsets.all(padding),
-      child: Container(
-        width: width,
-        decoration: BoxDecoration(
-          color: gradient == null ? containerColor : null, // Solid color only if gradient is null
-          gradient: gradient,
-          borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(
-            width: borderWidth,
-            color: borderColor,
-          ),
-        ),
-        child: Padding(
-          padding: innerPadding,
-          child: CustomText(
-            text: text,
-            color: textColor,
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-            textAlign: textAlign,
-            textCase: textCase,
-            fontFamily: fontFamily,
-            maxLines: maxLines,
-            overflow: overflow,
-          ),
-        ),
+      child: onTap == null
+          ? content
+          : InkWell(
+        splashColor: AppColors.transparent,
+        highlightColor: AppColors.transparent,
+        borderRadius: BorderRadius.circular(borderRadius),
+        onTap: onTap,
+        child: content,
       ),
     );
   }

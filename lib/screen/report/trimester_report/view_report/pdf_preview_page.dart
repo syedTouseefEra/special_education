@@ -125,10 +125,12 @@ class _PdfPreviewFullScreenState extends State<PdfPreviewFullScreen> {
             if (_pdfBytes != null)
               Positioned.fill(
                 child: PdfPreview(
-                  maxPageWidth: screenW, // encourage full-width preview
-                  allowPrinting: true,
-                  allowSharing: false, // we use custom share action
                   canChangePageFormat: false,
+                  canChangeOrientation: false,
+                  canDebug: false,
+                  allowPrinting: false,
+                  allowSharing: false,
+                  maxPageWidth: screenW,
                   build: (PdfPageFormat format) async => _pdfBytes!,
                 ),
               )
