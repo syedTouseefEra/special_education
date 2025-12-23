@@ -1,15 +1,10 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'weekly_pdf_report_data_model.dart';
 
-/// ======================
-/// MAIN PDF GENERATOR
-/// ======================
 Future<pw.Document> generateIEPPdf(
-    List<WeeklyPdfReportDataModel> reportData,
-    ) async {
+  List<WeeklyPdfReportDataModel> reportData,
+) async {
   final pdf = pw.Document();
 
   if (reportData.isEmpty) return pdf;
@@ -19,23 +14,23 @@ Future<pw.Document> generateIEPPdf(
   pdf.addPage(
     pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
-      margin: const pw.EdgeInsets.all(20),
+      margin: const pw.EdgeInsets.all(15),
       build: (context) => [
 
-        /// ===== HEADER =====
+        pw.SizedBox(height: 0),
         _headerSection(student),
 
-        pw.SizedBox(height: 12),
+        pw.SizedBox(height: 8),
 
         /// ===== PRE-ASSESSMENT =====
         _preAssessmentSection(student),
 
-        pw.SizedBox(height: 12),
+        pw.SizedBox(height: 8),
 
         /// ===== LEARNING OBJECTIVES =====
         _learningObjectiveSection(student),
 
-        pw.SizedBox(height: 12),
+        pw.SizedBox(height: 5),
 
         /// ===== WEEKLY TABLE =====
         _weeklyGoalTable(student),
@@ -51,30 +46,55 @@ Future<pw.Document> generateIEPPdf(
 /// ======================
 pw.Widget _headerSection(WeeklyPdfReportDataModel student) {
   return pw.Container(
-    padding: const pw.EdgeInsets.all(8),
+    padding: pw.EdgeInsets.all(8),
     decoration: pw.BoxDecoration(border: pw.Border.all()),
     child: pw.Column(
       children: [
         pw.Text(
           "INDIVIDUALISED EDUCATION PROGRAM",
-          style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
+          style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
         ),
-        pw.SizedBox(height: 8),
+        pw.SizedBox(height: 10),
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text("Name: ${student.firstName} ${student.lastName}"),
-            pw.Text("Age: ${student.age}"),
-            pw.Text("PID: ${student.pidNumber}"),
+            pw.Text(
+              "Name: ${student.firstName} ${student.lastName}",
+              style: pw.TextStyle(fontSize: 14),
+            ),
+            pw.Text(
+              "Age: ${student.age}",
+              style: pw.TextStyle(fontSize: 14),
+            ),
+          ],
+        ),
+        pw.SizedBox(height: 4),
+
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text(
+              "Diagnosis: ${student.diagnosis}",
+              style: pw.TextStyle(fontSize: 14),
+            ),
+            pw.Text(
+              "PID: ${student.pidNumber}",
+              style: pw.TextStyle(fontSize: 14),
+            ),
           ],
         ),
         pw.SizedBox(height: 4),
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text("Diagnosis: ${student.diagnosis}"),
-            pw.Text("Gender: ${student.gender}"),
-            pw.Text("D.O.A: ${student.dateOfAdmission}"),
+            pw.Text(
+              "Gender: ${student.gender}",
+              style: pw.TextStyle(fontSize: 14),
+            ),
+            pw.Text(
+              "D.O.A: ${student.dateOfAdmission}",
+              style: pw.TextStyle(fontSize: 14),
+            ),
           ],
         ),
       ],
@@ -87,23 +107,49 @@ pw.Widget _headerSection(WeeklyPdfReportDataModel student) {
 /// ======================
 pw.Widget _preAssessmentSection(WeeklyPdfReportDataModel student) {
   return pw.Container(
+    width: double.infinity,
     padding: const pw.EdgeInsets.all(8),
     decoration: pw.BoxDecoration(border: pw.Border.all()),
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("PRE-ASSESSMENT :", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text(
+          "PRE-ASSESSMENT :",
+          style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
+        ),
         pw.SizedBox(height: 6),
-        pw.Text("Psycho-Motor Skill :", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-        pw.SizedBox(height: 6),
+        pw.Text(
+          "Psycho-Motor Skill :",
+          style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
+        ),
+        pw.SizedBox(height: 10),
 
         ...student.skillList!.expand((skill) {
           return skill.skillRating!.map((s) {
             return pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 2),
-              child: pw.Text(
-                "${s.name}: ${_ratingText(s.ratingId ?? 0)}",
-                style: const pw.TextStyle(fontSize: 10),
+              padding: pw.EdgeInsets.only(bottom: 5),
+              child: pw.RichText(
+                text: pw.TextSpan(
+                  children: [
+                    pw.TextSpan(
+                      text: "${s.name}: ",
+                      style: pw.TextStyle(
+                        fontSize: 13,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.black,
+                      ),
+                    ),
+
+                    pw.TextSpan(
+                      text: _ratingText(s.ratingId ?? 0),
+                      style: pw.TextStyle(
+                        fontSize: 13,
+                        fontWeight: pw.FontWeight.normal,
+                        color: PdfColors.black,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           });
@@ -117,39 +163,75 @@ pw.Widget _preAssessmentSection(WeeklyPdfReportDataModel student) {
 /// LEARNING OBJECTIVE
 /// ======================
 pw.Widget _learningObjectiveSection(WeeklyPdfReportDataModel student) {
-  final goals = student.learningObjective?.first.longTermGoal;
+  final goals = student.learningObjective?.first.longTermGoal ?? [];
 
-  return pw.Container(
-    padding: const pw.EdgeInsets.all(8),
-    decoration: pw.BoxDecoration(border: pw.Border.all()),
-    child: pw.Row(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        pw.SizedBox(
-          width: 90,
-          child: pw.Text(
-            "Long Term Goals:",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-          ),
+  return pw.Column(
+    crossAxisAlignment: pw.CrossAxisAlignment.start,
+    children: [
+      pw.Text(
+        "Learning Objective :",
+        style: pw.TextStyle(
+          fontSize: 15,
+          fontWeight: pw.FontWeight.bold,
         ),
-        pw.Expanded(
-          child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: goals!.map((g) {
-              return pw.Padding(
-                padding: const pw.EdgeInsets.only(bottom: 4),
+      ),
+      pw.SizedBox(height: 8),
+      pw.Table(
+        border: pw.TableBorder.all(),
+        columnWidths: {
+          0: const pw.FlexColumnWidth(1.3),
+          1: const pw.FlexColumnWidth(6),
+          2: const pw.FlexColumnWidth(1),
+          3: const pw.FlexColumnWidth(1),
+        },
+        children: [
+          pw.TableRow(
+            children: [
+              /// ✅ LEFT LABEL — TOP LEFT
+              pw.Container(
+                alignment: pw.Alignment.bottomLeft,
+                padding: const pw.EdgeInsets.all(6),
                 child: pw.Text(
-                  _cleanHtml(g.longTermGoal),
-                  style: const pw.TextStyle(fontSize: 10),
+                  "Long Term Goals :",
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
-              );
-            }).toList(),
+              ),
+
+              /// GOALS CONTENT
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(6),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: goals.map((g) {
+                    return pw.Padding(
+                      padding: const pw.EdgeInsets.only(bottom: 5),
+                      child: pw.Text(
+                        _cleanHtml(g.longTermGoal),
+                        style: const pw.TextStyle(fontSize: 11),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+              /// EMPTY CELLS
+              // pw.SizedBox(),
+              // pw.SizedBox(),
+            ],
           ),
-        ),
-      ],
-    ),
+
+
+        ],
+      ),
+    ],
   );
 }
+
+
+
 
 /// ======================
 /// WEEKLY TABLE
@@ -203,7 +285,7 @@ pw.Widget _headerCell(String text) {
     padding: const pw.EdgeInsets.all(6),
     child: pw.Text(
       text,
-      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
+      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
     ),
   );
 }
@@ -211,7 +293,7 @@ pw.Widget _headerCell(String text) {
 pw.Widget _cell(String text) {
   return pw.Padding(
     padding: const pw.EdgeInsets.all(6),
-    child: pw.Text(text, style: const pw.TextStyle(fontSize: 9)),
+    child: pw.Text(text, style: const pw.TextStyle(fontSize: 12)),
   );
 }
 

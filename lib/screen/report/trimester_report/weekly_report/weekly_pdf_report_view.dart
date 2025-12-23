@@ -67,7 +67,7 @@ class WeeklyReportPdfView extends StatelessWidget {
                 allowPrinting: false,
                 allowSharing: false,
         
-                // 🔥 forces page to fill screen width → height scales automatically
+
                 maxPageWidth: constraints.maxWidth,
         
                 build: (format) async {
