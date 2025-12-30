@@ -1,7 +1,6 @@
 
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path/path.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' hide PdfDocument;
 import 'package:pdfx/pdfx.dart';
@@ -16,33 +15,22 @@ class PdfService {
     String title = 'Report Card',
     required List<ViewPDFReportDataModel> reportData,
   }) async {
-    // existing emoji images
-    final img1 = await rootBundle.load(ImgAssets.smileEmoji);
-    final smileEmoji = img1.buffer.asUint8List();
-    final img2 = await rootBundle.load(ImgAssets.moon);
-    final moon = img2.buffer.asUint8List();
+    final img1 = await rootBundle.load(ImgAssets.headerReportView);
+    final headerReportView = img1.buffer.asUint8List();
+    final img2 = await rootBundle.load(ImgAssets.bottomReportView);
+    final bottomReportView = img2.buffer.asUint8List();
 
-    // load the two top images and the shared bottom image from assets
-    final bData = await rootBundle.load(ImgAssets.ballons);
-    final balloon = bData.buffer.asUint8List();
-    final rData = await rootBundle.load(ImgAssets.rainbow);
-    final rainbow = rData.buffer.asUint8List();
-    final sData = await rootBundle.load(ImgAssets.flower); // or sharedImage asset
-    final sharedImage = sData.buffer.asUint8List();
 
-    // If there is no original PDF, build from scratch (two pages)
+
     if (originalPdfBytes == null) {
       return _generatePdfFromScratch(
         title: title,
-        smileEmoji: smileEmoji,
-        moon: moon,
-        balloon: balloon,
-        rainbow: rainbow,
+        headerReportView: headerReportView,
+        bottomReportView: bottomReportView,
         reportData: reportData,
       );
     }
 
-    // Otherwise overlay the decorations on each page of the provided PDF
     final pdfDoc = await PdfDocument.openData(originalPdfBytes);
     final outPdf = pw.Document();
     final model = reportData.isNotEmpty ? reportData.first : null;
@@ -75,7 +63,6 @@ class PdfService {
             ];
 
             if (i == 1) {
-              // top red bar (behind images)
               children.add(
                 pw.Positioned(
                   left: 0,
@@ -85,7 +72,6 @@ class PdfService {
                 ),
               );
 
-              // bottom red bar (behind bottom images)
               children.add(
                 pw.Positioned(
                   left: 0,
@@ -95,68 +81,6 @@ class PdfService {
                 ),
               );
 
-              // TOP LEFT: balloon + rainbow pair
-              children.add(
-                pw.Positioned(
-                  left: w * 0.05,
-                  top: h * 0.02,
-                  child: pw.Row(
-                    mainAxisSize: pw.MainAxisSize.min,
-                    children: [
-                      pw.SizedBox(width: small, height: small, child: pw.Image(pw.MemoryImage(balloon), fit: pw.BoxFit.contain)),
-                      pw.SizedBox(width: 6),
-                      pw.SizedBox(width: small, height: small, child: pw.Image(pw.MemoryImage(rainbow), fit: pw.BoxFit.contain)),
-                    ],
-                  ),
-                ),
-              );
-
-              // TOP RIGHT: same pair (use right for stable placement)
-              children.add(
-                pw.Positioned(
-                  right: w * 0.05,
-                  top: h * 0.02,
-                  child: pw.Row(
-                    mainAxisSize: pw.MainAxisSize.min,
-                    children: [
-                      pw.SizedBox(width: small, height: small, child: pw.Image(pw.MemoryImage(balloon), fit: pw.BoxFit.contain)),
-                      pw.SizedBox(width: 6),
-                      pw.SizedBox(width: small, height: small, child: pw.Image(pw.MemoryImage(rainbow), fit: pw.BoxFit.contain)),
-                    ],
-                  ),
-                ),
-              );
-
-              // BOTTOM CENTER: the shared image, placed ABOVE the bottom red bar
-              children.add(
-                pw.Positioned(
-                  left: w * 0.15,
-                  right: w * 0.15,
-                  bottom: h * 0.02 + (h * 0.08),
-                  child: pw.SizedBox(
-                    height: h * 0.18,
-                    child: pw.Image(pw.MemoryImage(sharedImage), fit: pw.BoxFit.contain),
-                  ),
-                ),
-              );
-
-              // BOTTOM LEFT: balloon
-              children.add(
-                pw.Positioned(
-                  left: w * 0.05,
-                  bottom: h * 0.05,
-                  child: pw.SizedBox(width: large, height: large, child: pw.Image(pw.MemoryImage(balloon), fit: pw.BoxFit.contain)),
-                ),
-              );
-
-              // BOTTOM RIGHT: rainbow
-              children.add(
-                pw.Positioned(
-                  right: w * 0.05,
-                  bottom: h * 0.05,
-                  child: pw.SizedBox(width: large, height: large, child: pw.Image(pw.MemoryImage(rainbow), fit: pw.BoxFit.contain)),
-                ),
-              );
 
               // optional: small decorative red dot (left middle)
               children.add(
@@ -168,10 +92,10 @@ class PdfService {
               );
 
               // optional: corner moon images if you want (keep them last so they're on top)
-              children.addAll([
-                pw.Positioned(left: w * 0.05, bottom: h * 0.02, child: pw.SizedBox(width: large, height: large, child: pw.Image(pw.MemoryImage(moon), fit: pw.BoxFit.contain))),
-                pw.Positioned(right: w * 0.05, bottom: h * 0.02, child: pw.SizedBox(width: large, height: large, child: pw.Image(pw.MemoryImage(moon), fit: pw.BoxFit.contain))),
-              ]);
+              // children.addAll([
+              //   pw.Positioned(left: w * 0.05, bottom: h * 0.02, child: pw.SizedBox(width: large, height: large, child: pw.Image(pw.MemoryImage(moon), fit: pw.BoxFit.contain))),
+              //   pw.Positioned(right: w * 0.05, bottom: h * 0.02, child: pw.SizedBox(width: large, height: large, child: pw.Image(pw.MemoryImage(moon), fit: pw.BoxFit.contain))),
+              // ]);
             } // end if first page
 
             return pw.Stack(children: children);
@@ -190,10 +114,8 @@ class PdfService {
   // ------------------------
   static Future<Uint8List> _generatePdfFromScratch({
     required String title,
-    required Uint8List smileEmoji,
-    required Uint8List moon,
-    required Uint8List balloon,
-    required Uint8List rainbow,
+    required Uint8List headerReportView,
+    required Uint8List bottomReportView,
     required List<ViewPDFReportDataModel> reportData,
   }) async {
     final pdf = pw.Document();
@@ -203,113 +125,154 @@ class PdfService {
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(0),
+        margin: pw.EdgeInsets.zero,
         build: (pw.Context context) {
           return [
-            pw.FullPage(
-              ignoreMargins: true,
-              child: pw.Container(
-                decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.pdfColor, width: 10.sp)),
-                child: pw.Column(children: [
-                  pw.Padding(
-                    padding: const pw.EdgeInsets.all(20),
-                    child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                      // header stars & institute name
-                      pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-                        pw.Center(child: pw.Image(pw.MemoryImage(smileEmoji), width: 40)),
-                        pw.SizedBox(height: 10.sp),
-                        pw.Center(child: pw.Image(pw.MemoryImage(moon), width: 40)),
-                      ]),
-                      pw.SizedBox(height: 10.sp),
-                      pw.Center(
-                        child: pw.Container(
-                          width: 400.sp,
-                          decoration: pw.BoxDecoration(color: PdfColors.pdfColor),
+            pw.Container(
+              decoration: pw.BoxDecoration(
+                border: pw.Border.all(
+                  color: PdfColors.pdfColor,
+                  width: 10.sp,
+                ),
+              ),
+              child: pw.Padding(
+                padding: const pw.EdgeInsets.all(5),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+
+                    // ================= HEADER IMAGE (DYNAMIC) =================
+                    pw.LayoutBuilder(
+                      builder: (context, constraints) {
+                        final width = constraints!.maxWidth+40;
+                        final height = width * (190 / 600);
+
+                        return pw.Center(
+                          child: pw.Image(
+                            pw.MemoryImage(headerReportView),
+                            width: width,
+                            height: height,
+                            fit: pw.BoxFit.contain,
+                          ),
+                        );
+                      },
+                    ),
+
+                    pw.SizedBox(height: 8.sp),
+
+                    // ================= TITLE =================
+                    pw.Center(
+                      child: pw.Container(
+                        padding: pw.EdgeInsets.symmetric(
+                          vertical: 6.sp,
+                          horizontal: 30.sp,
+                        ),
+                        decoration: pw.BoxDecoration(
+                          color: PdfColors.pdfColor,
+                          borderRadius: pw.BorderRadius.circular(6.sp),
+                        ),
+                        child: pw.Text(
+                          'STUDENT PROGRESS CARD',
+                          style: pw.TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    pw.SizedBox(height: 5.sp),
+                    pw.Divider(color: PdfColors.pdfColor, thickness: 0.7.sp),
+
+                    // ================= STUDENT DETAILS =================
+                    buildFieldRow(
+                      label: "CHILD'S NAME:",
+                      value: _nullSafe(model?.studentName, fallback: "NA"),
+                      width: 20.sp,
+                    ),
+                    buildFieldRow(
+                      label: "DATE OF BIRTH:",
+                      value: _nullSafe(model?.dob, fallback: "NA"),
+                      width: 19.sp,
+                    ),
+                    buildFieldRow(
+                      label: "PID:",
+                      value: _nullSafe(model?.pidNumber?.toString(), fallback: "NA"),
+                      width: 110.sp,
+                    ),
+                    buildFieldRow(
+                      label: "DIAGNOSIS:",
+                      value: _nullSafe(model?.diagnosis, fallback: "NA"),
+                      width: 50.sp,
+                    ),
+
+                    pw.Divider(color: PdfColors.pdfColor, thickness: 0.7.sp),
+
+                    buildFieldRow(
+                      label: "DATE OF ADMISSION IN WELLNESS WARD:",
+                      value: _nullSafe(model?.dateOfAdmission, fallback: "NA"),
+                      width: 15.sp,
+                    ),
+                    buildFieldRow(
+                      label: "LEARNING PROGRAM START DATE:",
+                      value: _nullSafe(model?.programStartDate, fallback: "NA"),
+                      width: 65.sp,
+                    ),
+                    buildFieldRow(
+                      label: "PROGRESS REPORT TIMEFRAME:",
+                      value: _nullSafe(model?.timeFrame, fallback: "NA"),
+                      width: 75.sp,
+                    ),
+
+                    pw.Divider(color: PdfColors.pdfColor, thickness: 0.7.sp),
+
+                    buildFieldRow(
+                      label: "MOTHER'S NAME:",
+                      value: _nullSafe(model?.motherName, fallback: "NA"),
+                    ),
+                    buildFieldRow(
+                      label: "FATHER'S NAME:",
+                      value: _nullSafe(model?.fatherName, fallback: "NA"),
+                      width: 33.sp,
+                    ),
+                    buildFieldRow(
+                      label: "ADDRESS:",
+                      value: _buildAddress(model),
+                      width: 82.sp,
+                    ),
+
+                    pw.SizedBox(height: 20.sp),
+
+                    // ================= BOTTOM IMAGE =================
+                    pw.LayoutBuilder(
+                      builder: (context, constraints) {
+                        final width = constraints!.maxWidth;
+                        final height = width * (90 / 600);
+
+                        return pw.Padding(
+                          padding: pw.EdgeInsets.only(top: 10.sp),
                           child: pw.Center(
-                            child: pw.Padding(
-                              padding: pw.EdgeInsets.symmetric(vertical: 5.sp),
-                              child: pw.Text(_nullSafe(model?.instituteName, fallback: 'Hamaare Sitaare'),
-                                  style: pw.TextStyle(fontSize: 35.sp, fontWeight: pw.FontWeight.bold, color: PdfColors.white)),
+                            child: pw.Image(
+                              pw.MemoryImage(bottomReportView),
+                              width: width,
+                              height: height,
+                              fit: pw.BoxFit.fill,
                             ),
                           ),
-                        ),
-                      ),
-                      pw.SizedBox(height: 10.sp),
-                      pw.Center(
-                        child: pw.Text(_nullSafe(model?.instituteAdddress, fallback: 'Wellness Ward, Era Lucknow Medical College'),
-                            style: pw.TextStyle(fontSize: 16.sp, color: PdfColors.black, fontWeight: pw.FontWeight.bold),
-                            textAlign: pw.TextAlign.center),
-                      ),
-                      pw.SizedBox(height: 10.sp),
-                      pw.Center(
-                        child: pw.Padding(
-                          padding: pw.EdgeInsets.symmetric(vertical: 5.sp, horizontal: 100.sp),
-                          child: pw.Container(
-                            decoration: pw.BoxDecoration(color: PdfColors.pdfColor, borderRadius: pw.BorderRadius.circular(5.sp)),
-                            child: pw.Center(
-                              child: pw.Padding(
-                                padding: pw.EdgeInsets.symmetric(vertical: 5.sp),
-                                child: pw.Text('STUDENT PROGRESS CARD',
-                                    style: pw.TextStyle(fontSize: 20.sp, fontWeight: pw.FontWeight.bold, color: PdfColors.white)),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]),
-                  ),
+                        );
+                      },
+                    ),
 
-                  // student fields
-                  pw.Expanded(
-                    child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                      pw.Divider(thickness: 1.sp, color: PdfColors.pdfColor),
-                      pw.SizedBox(height: 10.sp),
-                      buildFieldRow(label: "CHILD'S NAME:  ", value: _nullSafe(model?.studentName, fallback: "NA"), width: 20.sp),
-                      buildFieldRow(label: "DATE OF BIRTH:", value: _nullSafe(model?.dob, fallback: "NA"), width: 19.sp),
-                      buildFieldRow(label: "PID:", value: _nullSafe(model?.pidNumber?.toString(), fallback: "NA"), width: 110.sp),
-                      buildFieldRow(label: "DIAGNOSIS:", value: _nullSafe(model?.diagnosis, fallback: "NA"), width: 50.sp),
-                      pw.Divider(thickness: 1.sp, color: PdfColors.pdfColor),
-                      pw.SizedBox(height: 10.sp),
-                      buildFieldRow(label: "DATE OF ADMISSION IN WELLNESS WARD:", value: _nullSafe(model?.dateOfAdmission, fallback: "NA"), width: 15.sp),
-                      buildFieldRow(label: "LEARNING PROGRAM START DATE:", value: _nullSafe(model?.programStartDate, fallback: "NA"), width: 65.sp),
-                      buildFieldRow(label: "PROGRESS REPORT TIMEFRAME :", value: _nullSafe(model?.timeFrame, fallback: "NA"), width: 75.sp),
-                      pw.Divider(thickness: 1.sp, color: PdfColors.pdfColor),
-                      pw.SizedBox(height: 10.sp),
-                      buildFieldRow(label: "MOTHER'S NAME:", value: _nullSafe(model?.motherName, fallback: "NA")),
-                      buildFieldRow(label: "FATHER'S NAME:       ", value: _nullSafe(model?.fatherName, fallback: "NA"), width: 33.sp),
-                      buildFieldRow(label: "ADDRESS:", value: _buildAddress(model), width: 82.sp),
-                      pw.Row(
-                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: pw.CrossAxisAlignment.end,
-                          children: [
-                        pw.Center(child: pw.Padding(padding: pw.EdgeInsets.only(left: 10.sp),child: pw.Image(pw.MemoryImage(balloon), width: 80.sp,height: 90.sp))),
-
-                            pw.Image(
-                              pw.MemoryImage(rainbow),
-                              width: 100.sp,
-                              height: 100.sp,
-          fit: pw.BoxFit.contain,
-
-                            )
-
-
-                          ]
-                      ),
-                      // pw.SizedBox(height: 95),
-                      // pw.Container(
-                      //   height: 20,
-                      //   width: double.infinity,
-                      //   color: PdfColors.red,
-                      // ),
-                    ]),
-                  ),
-                ]),
+                  ],
+                ),
               ),
             ),
           ];
         },
       ),
     );
+
 
     // Page 2: progress table
     pdf.addPage(await buildProgressPagePdf(reportData));
@@ -330,9 +293,9 @@ class PdfService {
     final dotImage = dot.buffer.asUint8List();
 
     // Styles
-    final headerStyle = pw.TextStyle(fontSize: 9.sp, fontWeight: pw.FontWeight.bold);
-    final smallStyle = pw.TextStyle(fontSize: 10.sp);
-    final bigStarStyle = pw.TextStyle(fontSize: 15.sp, fontWeight: pw.FontWeight.bold);
+    final headerStyle = pw.TextStyle(fontSize: 11.sp, fontWeight: pw.FontWeight.bold);
+    final smallStyle = pw.TextStyle(fontSize: 12.sp);
+    final bigStarStyle = pw.TextStyle(fontSize: 14.sp, fontWeight: pw.FontWeight.bold);
 
     // Build table rows
     List<pw.TableRow> buildRows() {
@@ -351,7 +314,7 @@ class PdfService {
 
       for (final a in areas) {
         final left = pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-          pw.Text(a['title'] ?? '', style: pw.TextStyle(fontSize: 8.sp, fontWeight: pw.FontWeight.bold)),
+          pw.Text(a['title'] ?? '', style: pw.TextStyle(fontSize: 10.sp, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 4.sp),
           ...((a['bullets'] as List<String>).map((b) => pw.Row(
 
@@ -442,7 +405,6 @@ class PdfService {
     final list = <Map<String, dynamic>>[];
     try {
       for (final entry in raw) {
-        // entry could be a Map or a typed object
         String title = '';
         String teacherRemark = '';
         int stars = 0;

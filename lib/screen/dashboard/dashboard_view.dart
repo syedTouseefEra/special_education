@@ -98,24 +98,20 @@ class DashboardView extends StatelessWidget {
                                   fontFamily: 'DMSerif',
                                   color: AppColors.themeColor,
                                 ),
-                                InkWell(
-                                  splashColor: AppColors.transparent,
-                                  highlightColor: AppColors.transparent,
+                                CustomContainer(
+                                  text: "Add Student",
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Inter',
+                                  borderRadius: 15,
+                                  innerPadding: EdgeInsets.symmetric(
+                                    vertical: 4.sp,
+                                    horizontal: 10.sp,
+                                  ),
                                   onTap: () {
                                     NavigationHelper.push(context, AddStudentView());
                                   },
-                                  child: CustomContainer(
-                                    text: "Add Student",
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                    borderRadius: 15,
-                                    innerPadding: EdgeInsets.symmetric(
-                                      vertical: 4.sp,
-                                      horizontal: 10.sp,
-                                    ),
-                                  ),
-                                ),
+                                )
                               ],
                             ),
                             SizedBox(height: 10.sp),

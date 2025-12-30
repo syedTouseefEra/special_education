@@ -126,19 +126,15 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
 
     setState(() => _isLoading = true);
     try {
-      // Await the provider call (make sure generateOtp returns Future<bool>)
       final sent = await provider.generateOtp(input, context);
 
       if (sent == true) {
-        // Save the contact so verifyOtp can use it later
         setState(() {
           _sentContact = input;
           _step = 1;
         });
-        // Clear the OTP controller (so Verify screen is empty) but keep contactController if you want
         otpController.clear();
       } else {
-        // provider should show snackbar with message; no UI change
       }
     } catch (e) {
       showSnackBar("Failed to send OTP: ${e.toString()}", context);
@@ -156,7 +152,6 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
     }
 
     if (_sentContact == null || _sentContact!.isEmpty) {
-      // fallback: read from contactController if not set
       showSnackBar("No contact found — please request OTP again", context);
       return;
     }
@@ -172,9 +167,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
           _step = 2;
         });
         otpController.clear();
-        // provider already shows success message; optionally show another
       } else {
-        // provider shows failure message (per your implementation)
       }
     } catch (e) {
       showSnackBar("OTP verification failed: ${e.toString()}", context);
@@ -213,9 +206,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
           _step = 2;
         });
         otpController.clear();
-        // provider already shows success message; optionally show another
       } else {
-        // provider shows failure message (per your implementation)
       }
     } catch (e) {
       showSnackBar("Password verification failed: ${e.toString()}", context);

@@ -29,6 +29,10 @@ class ImgAssets{
   static const String dot = "${assets}dot.webp";
 
 
+  static const String headerReportView = "${assets}header_report_view.webp";
+  static const String bottomReportView = "${assets}bottom_report_view.webp";
+
+
 
 
 

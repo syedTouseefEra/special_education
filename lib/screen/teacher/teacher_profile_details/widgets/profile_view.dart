@@ -167,7 +167,7 @@ class ProfileViewWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 10.sp,),
+          SizedBox(height: 15.sp,),
           Container(
             decoration: BoxDecoration(
                 border: Border.all(
@@ -178,7 +178,7 @@ class ProfileViewWidget extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.sp,vertical: 3.sp),
+                  padding: EdgeInsets.symmetric(horizontal: 16.sp,vertical: 15.sp),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -189,9 +189,16 @@ class ProfileViewWidget extends StatelessWidget {
                         fontFamily: 'Dm Serif',
                         fontWeight: FontWeight.w600,
                       ),
-                      InkWell(
-                        splashColor: AppColors.transparent,
-                        highlightColor: AppColors.transparent,
+                      CustomContainer(
+                        fontSize: 12.sp,
+                        text: 'Update',
+                        containerColor: AppColors.green,
+                        borderRadius: 20.r,
+                        padding: 0.sp,
+                        innerPadding: EdgeInsets.symmetric(
+                          horizontal: 30.w,
+                          vertical: 8.h,
+                        ),
                         onTap: () {
                           final teacherProvider = Provider.of<TeacherDashboardProvider>(context, listen: false);
                           final teacher = teacherProvider.selectedTeacherData?.first;
@@ -202,19 +209,7 @@ class ProfileViewWidget extends StatelessWidget {
                             );
                           }
                         },
-
-                        child: CustomContainer(
-                          fontSize: 12.sp,
-                          text: 'Update',
-                          containerColor: AppColors.green,
-                          borderRadius: 20.r,
-                          padding: 12.sp,
-                          innerPadding: EdgeInsets.symmetric(
-                            horizontal: 30.w,
-                            vertical: 8.h,
-                          ),
-                        ),
-                      ),
+                      )
                     ],
                   ),
                 ),

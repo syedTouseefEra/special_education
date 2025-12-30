@@ -300,7 +300,20 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          GestureDetector(
+                                          CustomContainer(
+                                            text: buttonText,
+                                            borderRadius: 10.r,
+                                            containerColor:
+                                                status == 'Ongoing'
+                                                ? buttonColor.withOpacity(0.5)
+                                                : buttonColor,
+                                            textAlign: TextAlign.center,
+                                            innerPadding:
+                                                EdgeInsets.symmetric(
+                                                  vertical: 7.sp,
+                                                  horizontal: 15.sp,
+                                                ),
+                                            padding: 1.sp,
                                             onTap: () async {
                                               provider.studentId = widget
                                                   .student
@@ -313,7 +326,7 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                               provider.endDate = endDate!;
 
                                               if (buttonText ==
-                                                      'Generate Report' &&
+                                                  'Generate Report' &&
                                                   status == 'Completed') {
                                                 NavigationHelper.push(
                                                   context,
@@ -329,14 +342,14 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                                   ),
                                                 );
                                               } else if (buttonText ==
-                                                      'View Report' &&
+                                                  'View Report' &&
                                                   status == 'Completed') {
                                                 final success = await provider
                                                     .getTrimesterReportPDFData(
-                                                      context,
-                                                      widget.student.studentId
-                                                          .toString(),widget.student.trimester![index].trimesterId.toString()
-                                                    );
+                                                    context,
+                                                    widget.student.studentId
+                                                        .toString(),widget.student.trimester![index].trimesterId.toString()
+                                                );
 
                                                 if (!context.mounted) return;
 
@@ -361,28 +374,12 @@ class _TrimesterReportState extends State<TrimesterReportView> {
                                                   );
                                                 }
                                               } else {
-                                                // 👉 For other statuses
                                                 showSnackBar(
                                                   "Report will be shown after some time",
                                                   context,
                                                 );
                                               }
                                             },
-                                            child: CustomContainer(
-                                              text: buttonText,
-                                              borderRadius: 10.r,
-                                              containerColor:
-                                                  status == 'Ongoing'
-                                                  ? buttonColor.withOpacity(0.5)
-                                                  : buttonColor,
-                                              textAlign: TextAlign.center,
-                                              innerPadding:
-                                                  EdgeInsets.symmetric(
-                                                    vertical: 7.sp,
-                                                    horizontal: 15.sp,
-                                                  ),
-                                              padding: 1,
-                                            ),
                                           ),
                                         ],
                                       ),

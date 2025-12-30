@@ -91,15 +91,21 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        InkWell(
-                          splashColor: AppColors.transparent,
-                          highlightColor: AppColors.transparent,
+                        CustomContainer(
+                          borderRadius: 20.r,
+                          text: isEdit ? 'Update' : 'Add',
+                          containerColor: AppColors.yellow,
+                          padding: 1,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 8.sp,
+                            horizontal: 35.sp,
+                          ),
                           onTap: () async {
                             final provider =
-                                Provider.of<StudentDashboardProvider>(
-                                  context,
-                                  listen: false,
-                                );
+                            Provider.of<StudentDashboardProvider>(
+                              context,
+                              listen: false,
+                            );
 
                             final text = learningTextController.text.trim();
 
@@ -145,17 +151,6 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                               learningTextController.clear();
                             }
                           },
-
-                          child: CustomContainer(
-                            borderRadius: 20.r,
-                            text: isEdit ? 'Update' : 'Add',
-                            containerColor: AppColors.yellow,
-                            padding: 1,
-                            innerPadding: EdgeInsets.symmetric(
-                              vertical: 8.sp,
-                              horizontal: 35.sp,
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -190,22 +185,18 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                 color: AppColors.textGrey,
                 fontWeight: FontWeight.w400,
               ),
-              InkWell(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              CustomContainer(
+                width: MediaQuery.sizeOf(context).width,
+                text: '+ Add Long Term Goal',
+                containerColor: AppColors.yellow,
+                textAlign: TextAlign.center,
+                borderRadius: 20.r,
                 onTap: () {
                   NavigationHelper.push(
                     context,
                     AddLongTermGoalView(studentId: widget.studentId),
                   );
                 },
-                child: CustomContainer(
-                  width: MediaQuery.sizeOf(context).width,
-                  text: '+ Add Long Term Goal',
-                  containerColor: AppColors.yellow,
-                  textAlign: TextAlign.center,
-                  borderRadius: 20.r,
-                ),
               ),
               if (longTermGoals == null || longTermGoals.isEmpty)
                 const Padding(
@@ -269,9 +260,15 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    InkWell(
-                                      splashColor: AppColors.transparent,
-                                      highlightColor: AppColors.transparent,
+                                    CustomContainer(
+                                      borderRadius: 7.r,
+                                      text: 'Edit',
+                                      containerColor: AppColors.green,
+                                      padding: 1,
+                                      innerPadding: EdgeInsets.symmetric(
+                                        vertical: 8.sp,
+                                        horizontal: 35.sp,
+                                      ),
                                       onTap: () {
                                         NavigationHelper.push(
                                           context,
@@ -282,16 +279,6 @@ class _LongTermGoalViewState extends State<LongTermGoalView> {
                                           ),
                                         );
                                       },
-                                      child: CustomContainer(
-                                        borderRadius: 7.r,
-                                        text: 'Edit',
-                                        containerColor: AppColors.green,
-                                        padding: 1,
-                                        innerPadding: EdgeInsets.symmetric(
-                                          vertical: 8.sp,
-                                          horizontal: 35.sp,
-                                        ),
-                                      ),
                                     ),
                                   ],
                                 ),

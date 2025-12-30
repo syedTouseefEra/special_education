@@ -161,27 +161,23 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
 
                               return Visibility(
                                 visible: showAddButton,
-                                child: InkWell(
-                                  splashColor: AppColors.transparent,
-                                  highlightColor: AppColors.transparent,
+                                child: CustomContainer(
+                                  text: "Add Teacher",
+                                  fontSize: 13.sp,
+                                  padding: 0.sp,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Inter',
+                                  borderRadius: 20.r,
+                                  innerPadding: EdgeInsets.symmetric(
+                                    vertical: 10.sp,
+                                    horizontal: 15.sp,
+                                  ),
                                   onTap: () {
                                     NavigationHelper.push(
                                       context,
                                       const AddTeacherView(),
                                     );
                                   },
-                                  child: CustomContainer(
-                                    text: "Add Teacher",
-                                    fontSize: 13.sp,
-                                    padding: 0.sp,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                    borderRadius: 20.r,
-                                    innerPadding: EdgeInsets.symmetric(
-                                      vertical: 10.sp,
-                                      horizontal: 15.sp,
-                                    ),
-                                  ),
                                 ),
                               );
                             },
@@ -213,26 +209,22 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                     color: AppColors.themeColor,
                                     fontWeight: FontWeight.w600,
                                   ),
-                                  InkWell(
-                                    splashColor: AppColors.transparent,
-                                    highlightColor: AppColors.transparent,
+                                  CustomContainer(
+                                    text: "Add Teacher",
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
+                                    borderRadius: 20.r,
+                                    innerPadding: EdgeInsets.symmetric(
+                                      vertical: 10.sp,
+                                      horizontal: 18.sp,
+                                    ),
                                     onTap: () {
                                       NavigationHelper.push(
                                         context,
                                         const AddTeacherView(),
                                       );
                                     },
-                                    child: CustomContainer(
-                                      text: "Add Teacher",
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: 'Inter',
-                                      borderRadius: 20.r,
-                                      innerPadding: EdgeInsets.symmetric(
-                                        vertical: 10.sp,
-                                        horizontal: 18.sp,
-                                      ),
-                                    ),
                                   ),
                                 ],
                               ),
@@ -345,15 +337,23 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          InkWell(
-                                            splashColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
+                                          CustomContainer(
+                                            text: 'Remove',
+                                            innerPadding:
+                                                EdgeInsets.symmetric(
+                                                  vertical: 4.sp,
+                                                  horizontal: 22.sp,
+                                                ),
+                                            containerColor: Colors.red,
+                                            textColor: AppColors.white,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
                                             onTap: () async {
                                               doubleButton(
                                                 context,
                                                 "",
                                                 "Are you sure? You can't undo this action afterwards.",
-                                                () {
+                                                    () {
                                                   provider.deleteTeacher(
                                                     context,
                                                     teacher.userId.toString(),
@@ -361,23 +361,21 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                                 },
                                               );
                                             },
-                                            child: CustomContainer(
-                                              text: 'Remove',
-                                              innerPadding:
-                                                  EdgeInsets.symmetric(
-                                                    vertical: 4.sp,
-                                                    horizontal: 22.sp,
-                                                  ),
-                                              containerColor: Colors.red,
-                                              textColor: AppColors.white,
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
                                           ),
                                           SizedBox(width: 10.sp),
-                                          InkWell(
-                                            splashColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
+                                          CustomContainer(
+                                            text: 'View',
+                                            innerPadding:
+                                                EdgeInsets.symmetric(
+                                                  vertical: 3.sp,
+                                                  horizontal: 22.sp,
+                                                ),
+                                            containerColor: Colors.white,
+                                            textColor: AppColors.yellow,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            borderColor: AppColors.yellow,
+                                            borderWidth: 1.r,
                                             onTap: () async {
                                               NavigationHelper.push(
                                                 context,
@@ -386,20 +384,6 @@ class _TeacherDashboardState extends State<TeacherDashboard> with RouteAware {
                                                 ),
                                               );
                                             },
-                                            child: CustomContainer(
-                                              text: 'View',
-                                              innerPadding:
-                                                  EdgeInsets.symmetric(
-                                                    vertical: 3.sp,
-                                                    horizontal: 22.sp,
-                                                  ),
-                                              containerColor: Colors.white,
-                                              textColor: AppColors.yellow,
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w500,
-                                              borderColor: AppColors.yellow,
-                                              borderWidth: 1.r,
-                                            ),
                                           ),
                                         ],
                                       ),

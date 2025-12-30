@@ -11,10 +11,7 @@ import 'weekly_pdf_report_data_model.dart';
 class WeeklyReportPdfView extends StatelessWidget {
   final List<WeeklyPdfReportDataModel> reportData;
 
-  const WeeklyReportPdfView({
-    super.key,
-    required this.reportData,
-  });
+  const WeeklyReportPdfView({super.key, required this.reportData});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +33,7 @@ class WeeklyReportPdfView extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5.sp,),
+                      padding: EdgeInsets.symmetric(horizontal: 5.sp),
                       child: IconButton(
                         icon: const Icon(Icons.share),
                         onPressed: () async {
@@ -46,7 +43,7 @@ class WeeklyReportPdfView extends StatelessWidget {
                               await pdf.save(),
                               mimeType: 'application/pdf',
                               name: 'Weekly_IEP_Report.pdf',
-                            )
+                            ),
                           ]);
                         },
                       ),
@@ -66,10 +63,7 @@ class WeeklyReportPdfView extends StatelessWidget {
                 canDebug: false,
                 allowPrinting: false,
                 allowSharing: false,
-        
-
                 maxPageWidth: constraints.maxWidth,
-        
                 build: (format) async {
                   final pdf = await generateIEPPdf(reportData);
                   return pdf.save();
@@ -82,4 +76,3 @@ class WeeklyReportPdfView extends StatelessWidget {
     );
   }
 }
-

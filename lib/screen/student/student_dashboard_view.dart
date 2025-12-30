@@ -26,8 +26,10 @@ class StudentDashboard extends StatefulWidget {
 class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
   final searchController = TextEditingController();
   late BuildContext scaffoldContext;
+  
 
   @override
+
   void initState() {
     super.initState();
     Provider.of<StudentDashboardProvider>(
@@ -105,23 +107,19 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                           fontFamily: 'DMSerif',
                           color: AppColors.themeColor,
                         ),
-                        InkWell(
-                          splashColor: AppColors.transparent,
-                          highlightColor: AppColors.transparent,
+                        CustomContainer(
+                          text: "Add Student",
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Inter',
+                          borderRadius: 15,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 4.sp,
+                            horizontal: 10.sp,
+                          ),
                           onTap: () {
                             NavigationHelper.push(context, AddStudentView());
                           },
-                          child: CustomContainer(
-                            text: "Add Student",
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Inter',
-                            borderRadius: 15,
-                            innerPadding: EdgeInsets.symmetric(
-                              vertical: 4.sp,
-                              horizontal: 10.sp,
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -259,59 +257,55 @@ class _StudentDashboardState extends State<StudentDashboard> with RouteAware {
                                     ),
                                     Align(
                                       alignment: Alignment.centerRight,
-                                      child: InkWell(
-                                        splashColor: AppColors.transparent,
-                                        highlightColor: AppColors.transparent,
-                                        onTap: () async {
-                                          final success = await provider
-                                              .fetchProfileDetail(
-                                                context,
-                                                student.id.toString(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 8.0,
+                                        ),
+                                        child: CustomContainer(
+                                          padding: 0.sp,
+                                          text: 'View',
+                                          innerPadding: EdgeInsets.symmetric(
+                                            vertical: 3.sp,
+                                            horizontal: 20.sp,
+                                          ),
+                                          containerColor: Colors.white,
+                                          textColor: AppColors.yellow,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500,
+                                          borderColor: AppColors.yellow,
+                                          borderWidth: 1,
+                                          onTap: () async {
+                                            final success = await provider
+                                                .fetchProfileDetail(
+                                              context,
+                                              student.id.toString(),
+                                            );
+                                            if (!mounted) return;
+                                            if (success &&
+                                                provider.studentProfileData !=
+                                                    null &&
+                                                provider
+                                                    .studentProfileData!
+                                                    .isNotEmpty) {
+                                              final profile =
+                                              provider.studentProfileData![0];
+                                              NavigationHelper.push(
+                                                scaffoldContext,
+                                                ProfileView(id: profile.studentId.toString()),
                                               );
-                                          if (!mounted) return;
-                                          if (success &&
-                                              provider.studentProfileData !=
-                                                  null &&
-                                              provider
-                                                  .studentProfileData!
-                                                  .isNotEmpty) {
-                                            final profile =
-                                                provider.studentProfileData![0];
-                                            NavigationHelper.push(
-                                              scaffoldContext,
-                                              ProfileView(id: profile.studentId.toString()),
-                                            );
-                                          } else {
-                                            ScaffoldMessenger.of(
-                                              scaffoldContext,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  provider.error ??
-                                                      "Failed to load top_right_button",
+                                            } else {
+                                              ScaffoldMessenger.of(
+                                                scaffoldContext,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    provider.error ??
+                                                        "Failed to load top_right_button",
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 8.0,
-                                          ),
-                                          child: CustomContainer(
-                                            padding: 0.sp,
-                                            text: 'View',
-                                            innerPadding: EdgeInsets.symmetric(
-                                              vertical: 3.sp,
-                                              horizontal: 20.sp,
-                                            ),
-                                            containerColor: Colors.white,
-                                            textColor: AppColors.yellow,
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w500,
-                                            borderColor: AppColors.yellow,
-                                            borderWidth: 1,
-                                          ),
+                                              );
+                                            }
+                                          },
                                         ),
                                       ),
                                     ),

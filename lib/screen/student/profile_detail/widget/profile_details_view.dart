@@ -125,24 +125,20 @@ class ProfileDetailsView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
+                        CustomContainer(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w400,
+                          borderRadius: 8.r,
+                          text: 'Update',
+                          containerColor: AppColors.green,
+                          padding: 1,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 8.sp,
+                            horizontal: 30.sp,
+                          ),
                           onTap: (){
                             NavigationHelper.push(context, UpdateAcademicSkillView(id: student.studentId.toString(),));
                           },
-                          child: CustomContainer(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w400,
-                            borderRadius: 8.r,
-                            text: 'Update',
-                            containerColor: AppColors.green,
-                            padding: 1,
-                            innerPadding: EdgeInsets.symmetric(
-                              vertical: 8.sp,
-                              horizontal: 30.sp,
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -270,24 +266,20 @@ class ProfileDetailsView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
+                        CustomContainer(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w400,
+                          borderRadius: 8.r,
+                          text: 'Update',
+                          containerColor: AppColors.green,
+                          padding: 1,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 8.sp,
+                            horizontal: 30.sp,
+                          ),
                           onTap: (){
                             NavigationHelper.push(context, UpdatePsychoMotorAssessmentView(id: student.studentId.toString(),));
                           },
-                          child: CustomContainer(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w400,
-                            borderRadius: 8.r,
-                            text: 'Update',
-                            containerColor: AppColors.green,
-                            padding: 1,
-                            innerPadding: EdgeInsets.symmetric(
-                              vertical: 8.sp,
-                              horizontal: 30.sp,
-                            ),
-                          ),
                         ),
                       ],
                     ),

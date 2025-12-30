@@ -105,24 +105,20 @@ class _MyProfileViewState extends State<MyProfileView> {
                           fontWeight: FontWeight.w600,
                           color: AppColors.themeColor,
                         ),
-                        value: InkWell(
-                          splashColor: AppColors.transparent,
-                          highlightColor: AppColors.transparent,
+                        value: CustomContainer(
+                          text: "Update Profile",
+                          padding: 10.sp,
+                          innerPadding: EdgeInsets.symmetric(
+                            vertical: 5.sp,
+                            horizontal: 15.sp,
+                          ),
+                          containerColor: AppColors.yellow,
+                          textColor: AppColors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
                           onTap: (){
                             NavigationHelper.push(context, UpdateMyProfileView(profile: profile,));
                           },
-                          child: CustomContainer(
-                            text: "Update Profile",
-                            padding: 10.sp,
-                            innerPadding: EdgeInsets.symmetric(
-                              vertical: 5.sp,
-                              horizontal: 15.sp,
-                            ),
-                            containerColor: AppColors.yellow,
-                            textColor: AppColors.white,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
                         ),
                       ),
                     ),

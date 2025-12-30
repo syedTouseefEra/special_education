@@ -144,42 +144,34 @@ class _AddUpdateWeeklyGoalViewState extends State<AddUpdateWeeklyGoalView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      InkWell(
-                        splashColor: AppColors.transparent,
-                        highlightColor: AppColors.transparent,
+                      CustomContainer(
+                        borderRadius: 20.r,
+                        borderColor: AppColors.yellow,
+                        textColor: AppColors.yellow,
+                        text: 'Back',
+                        containerColor: AppColors.transparent,
+                        padding: 1,
+                        innerPadding: EdgeInsets.symmetric(
+                          vertical: 8.sp,
+                          horizontal: 35.sp,
+                        ),
                         onTap: (){
                           NavigationHelper.pop(context);
                         },
-                        child: CustomContainer(
-                          borderRadius: 20.r,
-                          borderColor: AppColors.yellow,
-                          textColor: AppColors.yellow,
-                          text: 'Back',
-                          containerColor: AppColors.transparent,
-                          padding: 1,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 8.sp,
-                            horizontal: 35.sp,
-                          ),
-                        ),
                       ),
                       SizedBox(width: 20.sp,),
-                      InkWell(
-                        splashColor: AppColors.transparent,
-                        highlightColor: AppColors.transparent,
-                        onTap: _onSubmit,
-                        child: CustomContainer(
-                          borderRadius: 20.r,
-                          text: widget.goalId == null
-                              ? 'Add'
-                              : 'Update',
-                          containerColor: AppColors.yellow,
-                          padding: 1,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 8.sp,
-                            horizontal: 35.sp,
-                          ),
+                      CustomContainer(
+                        borderRadius: 20.r,
+                        text: widget.goalId == null
+                            ? 'Add'
+                            : 'Update',
+                        containerColor: AppColors.yellow,
+                        padding: 1,
+                        innerPadding: EdgeInsets.symmetric(
+                          vertical: 8.sp,
+                          horizontal: 35.sp,
                         ),
+                        onTap: _onSubmit,
                       ),
                     ],
                   ),

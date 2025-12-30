@@ -71,31 +71,27 @@ class _ChooseAccountViewState extends State<ChooseAccountView> {
                             color: AppColors.textGrey,
                           ),
                         ),
-                        InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () {
-                            UserData().removeUserData();
-                            NavigationHelper.pushAndClearStack(
-                              context,
-                              LoginPage(),
-                            );
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.sp),
-                            child: CustomContainer(
-                              textCase: TextCase.upper,
-                              padding: 8.sp,
-                              innerPadding: EdgeInsets.symmetric(
-                                horizontal: 25.sp,
-                                vertical: 5.sp,
-                              ),
-                              containerColor: AppColors.yellow,
-                              text: 'Logout',
-                              textColor: AppColors.white,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.sp),
+                          child: CustomContainer(
+                            textCase: TextCase.upper,
+                            padding: 8.sp,
+                            innerPadding: EdgeInsets.symmetric(
+                              horizontal: 25.sp,
+                              vertical: 5.sp,
                             ),
+                            containerColor: AppColors.yellow,
+                            text: 'Logout',
+                            textColor: AppColors.white,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            onTap: () {
+                              UserData().removeUserData();
+                              NavigationHelper.pushAndClearStack(
+                                context,
+                                LoginPage(),
+                              );
+                            },
                           ),
                         ),
                         ListView.builder(

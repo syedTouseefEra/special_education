@@ -190,7 +190,15 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                                       horizontal: 35.sp,
                                     ),
                                   ),
-                                  InkWell(
+                                  CustomContainer(
+                                    borderRadius: 10.sp,
+                                    text: 'Update',
+                                    containerColor: AppColors.green,
+                                    padding: 1,
+                                    innerPadding: EdgeInsets.symmetric(
+                                      vertical: 8.sp,
+                                      horizontal: 25.sp,
+                                    ),
                                     onTap: () {
                                       NavigationHelper.push(
                                         context,
@@ -199,16 +207,6 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                                         ),
                                       );
                                     },
-                                    child: CustomContainer(
-                                      borderRadius: 10.sp,
-                                      text: 'Update',
-                                      containerColor: AppColors.green,
-                                      padding: 1,
-                                      innerPadding: EdgeInsets.symmetric(
-                                        vertical: 8.sp,
-                                        horizontal: 25.sp,
-                                      ),
-                                    ),
                                   ),
                                 ],
                               ),
@@ -222,15 +220,21 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
                       Visibility(
                         visible: selectedTab != 'Learning Objective',
-                        child: InkWell(
-                          splashColor: AppColors.transparent,
-                          highlightColor: AppColors.transparent,
+                        child: CustomContainer(
+                          textAlign: TextAlign.center,
+                          width: MediaQuery.sizeOf(context).width,
+                          borderRadius: 0,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w400,
+                          text: 'Delete Student',
+                          containerColor: AppColors.themeColor,
+                          padding: 5.sp,
                           onTap: () {
                             doubleButton(
                               context,
                               "",
                               "Are you sure? You can't undo this action afterwards.",
-                              () async {
+                                  () async {
                                 Navigator.pop(context);
                                 await Provider.of<StudentDashboardProvider>(
                                   context,
@@ -239,16 +243,6 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                               },
                             );
                           },
-                          child: CustomContainer(
-                            textAlign: TextAlign.center,
-                            width: MediaQuery.sizeOf(context).width,
-                            borderRadius: 0,
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w400,
-                            text: 'Delete Student',
-                            containerColor: AppColors.themeColor,
-                            padding: 5.sp,
-                          ),
                         ),
                       ),
 
@@ -345,7 +339,6 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
 
                       SizedBox(height: 15.sp),
 
-                      /// 🔹 TAB TITLE
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 5.sp),
                         child: CustomText(
@@ -387,20 +380,16 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
+    return CustomContainer(
+      textAlign: TextAlign.center,
+      borderRadius: 0,
+      fontSize: 13.sp,
+      fontWeight: FontWeight.w400,
+      text: text,
+      containerColor: isSelected ? AppColors.themeColor : AppColors.grey,
+      padding: 5.sp,
+      innerPadding: EdgeInsets.symmetric(vertical: 6.sp),
       onTap: onTap,
-      child: CustomContainer(
-        textAlign: TextAlign.center,
-        borderRadius: 0,
-        fontSize: 13.sp,
-        fontWeight: FontWeight.w400,
-        text: text,
-        containerColor: isSelected ? AppColors.themeColor : AppColors.grey,
-        padding: 5.sp,
-        innerPadding: EdgeInsets.symmetric(vertical: 6.sp),
-      ),
     );
   }
 

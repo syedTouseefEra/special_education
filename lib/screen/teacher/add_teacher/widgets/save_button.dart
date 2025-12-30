@@ -13,17 +13,13 @@ class SaveButton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        InkWell(
-          splashColor: AppColors.transparent,
-          highlightColor: AppColors.transparent,
+        CustomContainer(
+          text: 'Add Teacher',
+          fontWeight: FontWeight.w400,
+          padding: 5.sp,
+          innerPadding: EdgeInsets.symmetric(horizontal: 18.sp, vertical: 10.sp),
+          borderRadius: 20.r,
           onTap: onPressed,
-          child: CustomContainer(
-            text: 'Add Teacher',
-            fontWeight: FontWeight.w400,
-            padding: 5.sp,
-            innerPadding: EdgeInsets.symmetric(horizontal: 18.sp, vertical: 10.sp),
-            borderRadius: 20.r,
-          ),
         ),
       ],
     );

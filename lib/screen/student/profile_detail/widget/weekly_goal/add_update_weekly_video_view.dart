@@ -175,29 +175,31 @@ class _AddUpdateWeeklyVideoViewState extends State<AddUpdateWeeklyVideoView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      InkWell(
-                        splashColor: AppColors.transparent,
-                        highlightColor: AppColors.transparent,
+                      CustomContainer(
+                        borderRadius: 20.r,
+                        borderColor: AppColors.yellow,
+                        textColor: AppColors.yellow,
+                        text: 'Back',
+                        containerColor: AppColors.transparent,
+                        padding: 1,
+                        innerPadding: EdgeInsets.symmetric(
+                          vertical: 8.sp,
+                          horizontal: 35.sp,
+                        ),
                         onTap: (){
                           NavigationHelper.pop(context);
                         },
-                        child: CustomContainer(
-                          borderRadius: 20.r,
-                          borderColor: AppColors.yellow,
-                          textColor: AppColors.yellow,
-                          text: 'Back',
-                          containerColor: AppColors.transparent,
-                          padding: 1,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 8.sp,
-                            horizontal: 35.sp,
-                          ),
-                        ),
                       ),
                       SizedBox(width: 15.sp,),
-                      InkWell(
-                        splashColor: AppColors.transparent,
-                        highlightColor: AppColors.transparent,
+                      CustomContainer(
+                        borderRadius: 20.r,
+                        text: 'Add Learning Outcome',
+                        containerColor: AppColors.yellow,
+                        padding: 1,
+                        innerPadding: EdgeInsets.symmetric(
+                          vertical: 8.sp,
+                          horizontal: 15.sp,
+                        ),
                         onTap: () async {
                           final provider =
                           Provider.of<StudentDashboardProvider>(
@@ -233,16 +235,6 @@ class _AddUpdateWeeklyVideoViewState extends State<AddUpdateWeeklyVideoView> {
                             });
                           }
                         },
-                        child: CustomContainer(
-                          borderRadius: 20.r,
-                          text: 'Add Learning Outcome',
-                          containerColor: AppColors.yellow,
-                          padding: 1,
-                          innerPadding: EdgeInsets.symmetric(
-                            vertical: 8.sp,
-                            horizontal: 15.sp,
-                          ),
-                        ),
                       ),
                     ],
                   ),

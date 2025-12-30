@@ -17,7 +17,7 @@ pw.Widget buildFieldRow({
         pw.Text(
           label,
           style: pw.TextStyle(
-            fontSize: 15.sp,
+            fontSize: 13.sp,
             fontWeight: pw.FontWeight.bold,
           ),
         ),

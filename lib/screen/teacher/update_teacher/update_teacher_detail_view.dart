@@ -233,9 +233,18 @@ class _UpdateTeacherDetailViewState extends State<UpdateTeacherDetailView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
+                    CustomContainer(
+                      fontSize: 14.sp,
+                      width: MediaQuery.sizeOf(context).width,
+                      text: 'Remove Teacher',
+                      textAlign: TextAlign.center,
+                      containerColor: AppColors.red,
+                      borderRadius: 20.r,
+                      padding: 5.sp,
+                      innerPadding: EdgeInsets.symmetric(
+                        horizontal: 15.w,
+                        vertical: 8.h,
+                      ),
                       onTap: () async {
                         doubleButton(
                           context,
@@ -254,19 +263,6 @@ class _UpdateTeacherDetailViewState extends State<UpdateTeacherDetailView> {
                           },
                         );
                       },
-                      child: CustomContainer(
-                        fontSize: 14.sp,
-                        width: MediaQuery.sizeOf(context).width,
-                        text: 'Remove Teacher',
-                        textAlign: TextAlign.center,
-                        containerColor: AppColors.red,
-                        borderRadius: 20.r,
-                        padding: 5.sp,
-                        innerPadding: EdgeInsets.symmetric(
-                          horizontal: 15.w,
-                          vertical: 8.h,
-                        ),
-                      ),
                     ),
                     SizedBox(height: 5.sp),
                     const SectionHeader(title: 'General Information'),

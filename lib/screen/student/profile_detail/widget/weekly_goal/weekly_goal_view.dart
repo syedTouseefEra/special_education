@@ -38,224 +38,7 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
   final TextEditingController learningBarrierController =
       TextEditingController();
 
-  File? _pickedVideo;
   DateTime selectedDate = DateTime.now();
-
-  // void showAddVideoDialog({String? initialText, String? goalId}) {
-  //   _pickedVideo = null;
-  //   if (initialText != null) {
-  //     learningOutcomeController.text = initialText;
-  //   } else {
-  //     learningOutcomeController.clear();
-  //   }
-  //
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setDialogState) {
-  //           return Dialog(
-  //             insetPadding: EdgeInsets.zero,
-  //             child: SizedBox(
-  //               width: MediaQuery.of(context).size.width,
-  //               child: SingleChildScrollView(
-  //                 child: Material(
-  //                   color: AppColors.white,
-  //                   borderRadius: BorderRadius.circular(20.r),
-  //                   child: Padding(
-  //                     padding: EdgeInsets.all(20.sp),
-  //                     child: Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         CustomText(
-  //                           text: 'Add Learning Outcome',
-  //                           fontWeight: FontWeight.w600,
-  //                           fontSize: 18.sp,
-  //                           color: AppColors.themeColor,
-  //                         ),
-  //                         CustomText(
-  //                           text: 'Add Weekly Learning Outcome!',
-  //                           fontWeight: FontWeight.w400,
-  //                           fontSize: 16.sp,
-  //                           color: AppColors.textGrey,
-  //                         ),
-  //                         SizedBox(height: 15.h),
-  //
-  //                         Row(
-  //                           children: [
-  //                             CustomText(
-  //                               text: 'Learning Outcome',
-  //                               color: AppColors.black,
-  //                               fontSize: 14.h,
-  //                             ),
-  //                             Icon(
-  //                               Icons.star,
-  //                               size: 10.sp,
-  //                               color: AppColors.themeColor,
-  //                             ),
-  //                           ],
-  //                         ),
-  //                         SizedBox(height: 10.h),
-  //                         CustomTextField(
-  //                           controller: learningOutcomeController,
-  //                           maxLines: 10,
-  //                           borderRadius: 0,
-  //                           borderColor: AppColors.grey,
-  //                           height: 120.sp,
-  //                           label: '',
-  //                         ),
-  //                         SizedBox(height: 10.h),
-  //                         CustomText(
-  //                           text: 'Remark',
-  //                           color: AppColors.black,
-  //                           fontSize: 14.h,
-  //                         ),
-  //                         SizedBox(height: 10.h),
-  //                         CustomTextField(
-  //                           controller: remarkController,
-  //                           maxLines: 10,
-  //                           borderRadius: 0,
-  //                           borderColor: AppColors.grey,
-  //                           height: 120.sp,
-  //                           label: '',
-  //                         ),
-  //
-  //                         SizedBox(height: 15.h),
-  //
-  //                         Row(
-  //                           children: [
-  //                             CustomText(
-  //                               text: 'Add Video',
-  //                               color: AppColors.black,
-  //                               fontSize: 14.h,
-  //                             ),
-  //                             Icon(
-  //                               Icons.star,
-  //                               size: 10.sp,
-  //                               color: AppColors.themeColor,
-  //                             ),
-  //                           ],
-  //                         ),
-  //                         SizedBox(height: 10.h),
-  //
-  //                         Container(
-  //                           width: MediaQuery.sizeOf(context).width,
-  //                           decoration: BoxDecoration(
-  //                             border: Border.all(
-  //                               color: AppColors.grey,
-  //                               width: 1,
-  //                             ),
-  //                           ),
-  //                           child: Padding(
-  //                             padding: EdgeInsets.all(10.sp),
-  //                             child: Row(
-  //                               children: [
-  //                                 InkWell(
-  //                                   onTap: () async {
-  //                                     final picked =
-  //                                         await ImagePickerHelper.pickVideoFromGallery();
-  //                                     if (picked != null) {
-  //                                       setDialogState(() {
-  //                                         _pickedVideo = File(picked.path);
-  //                                       });
-  //                                     }
-  //                                   },
-  //                                   child: Container(
-  //                                     decoration: BoxDecoration(
-  //                                       color: AppColors.textGrey,
-  //                                       borderRadius: BorderRadius.circular(5.r),
-  //                                     ),
-  //                                     padding: EdgeInsets.symmetric(
-  //                                       vertical: 5.sp,
-  //                                       horizontal: 10.sp,
-  //                                     ),
-  //                                     child: CustomText(
-  //                                       text: 'Add Video',
-  //                                       color: AppColors.white,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //
-  //                                 if (_pickedVideo != null)
-  //                                   Expanded(
-  //                                     child: Padding(
-  //                                       padding: EdgeInsets.only(left: 10.sp),
-  //                                       child: CustomText(
-  //                                         text: _pickedVideo!.path
-  //                                             .split('/')
-  //                                             .last,
-  //                                         color: AppColors.textGrey,
-  //                                         overflow: TextOverflow.ellipsis,
-  //                                       ),
-  //                                     ),
-  //                                   ),
-  //                               ],
-  //                             ),
-  //                           ),
-  //                         ),
-  //
-  //                         SizedBox(height: 40.h),
-  //
-  //                         Row(
-  //                           mainAxisAlignment: MainAxisAlignment.end,
-  //                           children: [
-  //                             InkWell(
-  //                               onTap: () async {
-  //                                 final provider =
-  //                                     Provider.of<StudentDashboardProvider>(
-  //                                       context,
-  //                                       listen: false,
-  //                                     );
-  //                                 final text = learningOutcomeController.text
-  //                                     .trim();
-  //                                 bool success = await provider
-  //                                     .addLongTermCourse(
-  //                                       context,
-  //                                       widget.studentId,
-  //                                       text,
-  //                                     );
-  //
-  //                                 if (success && context.mounted) {
-  //                                   Navigator.pop(context);
-  //                                   ScaffoldMessenger.of(context).showSnackBar(
-  //                                     const SnackBar(
-  //                                       content: Text(
-  //                                         'Goal added successfully!',
-  //                                       ),
-  //                                     ),
-  //                                   );
-  //                                   await provider.getLongTermGoal(
-  //                                     context,
-  //                                     widget.studentId
-  //                                   );
-  //                                   learningOutcomeController.clear();
-  //                                 }
-  //                               },
-  //                               child: CustomContainer(
-  //                                 borderRadius: 20.r,
-  //                                 text: 'Weekly Goal Completed',
-  //                                 containerColor: AppColors.yellow,
-  //                                 padding: 1,
-  //                                 innerPadding: EdgeInsets.symmetric(
-  //                                   vertical: 8.sp,
-  //                                   horizontal: 35.sp,
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -294,25 +77,21 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                     fontWeight: FontWeight.w600,
                   ),
 
-                  InkWell(
-                    splashColor: AppColors.transparent,
-                    highlightColor: AppColors.transparent,
+                  CustomContainer(
+                    text: 'Add Weekly Goal',
+                    fontSize: 12.sp,
+                    innerPadding: EdgeInsets.symmetric(
+                      horizontal: 15.sp,
+                      vertical: 8.sp,
+                    ),
+                    borderRadius: 20.r,
+                    containerColor: AppColors.yellow,
                     onTap: () {
                       NavigationHelper.push(
                         context,
                         AddUpdateWeeklyGoalView(studentId: widget.studentId),
                       );
                     },
-                    child: CustomContainer(
-                      text: 'Add Weekly Goal',
-                      fontSize: 12.sp,
-                      innerPadding: EdgeInsets.symmetric(
-                        horizontal: 15.sp,
-                        vertical: 8.sp,
-                      ),
-                      borderRadius: 20.r,
-                      containerColor: AppColors.yellow,
-                    ),
                   ),
                 ],
               ),
@@ -526,9 +305,15 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              InkWell(
-                                splashColor: AppColors.transparent,
-                                highlightColor: AppColors.transparent,
+                              CustomContainer(
+                                borderRadius: 7.r,
+                                text: 'Edit',
+                                containerColor: AppColors.green,
+                                padding: 1,
+                                innerPadding: EdgeInsets.symmetric(
+                                  vertical: 8.sp,
+                                  horizontal: 35.sp,
+                                ),
                                 onTap: () {
                                   NavigationHelper.push(
                                     context,
@@ -551,16 +336,6 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                                     ),
                                   );
                                 },
-                                child: CustomContainer(
-                                  borderRadius: 7.r,
-                                  text: 'Edit',
-                                  containerColor: AppColors.green,
-                                  padding: 1,
-                                  innerPadding: EdgeInsets.symmetric(
-                                    vertical: 8.sp,
-                                    horizontal: 35.sp,
-                                  ),
-                                ),
                               ),
                             ],
                           ),
@@ -577,9 +352,14 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                InkWell(
-                  splashColor: AppColors.transparent,
-                  highlightColor: AppColors.transparent,
+                CustomContainer(
+                  text: '+ Add Weekly Goal',
+                  innerPadding: EdgeInsets.symmetric(
+                    horizontal: 15.sp,
+                    vertical: 10.sp,
+                  ),
+                  borderRadius: 20.r,
+                  containerColor: AppColors.themeColor,
                   onTap: () {
                     NavigationHelper.push(
                       context,
@@ -590,16 +370,6 @@ class _WeeklyGoalViewState extends State<WeeklyGoalView> {
                       ),
                     );
                   },
-
-                  child: CustomContainer(
-                    text: '+ Add Weekly Goal',
-                    innerPadding: EdgeInsets.symmetric(
-                      horizontal: 15.sp,
-                      vertical: 10.sp,
-                    ),
-                    borderRadius: 20.r,
-                    containerColor: AppColors.themeColor,
-                  ),
                 ),
               ],
             ),

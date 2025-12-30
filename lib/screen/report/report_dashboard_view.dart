@@ -80,9 +80,14 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                   showTopSheet(
                     context,
                     TopOptionSheet(
-                      name: UserData().getUserData.name!.isEmpty?'NA': UserData().getUserData.name.toString(),
-                      subtitle: UserData().getUserData.instituteName!.isEmpty?'NA': UserData().getUserData.instituteName.toString(),
-                      profileImage: '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
+                      name: UserData().getUserData.name!.isEmpty
+                          ? 'NA'
+                          : UserData().getUserData.name.toString(),
+                      subtitle: UserData().getUserData.instituteName!.isEmpty
+                          ? 'NA'
+                          : UserData().getUserData.instituteName.toString(),
+                      profileImage:
+                          '${ApiServiceUrl.urlLauncher}uploads/${UserData().getUserData.profileImage}',
                     ),
                   );
                 },
@@ -97,65 +102,56 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              splashColor: AppColors.transparent,
-                              highlightColor: AppColors.transparent,
+                            CustomContainer(
+                              padding: 5.sp,
+                              text: "Weekly Report",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Inter',
+                              borderRadius: 5.r,
+                              textColor: isSelected
+                                  ? AppColors.white
+                                  : AppColors.themeColor,
+                              containerColor: isSelected
+                                  ? AppColors.themeColor
+                                  : AppColors.white,
+                              borderColor: isSelected
+                                  ? Colors.transparent
+                                  : AppColors.themeColor,
+                              borderWidth: isSelected ? 0 : 0.7.sp,
+                              innerPadding: EdgeInsets.symmetric(
+                                vertical: 8.sp,
+                                horizontal: 25.sp,
+                              ),
                               onTap: () {
                                 setState(() => isSelected = true);
                               },
-                              child: CustomContainer(
-                                padding: 5.sp,
-                                text: "Weekly Report",
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Inter',
-                                borderRadius: 5.r,
-                                textColor: isSelected
-                                    ? AppColors.white
-                                    : AppColors.themeColor,
-                                containerColor: isSelected
-                                    ? AppColors.themeColor
-                                    : AppColors.white,
-                                borderColor: isSelected
-                                    ? Colors.transparent
-                                    : AppColors.themeColor,
-                                borderWidth: isSelected ? 0 : 0.7.sp,
-                                innerPadding: EdgeInsets.symmetric(
-                                  vertical: 8.sp,
-                                  horizontal: 25.sp,
-                                ),
-                              ),
                             ),
-
-                            InkWell(
-                              splashColor: AppColors.transparent,
-                              highlightColor: AppColors.transparent,
+                            CustomContainer(
+                              padding: 5.sp,
+                              text: "Trimester Report",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Inter',
+                              borderRadius: 5.r,
+                              textAlign: TextAlign.center,
+                              textColor: !isSelected
+                                  ? AppColors.white
+                                  : AppColors.themeColor,
+                              containerColor: !isSelected
+                                  ? AppColors.themeColor
+                                  : AppColors.white,
+                              borderColor: !isSelected
+                                  ? Colors.transparent
+                                  : AppColors.themeColor,
+                              borderWidth: !isSelected ? 0 : 0.7.sp,
+                              innerPadding: EdgeInsets.symmetric(
+                                vertical: 8.sp,
+                                horizontal: 18.sp,
+                              ),
                               onTap: () {
                                 setState(() => isSelected = false);
                               },
-                              child: CustomContainer(
-                                padding: 5.sp,
-                                text: "Trimester Report",
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Inter',
-                                borderRadius: 5.r,
-                                textAlign: TextAlign.center,
-                                textColor: !isSelected
-                                    ? AppColors.white
-                                    : AppColors.themeColor,
-                                containerColor: !isSelected
-                                    ? AppColors.themeColor
-                                    : AppColors.white,
-                                borderColor: !isSelected
-                                    ? Colors.transparent
-                                    : AppColors.themeColor,
-                                borderWidth: !isSelected ? 0 : 0.7.sp,
-                                innerPadding: EdgeInsets.symmetric(
-                                  vertical: 8.sp,
-                                  horizontal: 18.sp,
-                                ),
-                              ),
                             ),
                           ],
                         ),
@@ -320,85 +316,83 @@ class _ReportDashboardState extends State<ReportDashboard> with RouteAware {
                                           ),
                                           Align(
                                             alignment: Alignment.centerRight,
-                                            child: InkWell(
-                                              splashColor: AppColors.transparent,
-                                              highlightColor: AppColors.transparent,
-                                              onTap: () async {
-                                                if (isSelected) {
-                                                  final success = await provider
-                                                      .getWeeklyReportData(
-                                                        context,
-                                                        student.id.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                right: 8.0,
+                                              ),
+                                              child: CustomContainer(
+                                                padding: 0.sp,
+                                                text: 'View',
+                                                innerPadding:
+                                                    EdgeInsets.symmetric(
+                                                      vertical: 3.sp,
+                                                      horizontal: 20.sp,
+                                                    ),
+                                                containerColor: Colors.white,
+                                                textColor: AppColors.yellow,
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w500,
+                                                borderColor: AppColors.yellow,
+                                                borderWidth: 1,
+                                                onTap: () async {
+                                                  if (isSelected) {
+                                                    final success =
+                                                        await provider
+                                                            .getWeeklyReportData(
+                                                              context,
+                                                              student.id
+                                                                  .toString(),
+                                                            );
+                                                    if (!mounted) return;
+                                                    if (success &&
+                                                        provider.weeklyReportData !=
+                                                            null &&
+                                                        provider
+                                                            .weeklyReportData!
+                                                            .isNotEmpty) {
+                                                      final weeklyReport = provider
+                                                          .weeklyReportData![0];
+                                                      NavigationHelper.push(
+                                                        scaffoldContext,
+                                                        WeeklyReportView(
+                                                          student: weeklyReport,
+                                                        ),
                                                       );
-                                                  if (!mounted) return;
-                                                  if (success &&
-                                                      provider.weeklyReportData !=
-                                                          null &&
-                                                      provider
-                                                          .weeklyReportData!
-                                                          .isNotEmpty) {
-                                                    final weeklyReport = provider
-                                                        .weeklyReportData![0];
-                                                    NavigationHelper.push(
-                                                      scaffoldContext,
-                                                      WeeklyReportView(
-                                                        student: weeklyReport,
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    showSnackBar(
-                                                      "Failed to load top_right_button",
-                                                      context,
-                                                    );
-                                                  }
-                                                } else {
-                                                  final success = await provider
-                                                      .getTrimesterReportData(
+                                                    } else {
+                                                      showSnackBar(
+                                                        "Failed to load top_right_button",
                                                         context,
-                                                        student.id.toString(),
                                                       );
-                                                  if (!mounted) return;
-                                                  if (success &&
-                                                      provider.trimesterReportData !=
-                                                          null &&
-                                                      provider
-                                                          .trimesterReportData!
-                                                          .isNotEmpty) {
-                                                    final profile = provider
-                                                        .trimesterReportData![0];
-                                                    NavigationHelper.push(
-                                                      scaffoldContext,
-                                                      TrimesterReportView(
-                                                        student: profile,
-                                                      ),
-                                                    );
+                                                    }
                                                   } else {
-                                                    showSnackBar(
-                                                      "Failed to load top_right_button",
-                                                      context,
-                                                    );
+                                                    final success = await provider
+                                                        .getTrimesterReportData(
+                                                          context,
+                                                          student.id.toString(),
+                                                        );
+                                                    if (!mounted) return;
+                                                    if (success &&
+                                                        provider.trimesterReportData !=
+                                                            null &&
+                                                        provider
+                                                            .trimesterReportData!
+                                                            .isNotEmpty) {
+                                                      final profile = provider
+                                                          .trimesterReportData![0];
+                                                      NavigationHelper.push(
+                                                        scaffoldContext,
+                                                        TrimesterReportView(
+                                                          student: profile,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      showSnackBar(
+                                                        "Failed to load top_right_button",
+                                                        context,
+                                                      );
+                                                    }
                                                   }
-                                                }
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                  right: 8.0,
-                                                ),
-                                                child: CustomContainer(
-                                                  padding: 0.sp,
-                                                  text: 'View',
-                                                  innerPadding:
-                                                      EdgeInsets.symmetric(
-                                                        vertical: 3.sp,
-                                                        horizontal: 20.sp,
-                                                      ),
-                                                  containerColor: Colors.white,
-                                                  textColor: AppColors.yellow,
-                                                  fontSize: 12.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  borderColor: AppColors.yellow,
-                                                  borderWidth: 1,
-                                                ),
+                                                },
                                               ),
                                             ),
                                           ),

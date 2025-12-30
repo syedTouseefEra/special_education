@@ -381,7 +381,7 @@ class _WeeklyReportViewState extends State<WeeklyReportView> {
                                     final mainUrl =
                                         'https://hamaaresitaareapi.edumation.in/FileUploads/weeklyGoal/';
                                     final video = item
-                                        .videoList![videoIndex]; // Ensure videoList is not null
+                                        .videoList![videoIndex];
 
                                     final fullUrl =
                                         '$mainUrl${video.videoName ?? ''}';
